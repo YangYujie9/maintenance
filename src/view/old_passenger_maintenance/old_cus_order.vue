@@ -58,10 +58,7 @@
             
         </div>
         <div  class="middle">
-            <div class="input-cus">
-              <el-button type="primary" plain class="btninput" size="small">导入</el-button>
-              <el-button type="primary" plain class="btninput" size="small">导出</el-button>
-            </div>
+            
 
             <div class="table_change" >
                 <el-tabs type="card" @tab-click="handleClick">
@@ -71,7 +68,31 @@
 
                 </el-tabs>
             </div>
+
+            <div class="input-cus">
+              <el-button type="primary" plain @click.native="editdialog_edit" class="btninput cursor" size="small">导入</el-button>
+              <el-button type="primary" plain class="btninput cursor" @click="editdialog_edit" size="small">导出</el-button>
+            </div>
         </div>
+        <!--编辑文件部分-->
+        <el-dialog
+            :close-on-click-modal="false"
+          :visible.sync="editdialog.dialogVisible"
+          width="600px"
+          >
+          <span slot="title">
+             编辑
+          </span>
+          <div>
+                
+          </div>
+          <span slot="footer" class="dialog-footer">
+            <el-button size="small" @click="editdialog.dialogVisible = false">取 消</el-button>
+            <el-button size="small" type="primary" >确 定</el-button>
+          </span>
+        </el-dialog>
+        <!--编辑文件部分-->
+        
     </div>
 </template>
 
@@ -85,6 +106,9 @@ export default {
     },
     data(){
         return{
+            editdialog: {
+                dialogVisible: false
+            },
             phototype: '',
             selectTab: [
               {
@@ -161,9 +185,12 @@ export default {
         }
     },
     mounted(){
-      
     },
     methods:{
+        editdialog_edit() {
+            this.editdialog.dialogVisible = true
+            
+        },
         handleCommand(type) {
 
           let start = ''
@@ -221,6 +248,40 @@ export default {
 </script>
 
 <style lang="less">
+
+.btninput {
+    padding: 7px 24px !important;
+
+    .el-button:hover {
+      background: #0057ff;
+      color: #ffffff;
+    }
+    
+}
+
+.input-cus {
+    .el-button:hover {
+    background: #0057ff !important;
+    color: white !important;
+
+    }
+}
+
+
+
+.btnbluet {
+    background: #409EFF !important;
+    color: white;
+
+
+    
+  }
+
+  .btnbluet:focus, .el-button:hover {
+      color: #409EFF !important;
+      background: #ecf5ff !important;
+      border-color: #b3d8ff !important;
+  }
 .old_cus_order {
 
 
