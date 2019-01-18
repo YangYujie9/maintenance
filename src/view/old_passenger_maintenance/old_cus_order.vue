@@ -58,7 +58,19 @@
             
         </div>
         <div  class="middle">
-            
+            <div class="input-cus">
+              <el-button type="primary" plain class="btninput" size="small">导入</el-button>
+              <el-button type="primary" plain class="btninput" size="small">导出</el-button>
+            </div>
+
+            <div class="table_change" >
+                <el-tabs type="card" @tab-click="handleClick">
+                    <el-tab-pane  class="item" :key="index" v-for="(list,index) in selectTab" :label="list.name" >
+                        <span slot="label">{{list.name}}</span>
+                    </el-tab-pane>
+
+                </el-tabs>
+            </div>
         </div>
     </div>
 </template>
@@ -73,6 +85,39 @@ export default {
     },
     data(){
         return{
+            phototype: '',
+            selectTab: [
+              {
+                  name: '全部(0)',
+                  id: '',
+                  choose: true
+              },
+              {
+                  name: '一次拍摄(0)',
+                  id: '0',
+                  choose: false
+              },
+              {
+                  name: '没定时间(0)',
+                  id: '1',
+                  choose: false
+              },
+              {
+                  name: '没定策划(0)',
+                  id: '2',
+                  choose: false
+              },
+              {
+                  name: '拍摄人员不齐(0)',
+                  id: '3',
+                  choose: false
+              },
+              {
+                  name: '暂定(0)',
+                  id: '4',
+                  choose: false
+              },
+            ],
             timeChoose: [{
               value: 'ps',
               label: '拍摄时间',
@@ -110,7 +155,8 @@ export default {
             searchItem: {
                timeType: 'ps',
                start: '',
-               end: ''
+               end: '',
+               type: ''
             }
         }
     },
@@ -165,12 +211,20 @@ export default {
           this.searchItem.end = end
 
         },
+        handleClick(tab) {
+          this.searchItem.type = this.selectTab[tab.index].id
+
+          
+        },
     },
 }
 </script>
 
 <style lang="less">
 .old_cus_order {
+
+
+
    .top {
         background:rgb(250, 250, 250);
         width: 100%;
@@ -243,10 +297,33 @@ export default {
    .middle {
       margin-top: 0px;
       position: relative;
+      padding-left:10px;
+      padding-right: 10px;
+
+      
+
+      
+      .el-tabs--card>.el-tabs__header .el-tabs__item.is-active {
+        border-bottom-color: #e4e7ed;
+        background: #0057ff;
+        color: white;
+      }
+
       .input-cus {
         position: absolute;
-        right: 0px;
+        right: 10px;
         top: -2px;
+
+
+        .btninput {
+            padding: 7px 24px !important;
+
+            .el-button:hover {
+              background: #0057ff;
+              color: #ffffff;
+            }
+            
+        }
       }
         .yeang-menu {
             padding: 20px 20px 0 20px;
@@ -257,6 +334,7 @@ export default {
                 display: inline-block;
                 padding: 5px 20px 6px 20px;
                 border-bottom: 1px solid #e2e2e2;
+
                 margin-right: -1px;
 
 
