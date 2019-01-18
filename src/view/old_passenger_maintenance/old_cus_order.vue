@@ -38,15 +38,15 @@
                 <div class="order-select">
                     <el-select clearable  class="custom-width"  size="mini" v-model="phototype" placeholder="正常/补拍/重拍/暂定">
                       <el-option 
-                        v-for="item in photolisttype" 
+                        v-for="item in giveType_list" 
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
                       </el-option>
                     </el-select> 
-                    <el-select clearable  class="custom-width"  size="mini" v-model="phototype" placeholder="正常/补拍/重拍/暂定">
+                    <el-select clearable  class="custom-width"  size="mini" v-model="searchItem.giveType" placeholder="送礼模式">
                       <el-option 
-                        v-for="item in photolisttype" 
+                        v-for="item in giveType_list" 
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -82,15 +82,7 @@
                 border
                 style="width: 100%;font-size: 12px;"> 
 
-                <el-table-column
-                    prop="name"
-                    width="50"
-                    label="排序"
-                    >
-                    <template slot-scope="scope"> 
-                      {{scope.row.collectorName}}
-                    </template>
-                </el-table-column>
+                
                 <el-table-column
                     prop="name"
                     width="120"
@@ -113,7 +105,8 @@
                     label="老客户"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.oldKzName}}
+                      <div>{{scope.row.oldKzName}}</div>
+                      <div>{{scope.row.oldMateName}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -121,7 +114,8 @@
                     label="老客电话"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.oldKzPhone}}
+                      <div>{{scope.row.oldKzPhone}}</div>
+                      <div>{{scope.row.oldMatePhone}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -137,7 +131,8 @@
                     label="新客户"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.kzName}}
+                      <div>{{scope.row.kzName}}</div>
+                      <div>{{scope.row.mateName}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -145,7 +140,8 @@
                     label="新客电话"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.kzPhone}}
+                      <div>{{scope.row.kzPhone}}</div>
+                      <div>{{scope.row.matePhone}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -225,7 +221,9 @@
                     label="操作"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.collectorName}}
+                      <el-button
+                          size="mini"
+                          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -407,53 +405,44 @@ export default {
                   choose: true
               },
               {
-                  name: '一次拍摄(0)',
+                  name: '未送礼(0)',
                   id: '0',
                   choose: false
               },
               {
-                  name: '没定时间(0)',
+                  name: '确定地址(0)',
                   id: '1',
                   choose: false
               },
               {
-                  name: '没定策划(0)',
+                  name: '已下单(0)',
                   id: '2',
                   choose: false
               },
               {
-                  name: '拍摄人员不齐(0)',
+                  name: '已送达(0)',
                   id: '3',
                   choose: false
               },
               {
-                  name: '暂定(0)',
+                  name: '保留(0)',
                   id: '4',
                   choose: false
               },
             ],
             timeChoose: [{
-              value: 'ps',
-              label: '拍摄时间',
-            },{
-              value: 'dd',
+              value: 'successtime',
               label: '订单时间',
             },{
-              value: 'qh',
-              label: '策划时间',
+              value: 'createtime',
+              label: '提报时间',
             }],
-            photolisttype: [{
+            giveType_list: [{
               value: '1',
-              label: '正常',
+              label: '只送老客',
             },{
               value: '2',
-              label: '重拍',
-            },{
-              value: '3',
-              label: '补拍',
-            },{
-              value: '4',
-              label: '暂定',
+              label: '新老双送',
             }],
             searchTime: [
               {label: "今天",value: "today"},
@@ -467,11 +456,14 @@ export default {
 
             ],
             searchItem: {
-               timeType: 'ps',
+               timeType: 'successtime',
                end: new Date(new Date(new Date().toLocaleDateString()).getTime()+24*60*60*1000-1),
                start: new Date(new Date(new Date().toLocaleDateString()).getTime()),
-               size: 10,
+               collectorId: '',
+               giveType: '',
+               size: 20,
                total: 0,
+               statusId: '',
                currentPage: 1,
             }
         }
@@ -504,15 +496,17 @@ export default {
                 timeType: 'successtime',
                 start: 1515340800,
                 end: this.searchItem.end/1000,
-                collectorId: '',
-                giveType: '',
-                pageNum: '1',
-                pageSize: 30,
+                collectorId: this.searchItem.collectorId,
+                giveType: this.searchItem.giveType,
+                pageNum: this.searchItem.currentPage,
+                statusId: this.searchItem.statusId,
+                pageSize: this.searchItem.size,
             })
                 .then((data)=>{
                     
                     if (data.code == '100000') {
-                       this.searchdata =  data.data.list
+                       this.searchdata=data.data.list
+                       this.searchItem.total=data.data.total
                     } else {
                         this.$message({
                           message: data.msg,
@@ -520,6 +514,9 @@ export default {
                         })
                     }
                 })
+        },
+        handleEdit(index, row) {
+
         },
         tableheaderClassName({ row, rowIndex }) {
             return "table-head-th";
@@ -569,11 +566,11 @@ export default {
 
           this.searchItem.start = start
           this.searchItem.end = end
-
+          this.getdata()
         },
         handleClick(tab) {
-          this.searchItem.type = this.selectTab[tab.index].id
-
+          this.searchItem.statusId = this.selectTab[tab.index].id
+          this.getdata()
           
         },
     },
@@ -705,7 +702,9 @@ export default {
     }
 }
 
-
+.el-select-dropdown__item {
+    font-size: 12px;
+}
 
 .btnbluet {
     background: #409EFF !important;
@@ -721,8 +720,10 @@ export default {
       border-color: #b3d8ff !important;
   }
 .old_cus_order {
+    font-size: 12px;
+    
 
-
+    
 
    .top {
         background:rgb(250, 250, 250);
@@ -774,6 +775,7 @@ export default {
             .custom-width {
                 width: 120px;
                 margin-right: 10px;
+                margin-bottom: 10px;
             }
             
 
@@ -796,8 +798,8 @@ export default {
    .middle {
       margin-top: 0px;
       position: relative;
-      padding-left:10px;
-      padding-right: 10px;
+      padding-left:16px;
+      padding-right: 16px;
       height: calc(100vh - 200px);
 
       .lan {
@@ -818,7 +820,7 @@ export default {
 
       .input-cus {
         position: absolute;
-        right: 10px;
+        right: 16px;
         top: -2px;
 
 

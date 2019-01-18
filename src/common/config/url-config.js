@@ -1,6 +1,6 @@
 // 开发环境
 let devUrl={
-    domain: 'http://172.18.1.212:8083/',
+    domain: 'http://introduce.dev.qiein.com/introduce-api/',
     apolloDomain:'https://apollo.qiein.com/',
     wxCallBack:'http://apollo.qiein.com/wechat/dsyy_order_call_back',
     websocketUrl:'wss://websocket.qiein.com/ws',

@@ -7,6 +7,8 @@
 
 <script>
 import vHeader from '@/components/v-header'
+
+
 export default {
     name: "index",
     components: {
@@ -18,7 +20,7 @@ export default {
         }
     },
     mounted(){
-      
+      this.$store.dispatch('getUserBaseInfo')
     },
     methods:{
       
