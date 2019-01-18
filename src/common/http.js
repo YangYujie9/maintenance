@@ -20,10 +20,10 @@ import Cookies from 'js-cookie'
  */
 
 erpAxios.interceptors.request.use(function (config) {
-  config.headers['cid'] = Cookies.get('cid')
-  config.headers['uid'] = Cookies.get('uid')
-  config.headers['token'] = Cookies.get('token')
-  console.log(config);
+  config.headers['cid'] = urlConfig.cid
+  config.headers['uid'] = urlConfig.uid
+  config.headers['token'] = urlConfig.token
+  //console.log(config);
   
   return config;
 }, function (error) {

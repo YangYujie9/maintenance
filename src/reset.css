@@ -10,7 +10,7 @@ menu, nav, output, ruby, section, summary, time, mark, audio, video {
     padding: 0;
     border: 0;
     box-sizing: border-box;
-    font-family: SourceHanSansSC;
+    font-family:"Microsoft Yahei";
 }
 
 body {

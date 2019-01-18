@@ -1,9 +1,12 @@
 // 开发环境
 let devUrl={
-    domain: 'http://dsyy.dev.qiein.com/dsyy-api/',
+    domain: 'http://172.18.1.212:8083/',
     apolloDomain:'https://apollo.qiein.com/',
     wxCallBack:'http://apollo.qiein.com/wechat/dsyy_order_call_back',
-    websocketUrl:'wss://websocket.qiein.com/ws'
+    websocketUrl:'wss://websocket.qiein.com/ws',
+    cid: 2,
+    uid: 222,
+    token: '1db84ac5e8ba927788896c331d9df8ef'
 
 }
 
