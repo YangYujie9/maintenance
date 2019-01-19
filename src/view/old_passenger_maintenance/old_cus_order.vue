@@ -36,14 +36,26 @@
                 </el-dropdown>
 
                 <div class="order-select">
-                    <el-select clearable  class="custom-width"  size="mini" v-model="phototype" placeholder="正常/补拍/重拍/暂定">
-                      <el-option 
-                        v-for="item in giveType_list" 
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select> 
+                    <!--摄影师-->
+                    <el-dropdown  class="custom-width" trigger="click" size="mini" placement="bottom">
+                      <el-button size="mini" style="width: 120px;">
+                        {{stafflistvaluedeal}}<i class="el-icon-arrow-down el-icon--right"></i>
+                      </el-button>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-tree  node-key="staffId" :data="dept_and_stafflist" :props="defaultmakeup" ref="stafflist" @check="stafflistsave" show-checkbox class="custom-width-order">
+                        </el-tree>
+                        <div class="allorfalse">
+                          <div @click="stafflistcheckall(true)" class="cursor">
+                            全选
+                          </div>
+                          <div @click="stafflistcheckall(false)" class="allorfalse-two cursor">
+                            清空
+                          </div>
+                        </div>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+
+                    <!--摄影师-->
                     <el-select clearable  class="custom-width"  size="mini" v-model="searchItem.giveType" placeholder="送礼模式">
                       <el-option 
                         v-for="item in giveType_list" 
@@ -69,10 +81,10 @@
                 </el-tabs>
             </div>
 
-            <div class="input-cus">
+            <!--<div class="input-cus">
               <el-button type="primary" plain @click.native="editdialog_edit" class="btninput cursor" size="small">导入</el-button>
               <el-button type="primary" plain class="btninput cursor" @click="matchdialog.dialogVisible = true" size="small">导出</el-button>
-            </div>
+            </div>-->
 
             <el-table
                 :data="searchdata"
@@ -465,11 +477,34 @@ export default {
                total: 0,
                statusId: '',
                currentPage: 1,
-            }
+            },
+            dept_and_stafflist: [],
+            defaultmakeup: {
+              children: 'staffList',
+              label: 'nickName'
+            },
+            stafflistvalue: '',
+            stafflistcheckdata: []
         }
+    },
+    computed: {
+        stafflistvaluedeal() {
+            if (this.stafflistvalue.length > 0) {
+              if (this.stafflistvalue.length > 6) {
+                return this.stafflistvalue.slice(0,6) + '...'
+              } else {
+                return this.stafflistvalue
+              }
+
+            } else {
+              return '渠道员工'
+            }
+
+        },
     },
     mounted(){
         this.getdata()
+        this.get_all_dept_and_staff()
 
         setTimeout(()=>{
             this.table_height = this.$refs.middle.offsetHeight - 92
@@ -480,9 +515,30 @@ export default {
           this.searchItem.size = val
           this.getdata()
         },
+
         handleCurrentChange(val) {
           this.searchItem.currentPage = val
           this.getdata()
+        },
+        //人员下拉列表
+        get_all_dept_and_staff() {
+            this.$http.get('staff/get_all_dept_and_staff')
+                .then((data)=>{
+                    
+                    if (data.code == '100000') {
+
+                       for (let i=0; i<data.data.length; i++) {
+                          data.data[i].nickName = data.data[i].groupName
+                        }
+
+                       this.dept_and_stafflist = data.data
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
+                })
         },
         editdialog_edit() {
             this.editdialog.dialogVisible = true
@@ -492,9 +548,18 @@ export default {
             this.getdata()
         },
         getdata() {
+            let collectorId = ''
+            for (let i=0;i<this.stafflistcheckdata.length;i++) {
+                if (this.stafflistcheckdata[i].staffId) {
+                  collectorId += this.stafflistcheckdata[i].staffId+','
+                }
+            }
+
+            this.searchItem.collectorId = collectorId.slice(0,collectorId.length-1)
+            this.get_cal_data()
             this.$http.post('info/get_info_list',{
                 timeType: 'successtime',
-                start: 1515340800,
+                start: this.searchItem.start/1000,
                 end: this.searchItem.end/1000,
                 collectorId: this.searchItem.collectorId,
                 giveType: this.searchItem.giveType,
@@ -514,6 +579,76 @@ export default {
                         })
                     }
                 })
+        },
+        get_cal_data() {
+            this.$http.post('info/get_info_num',{
+                timeType: this.searchItem.timeType,
+                start: this.searchItem.start/1000,
+                end: this.searchItem.end/1000,
+                collectorId: this.searchItem.collectorId,
+                giveType: this.searchItem.giveType,
+                pageNum: this.searchItem.currentPage,
+                statusId: this.searchItem.statusId,
+                pageSize: this.searchItem.size,
+            })
+            .then((data)=>{
+                
+                if (data.code == '100000') {
+                   //console.info(data.data)
+                   this.selectTab[0].name=`全部(${data.data.all})`
+                   this.selectTab[1].name=`未送礼(${data.data.notGive})`
+                   this.selectTab[2].name=`确定地址(${data.data.knownAddress})`
+                   this.selectTab[3].name=`已下单(${data.data.alreadyOrder})`
+                   this.selectTab[4].name=`已送达(${data.data.alreadyGive})`
+                   this.selectTab[4].name=`保留(${data.data.hold})`
+                } else {
+                    this.$message({
+                      message: data.msg,
+                      type: 'error'
+                    })
+                }
+            })
+        },
+        stafflistsave() {
+            let checkData = this.$refs.stafflist.getCheckedNodes()
+            this.stafflistvalue = ''
+            for (let i=0;i<checkData.length;i++) {
+                if (checkData[i].staffList) {
+
+                } else {
+                  this.stafflistvalue += checkData[i].nickName+','
+                }
+
+
+            }
+
+
+
+            this.stafflistcheckdata = checkData
+
+            //console.info(this.stafflistcheckdata)
+        },
+        stafflistcheckall(flag) {
+
+            if (flag) {
+                let stafflistchecked = []
+                for (let i=0; i<this.dept_and_stafflist.length; i++) {
+                  for (let j=0;j<this.dept_and_stafflist[i].staffList.length;j++) {
+                    //console.info(this.dept_and_stafflist[i].staffList)
+                    stafflistchecked.push(this.dept_and_stafflist[i].staffList[j].staffId)
+                  }
+                  
+                }
+
+                //console.info(stafflistchecked)
+
+
+                this.$refs.stafflist.setCheckedKeys(stafflistchecked)
+              } else {
+                this.$refs.stafflist.setCheckedKeys([])
+              }
+              
+              this.stafflistsave()
         },
         handleEdit(index, row) {
 
@@ -578,6 +713,33 @@ export default {
 </script>
 
 <style lang="less">
+
+.allorfalse {
+ 
+  width: 162px;
+  height: 30px;
+  border-top: 1px solid #e4e7ed;
+
+
+  div {
+    width: 80px;
+    display: inline-block;
+    height: 100%;
+    float: left;
+    font-size: 12px;
+    text-align: center;
+    padding-top: 6px;
+
+  }
+
+  
+
+}
+
+.custom-width-order .el-tree-node__label {
+  font-size: 12px;
+ }
+
 
 .btninput {
     padding: 7px 24px !important;
@@ -762,7 +924,7 @@ export default {
             }
 
             .widthone {
-                width: 100px;
+                width: 110px;
                 margin-bottom: 10px;
                 margin-right: 10px;
             }

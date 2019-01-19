@@ -1,5 +1,5 @@
 <template>
-    <div class="schedule-setting">
+    <div class="gift_manage">
     	uuuu
     
     </div>
@@ -8,7 +8,7 @@
 <script>
 
 export default {
-    name: "schedule-setting",
+    name: "gift_manage",
     components: {
         
     },
@@ -27,11 +27,8 @@ export default {
 </script>
 
 <style lang="less">
-.schedule-setting {
-    width:100%;
-    height:60px;
-    background:#f3faff;
-    font-size:14px;
+.gift_manage {
+   
 }
   
 </style>
