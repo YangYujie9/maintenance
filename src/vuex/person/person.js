@@ -7,8 +7,7 @@ const state = {
   //用户企业信息
   userCompany: {},
   pageDict: {
-    channelMap: [],
-    sourceMap: []
+    
   }
   
 }
@@ -20,6 +19,10 @@ const getters = {
   userCompany: state => {
     return state.userCompany
   },
+  getpageDict: state => {
+    
+    return state.pageDict
+  },
   
 }
 
@@ -28,11 +31,13 @@ const mutations = {
     state.userInfo = data
   },
   setUserCompany(state, data) {
+
     state.userCompany = data
   },
   setpageDict(state, data) {
-    state.pageDict.channelMap = data.channelMap
-    state.pageDict.sourceMap = data.sourceMap
+
+    state.pageDict = data
+    //console.info(state.pageDict)
   }
 
 }
@@ -46,7 +51,6 @@ const actions = {
     .then((data) => {
 
         if (data.code === 100000) {
-          //console.info(data)
           context.commit('setpageDict', data.data.pageDict)
 
         }

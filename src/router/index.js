@@ -5,7 +5,8 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-      path: '/index',
+      path: '/',
+      redirect: '/old_passenger_maintenance',
       name: 'index',
       component: resolve => require(['@/view/index'], resolve), 
       children: [

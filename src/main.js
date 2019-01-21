@@ -12,7 +12,21 @@ import erpAxios from './common/http'
 import store from './vuex'
 Vue.use(ElementUI)
 
+//路由拦截
+router.beforeEach((to, from, next) => {
 
+    if (store.state.person.pageDict.channelMap) {
+    } else {
+
+
+      store.dispatch('getUserBaseInfo')
+    }
+
+    next()
+
+    
+ 
+})
 
 Vue.$http = Vue.prototype.$http = erpAxios
 

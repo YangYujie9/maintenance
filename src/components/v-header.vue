@@ -10,10 +10,45 @@
         </div>
       </div>
 
+
+
+      <!--搜索-->
+
+      <div @click.stop=""  class="search-detail">
+
+        <el-input size="medium" v-model="searchKey" @keyup.native="keyupsearch" style="width:100%; font-size: 12px;" placeholder="请输入搜索内容" class="input-with-select">
+
+          <el-button slot="append" @click.stop.prevent="searchok" icon="el-icon-search"></el-button>
+        </el-input>
+        <div v-if="searchresult" class="list-rt boxshadow cursor">
+          <div v-for="list in searchlist" class="order-detail">
+              <!--<div class="order-detail-left">
+                <span">
+                  
+                </span>
+                
+              </div>-->
+              <div class="order-detail-right">
+                <div>
+                  <p>新客<span>{{list.kzName}}  </span><span> {{list.kzPhone}}</span>  <span> {{list.mateName}}</span> <span> {{list.matePhone}}</span></p>
+
+                  <p>老客<span>{{list.oldKzName}}  </span><span> {{list.oldKzPhone}}</span>  <span> {{list.oldMateName}}</span><span> {{list.oldMatePhone}}</span> </p>
+                  
+                </div>
+              </div>
+          </div>
+
+          <div v-if="searchlist.length == 0" class="noresult">
+            没有搜索结果
+          </div>
+        </div>
+      </div>
+      <!--搜索-->
+
      
       <!--个人信息-->
       <div class="person">
-        <el-popover width="200" trigger="hover">
+        <!--<el-popover width="200" trigger="hover">
           <div style="text-align: center;">
             <p style="margin-bottom: 12px;font-size: 12px;" class="person-p">当前帐号:{{loginUserInfo.nickName}}</p>
             <el-button size="mini" @click="exit()" style="">
@@ -24,9 +59,18 @@
             <img class="head" :src="loginUserInfo.headImg" />
             {{loginUserInfo.nickName}}
           </el-button>
-        </el-popover>
+        </el-popover>-->
+
+        <el-button style="padding: 3px 10px;" slot="reference">
+            <img class="head" :src="loginUserInfo.headImg" />
+            {{loginUserInfo.nickName}}
+          </el-button>
       </div>
       <!--个人信息-->
+
+
+
+
     </div>
 
 
@@ -48,21 +92,30 @@
             choose: true
           }
         ],
+        searchKey: '',
         //当前登录人
         loginUserInfo: {
           companyName: '',
           nickName: '888',
           headImg: 'https://oss.aliyuncs.com/hmcrm/beidou/home_img/beidou_logo.png'
         },
+        searchlist: [],
         //公司信息
         companyInfo: {
 
-        }
+        },
+        searchresult: false
       }
     },
     mounted() {
       //获取登录信息
       //this.getCurrentLoginUserInfo()
+      let that = this
+
+      document.addEventListener("click", function(){
+        that.searchresult = false
+        that.searchKey = ''
+      }, false);
     },
     methods: {
       //顶部跳转
@@ -72,6 +125,47 @@
         }
         this.category[index].choose = true
         this.$router.push(this.category[index].link)
+      },
+      //搜索
+      searchok() {
+        if (!this.searchKey) {
+          return
+        }
+
+        if (this.searchKey.length<3) {
+          if (/[^\u4E00-\u9FA5]/g.test(this.searchKey)) {
+            return this.$message({
+              message: '请输入清晰的条件',
+              type: 'error'
+            })
+          }
+        }
+
+        
+
+
+
+        
+        this.searchresult = true
+        this.$http.get(`info/get_info_list_by_key?searchKey=${this.searchKey}`)
+        .then((data)=>{
+            
+            if (data.code == '100000') {
+                this.searchlist = []
+
+                this.searchlist = data.data
+            } else {
+                this.$message({
+                  message: data.msg,
+                  type: 'error'
+                })
+            }
+        })
+      },
+      keyupsearch(event) {
+        if (event.keyCode == 13 && this.searchKey) {
+          this.searchok()
+        }
       },
       //退出登录
       exit() {
@@ -102,6 +196,91 @@
 
 <style spoced lang="less">
   .head-1 {
+    position: relative;
+
+    .search-detail {
+    position: absolute;
+    width: 20%;
+    max-width: 360px;
+    min-width: 310px;
+    height: 30px;
+    left: 60%;
+    z-index: 99;
+    top: 14px;
+
+
+    .iconsearch {
+      width: 2.6em;
+      height: 2.6em;
+    }
+
+    .list-rt {
+      position: absolute;
+      left: 0px;
+      top: 40px;
+      max-height: 310px;
+      min-height: 30px;
+      overflow-y: scroll;
+      width: 100%;
+      min-width: 300px;
+      z-index: 99;
+      background: #ffffff;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #e2e2e2;
+
+      .noresult {
+        height: 20px;
+        text-align: center;
+        font-size: 12px;
+      }
+
+
+      .order-detail {
+        height: 48px;
+        position: relative;
+        font-size: 12px;
+
+
+        &:hover {
+          background: #f8f8f8;
+        }
+
+
+        .order-detail-left {
+          position: absolute;
+          top: 8px;
+          left: 16px;
+          height: 32px;
+          width: 30px;
+
+          img {
+            width: 30px;
+            height: 30px;
+          }
+        }
+
+        .order-detail-right {
+          position: absolute;
+          top: 8px;
+          right: 16px;
+          height: 32px;
+          left: 52px;
+
+
+          p {
+            position: relative;
+            top: -2px;
+          }
+        }
+      }
+
+
+    }
+
+
+  }
 
 
     .qiein-head {

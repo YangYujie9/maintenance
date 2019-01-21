@@ -19,8 +19,11 @@ export default {
         
         }
     },
+    created() {
+       
+    },
     mounted(){
-      this.$store.dispatch('getUserBaseInfo')
+      
     },
     methods:{
       

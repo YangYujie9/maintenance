@@ -12,7 +12,7 @@
                 </el-select>
                 <!--连级时间-->
                 <el-date-picker
-                    v-model="searchItem.start"
+                    v-model="searchItem.start" 
                     class="widthtwo"
                     size="mini"
                     type="datetime"
@@ -97,7 +97,7 @@
                 
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="140"
                     label="订单时间"
                     >
                     <template slot-scope="scope"> 
@@ -105,7 +105,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    width="120"
+                    width="140"
                     label="提报时间"
                     >
                     <template slot-scope="scope"> 
@@ -169,7 +169,7 @@
                     label="渠道"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.sourceId}}
+                      {{scope.row.srcName}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -258,157 +258,33 @@
         </div>
 
         </div>
-        <!--编辑文件部分-->
-        <el-dialog
-            :close-on-click-modal="false"
-          :visible.sync="editdialog.dialogVisible"
-          width="680px"
-          >
-          <span slot="title">
-             编辑
-          </span>
-          <div class="edit-content">
-            <div>
-               <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-               </div> 
-               <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-               </div> 
-               <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-               </div> 
-            </div>
-            <div>
-                <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-               </div> 
 
-            </div>
-            <div>
-                <div class="ul1">
-                    <span class="lable">订单点</span>
-                    <span class="el-tag">确定地址</span><!--
-                    --><span class="el-tag">下单</span><!--
-                    --><span class="el-tag">送达</span><!--
-                    --><span class="el-tag">保留</span>
-                </div>
-                <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-               </div> 
-            </div>
-            <div>
-                <div class="ul1">
-                    <span class="lable">订单点</span>
-                    <span class="el-tag">确定地址</span><!--
-                    --><span class="el-tag">下单</span><!--
-                    --><span class="el-tag">送达</span><!--
-                    --><span class="el-tag">保留</span>
-                </div>
-                <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-               </div> 
-            </div>
-            <div>
-                <div class="table_change table_positive" >
-                    <el-tabs type="card" @tab-click="handleClick">
-                        <el-tab-pane  class="item" :key="index" v-for="(list,index) in select_cus_msg" :label="list.name" >
-                            <span slot="label">{{list.name}}</span>
-                        </el-tab-pane>
-
-                    </el-tabs>
-
-                    <div class="acumulate">
-                        累计介绍（4/6）
-                    </div>
-                </div>
-
-                <div class="ullist">
-                    <el-radio label=""></el-radio>
-                    <span class="input-span">老客户</span>
-                    <el-input size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
-
-                    <span class="input-span">老客户</span>
-                    <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-                    <el-button size="mini" class="btn_circle" icon="el-icon-plus" circle></el-button>
-                </div>
-                
-            </div>
-          </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button size="small" @click="editdialog.dialogVisible = false">取 消</el-button>
-            <el-button size="small" type="primary" >确 定</el-button>
-          </span>
-        </el-dialog>
-        <!--编辑文件部分-->
+        <orderDetailModel v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
         <!--增加表格lei数-->
-        <el-dialog
-            :close-on-click-modal="false"
-            :visible.sync="matchdialog.dialogVisible"
-            width="500px"
-          >
-              <span slot="title">
-                 匹配
-              </span>
-              <div class="match_content">
-                <div class="ul">
-                   <span>订单点</span>
-                   <el-input size="mini" class="input-new" placeholder="请输入内容"></el-input>
-                </div>
-
-                <el-table
-                    :data="tableData"
-                    :header-cell-class-name="tableheaderClassName"
-                    class="border-q"
-                    border
-                    style="width: 100%;font-size: 12px"> 
-                </el-table>
-              </div>
-              <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="matchdialog.dialogVisible= false">取 消</el-button>
-                <el-button size="small" type="primary" >确 定</el-button>
-              </span>
-        </el-dialog>
+        
     </div>
 </template>
 
 <script>
 import timeUtil from '../../../static/js/timeUtil.js'
+import orderDetailModel from '../../components/order_detail_model'
+import { mapGetters } from 'vuex'
+
 
 export default {
     name: "old_cus_order",
     components: {
-        
+        orderDetailModel
     },
     data(){
         return{
-            matchdialog: {
-                dialogVisible: false
-            },
             table_height: 300,
             tableData: [],
             searchdata: [],
             editdialog: {
-                dialogVisible: false
+                dialogVisible: false,
+                kzId: ''
             },
-            select_cus_msg: [
-                {
-                    name: '全部(0)',
-                    id: '',
-                    choose: true
-                },
-                {
-                    name: '一次拍摄(0)',
-                    id: '0',
-                    choose: false
-                },
-            ],
             phototype: '',
             selectTab: [
               {
@@ -501,14 +377,19 @@ export default {
             }
 
         },
+        ...mapGetters([
+          'getpageDict',
+        ]), 
     },
     mounted(){
         this.getdata()
         this.get_all_dept_and_staff()
+        //console.info(this.$store.state)
 
         setTimeout(()=>{
             this.table_height = this.$refs.middle.offsetHeight - 92
-        },0)
+            
+        },10)
     },
     methods:{
         handleSizeChange(val) {
@@ -524,6 +405,7 @@ export default {
         get_all_dept_and_staff() {
             this.$http.get('staff/get_all_dept_and_staff')
                 .then((data)=>{
+
                     
                     if (data.code == '100000') {
 
@@ -540,10 +422,6 @@ export default {
                     }
                 })
         },
-        editdialog_edit() {
-            this.editdialog.dialogVisible = true
-            
-        },
         search() {
             this.getdata()
         },
@@ -558,7 +436,7 @@ export default {
             this.searchItem.collectorId = collectorId.slice(0,collectorId.length-1)
             this.get_cal_data()
             this.$http.post('info/get_info_list',{
-                timeType: 'successtime',
+                timeType: this.searchItem.timeType,
                 start: this.searchItem.start/1000,
                 end: this.searchItem.end/1000,
                 collectorId: this.searchItem.collectorId,
@@ -568,8 +446,11 @@ export default {
                 pageSize: this.searchItem.size,
             })
                 .then((data)=>{
-                    
+                    console.info(this.getpageDict)
                     if (data.code == '100000') {
+                      for (let i=0; i<data.data.list.length; i++) {
+                        data.data.list[i].srcName = this.getpageDict.sourceMap[data.data.list[i].sourceId].srcName
+                      }
                        this.searchdata=data.data.list
                        this.searchItem.total=data.data.total
                     } else {
@@ -651,7 +532,8 @@ export default {
               this.stafflistsave()
         },
         handleEdit(index, row) {
-
+          this.editdialog.dialogVisible = true
+          this.editdialog.kzId = row.kzId
         },
         tableheaderClassName({ row, rowIndex }) {
             return "table-head-th";
@@ -790,79 +672,6 @@ export default {
     top: -15px;
 }
 
-.edit-content {
-    font-size: 12px;
-    .input-new {
-        display: inline-block;
-        width: 130px;
-    }
-
-
-
-    .input-span {
-        padding-right: 10px;
-    }
-    .ullist {
-        position: relative;
-        padding-left: 10px;
-        margin-bottom: 10px;
-
-        .btn_circle {
-            position: absolute;
-            right: 10px;
-
-        }
-    }
-    .table_positive {
-        position: relative;
-        margin-top: 6px;
-
-
-        .acumulate {
-            position: absolute;
-            border: 1px solid #e4e7ed;
-            left: 300px;
-            top: 1px;
-            height: 33px;
-            padding: 0 12px;
-            line-height: 33px;
-            border-radius: 4px;
-            border-bottom: 0px;
-        }
-    }
-    .ul {
-        display: inline-block;
-        margin-right: 16px;
-        margin-bottom: 10px;
-
-        span {
-            padding-right: 10px;
-        }
-
-        
-    }
-
-    .ul1 {
-        display: inline-block;
-        margin-right: 36px;
-        margin-bottom: 10px;
-
-        .lable {
-            padding-right: 10px;
-        }
-
-        .el-tag {
-            padding: 0 16px;
-            min-width: 80px;
-            text-align: center;
-            background: white;
-            color: #606266;
-            border-color: #e4e7ed;
-            height: 28px;
-            line-height: 28px;
-        }
-    }
-}
 
 .el-select-dropdown__item {
     font-size: 12px;
