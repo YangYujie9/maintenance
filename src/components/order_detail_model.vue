@@ -129,7 +129,7 @@
 	                    <span class="input-span">邮寄</span>
 	                    
 
-	                    <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdOld" placeholder="快递时间">
+	                    <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdOld" placeholder="快递">
 	                      	<el-option 
 	                        v-for="item in getpageDict.commonMap.expressType" 
 	                        :key="item.id"
@@ -151,18 +151,18 @@
                       
                       <el-checkbox v-model="detail.newkzchoose"></el-checkbox>
                       <span class="input-span">新客户</span>
-                      <el-input v-model="detail.newKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
 
                       <span class="input-span">电话</span>
-                      <el-input size="mini" v-model="detail.newKzPhone"  class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input size="mini" v-model="detail.kzPhone"  class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                   <div class="ullist">
-                      <el-checkbox v-model="detail.newkzmatechoose"></el-checkbox>
+                      <el-checkbox v-model="detail.kzmatechoose"></el-checkbox>
                       <span class="input-span">新客户配偶</span>
-                      <el-input  size="mini" v-model="detail.newMateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input  size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
 
                       <span class="input-span">配偶电话</span>
-                      <el-input size="mini" v-model="detail.newMatePhone" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input size="mini" v-model="detail.matePhone" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄地址</span>
@@ -398,7 +398,7 @@ export default {
 	computed: {
         ...mapGetters([
         	'getpageDict',
-        ]),   
+        ]),
     },
     data(){
         return{
@@ -412,7 +412,7 @@ export default {
             	data: [],
             	chooselist: []
             },
-        	giveType_list: [{
+        	  giveType_list: [{
               value: '1',
               label: '只送老客',
             },{
@@ -503,9 +503,52 @@ export default {
     	handleChange(value) {
 	        console.log(value);
 	    },
+      getexpressname(id) {
+        let arr = this.getpageDict.commonMap.expressType.filter((list) => {
+            return list.id == id
+        })
+
+        return arr[0].dicName
+
+      },
       edit_kz_detail() {
-        alert(99)
-        console.info(this.detail)
+
+        this.$http.post(`info/edit_kz_detail`, {
+            companyId: 2,
+            giveType: this.detail.giveType,
+            statusNew: this.oldstatus.newchecked,
+            statusOld: this.oldstatus.oldchecked,
+            giftIdOld: this.detail.giftIdOld,
+            giftIdNew: this.detail.giftIdNew,
+            expressIdOld: this.detail.expressIdOld,
+            expressNameOld: this.getexpressname(this.detail.expressIdOld),
+            expressNumOld: this.detail.expressNumOld,
+            addressOld: this.detail.addressOldarray.join(','),
+            address2Old: this.detail.address2Old,
+            expressIdNew: this.detail.expressIdNew,
+            expressNameNew: this.getexpressname(this.detail.expressIdNew),
+            expressNumNew: this.detail.expressNumNew,
+            addressNew: this.detail.addressNewarray.join(','),
+            address2New: this.detail.address2New,
+            oldKzId: this.detail.oldKzId,
+            kzId: this.kzId,
+        })
+        .then((data)=>{
+              
+              if (data.code == '100000') {
+                  
+
+                  //this.searchData.data = data.data
+              } else {
+                  this.$message({
+                    message: data.msg,
+                    type: 'error'
+                  })
+              }
+          })
+
+
+
       },
     	matchdata() {
     		this.matchdialog.dialogVisible = true
@@ -530,7 +573,15 @@ export default {
     		} else if (this.searchData.chooselist.length==1) {
     			
     			this.matchdialog.dialogVisible = false
-    			this.detail.oldKzId=this.searchData.chooselist[0].oldKzId
+    			this.detail.oldKzId=this.searchData.chooselist[0].kzId
+
+
+          this.detail.oldKzName = this.searchData.chooselist[0].kzName
+          this.detail.oldKzPhone = this.searchData.chooselist[0].kzPhone
+          this.detail.oldMateName = this.searchData.chooselist[0].mateName
+          this.detail.oldMatePhone = this.searchData.chooselist[0].matePhone
+           
+
     			this.searchData.searchkey = ''
     			this.searchData.data = []
     			this.searchData.chooselist = []
@@ -565,12 +616,6 @@ export default {
 	            })
 	          }
 	        }
-
-	        
-
-
-
-	        
 	        
 	        this.$http.get(`info/get_info_list_by_key?searchKey=${this.searchData.searchkey}`)
 	        .then((data)=>{
@@ -591,9 +636,7 @@ export default {
             return "table-head-th";
         },
     	handleClick(tab) {
-          //this.searchItem.statusId = this.selectTab[tab.index].id
-
-          //console.info(tab)
+          
           this.choosetab = this.select_cus_msg[tab.index].id
           
       }, 
@@ -626,30 +669,29 @@ export default {
 			        this.detail.giveType = data.data.giveType
 			        this.detail.statusNew = data.data.statusNew
 			        this.detail.statusOld = data.data.statusOld
-					this.detail.giftIdOld = data.data.giftIdOld
-					this.detail.oldKzName = data.data.oldKzName
-					this.detail.oldKzPhone = data.data.oldKzPhone
-					this.detail.oldMateName = data.data.oldMateName
-					this.detail.oldMatePhone = data.data.oldMatePhone
-					this.detail.kzName = data.data.kzName
-					this.detail.mateName = data.data.mateName
-					this.detail.matePhone = data.data.matePhone
-					this.detail.expressNameNew = data.data.expressNameNew
-					this.detail.expressNumNew = data.data.expressNumNew
-					this.detail.addressNew = data.data.addressNew
-					this.detail.address2New = data.data.address2New
-					this.detail.expressNameOld = data.data.expressNameOld
-					this.detail.expressNumOld = data.data.expressNumOld
+    					this.detail.giftIdOld = data.data.giftIdOld
+    					this.detail.oldKzName = data.data.oldKzName
+    					this.detail.oldKzPhone = data.data.oldKzPhone
+    					this.detail.oldMateName = data.data.oldMateName
+    					this.detail.oldMatePhone = data.data.oldMatePhone
+    					this.detail.kzName = data.data.kzName
+              this.detail.kzPhone = data.data.kzPhone
+    					this.detail.mateName = data.data.mateName
+    					this.detail.matePhone = data.data.matePhone
+    					this.detail.expressNameNew = data.data.expressNameNew
+    					this.detail.expressNumNew = data.data.expressNumNew
+    					this.detail.addressNew = data.data.addressNew
+    					this.detail.address2New = data.data.address2New
+    					this.detail.expressNameOld = data.data.expressNameOld
+    					this.detail.expressNumOld = data.data.expressNumOld
 
-					this.detail.addressOldarray = data.data.addressOld.split(",")
-					this.detail.addressOld = data.data.addressOld
-					this.detail.address2Old = data.data.address2Old
-					this.detail.oldKzId = data.data.oldKzId
+    					this.detail.addressOldarray = data.data.addressOld.split(",")
+    					this.detail.addressOld = data.data.addressOld
+    					this.detail.address2Old = data.data.address2Old
+    					this.detail.oldKzId = data.data.oldKzId
+              this.detail.kzId = this.kzId
 
-
-		            	
-		            
-		            	
+              
 		            } else {
 		                this.$message({
 		                  message: data.msg,

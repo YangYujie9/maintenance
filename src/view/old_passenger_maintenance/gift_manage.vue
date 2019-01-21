@@ -109,7 +109,10 @@
                     label="操作"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.typeName}}
+                        <el-button
+                          size="mini"
+                          @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -163,7 +166,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button size="small" @click="giftdialog.dialogVisible= false">取 消</el-button>
-                <el-button size="small" type="primary" >确 定</el-button>
+                <el-button size="small" @click="edit_ok" type="primary" >确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -180,28 +183,29 @@ export default {
         return{
             giftdialog: {
                     dialogVisible: false,
-                    "giftName": "礼品555555",   
-                    "giftTypeCode": 4,      
-                    "id": 4,          
-                    "inventory": 5005555,    
-                    "pictureId": 5515,      
-                    "remark": "礼品备注554",  
-                    "sendOut": 2050,      
+                    "giftName": "",   
+                    "giftTypeCode": '',      
+                    "id": '',          
+                    "inventory": '',    
+                    "pictureId": '',      
+                    "remark": "",  
+                    "sendOut": '',      
                     "soldOutTime": "",     
-                    "status": 1,       
+                    "status": false,       
             },
             gifttype: [],
             giftdata: [],
             table_height: '300',
+            statusId: '1',
             selectTab: [
               {
                   name: '在线礼品(0)',
-                  id: '',
+                  id: 1,
                   choose: true
               },
               {
                   name: '下架礼品(0)',
-                  id: '0',
+                  id: 0,
                   choose: false
               },
               
@@ -210,23 +214,108 @@ export default {
     },
     mounted(){
         this.get_data()
+        this.gift_count_1()
+        this.gift_count_0()
         setTimeout(()=>{
             this.table_height = this.$refs.middle.offsetHeight - 82
         },0)
     },
     methods:{
         giftadd() {
+            this.giftdialog.giftName = ""
+            this.giftdialog.giftTypeCode = ""
+            this.giftdialog.id = ""
+            this.giftdialog.inventory = ""
+            this.giftdialog.pictureId = ""
+            this.giftdialog.remark = ""
+            this.giftdialog.sendOut = ""
+            this.giftdialog.status = ""
+            this.giftdialog.typeName = ""
             this.giftdialog.dialogVisible = true
+
         },
         handleClick(tab) {
-          //this.searchItem.statusId = this.selectTab[tab.index].id
-          
+          this.statusId = this.selectTab[tab.index].id
+          this.get_data()
+        },
+        handleEdit(index, row) {
+            this.giftdialog.giftName = row.giftName
+            this.giftdialog.giftTypeCode = row.giftTypeCode
+            this.giftdialog.id = row.id
+            this.giftdialog.inventory = row.inventory
+            this.giftdialog.pictureId = row.pictureId
+            this.giftdialog.remark = row.remark
+            this.giftdialog.sendOut = row.sendOut
+            this.giftdialog.status = row.status
+            this.giftdialog.typeName = row.typeName
+
+            this.giftdialog.dialogVisible = true
         },
         tableheaderClassName({ row, rowIndex }) {
             return "table-head-th";
         },
+        edit_ok() {
+            this.$http.post(`gift/edit`, {
+                "giftName": this.giftdialog.giftName,   
+                "giftTypeCode": this.giftdialog.giftTypeCode,      
+                "id": this.giftdialog.id,          
+                "inventory": this.giftdialog.inventory,    
+                "pictureId": this.giftdialog.pictureId,      
+                "remark": this.giftdialog.remark,  
+                "sendOut": this.giftdialog.sendOut,      
+                "status": this.giftdialog.status,  
+            })
+                .then((data)=>{
+                    
+                    if (data.code == '100000') {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                        //this.selectTab[0].name = `在线礼品(${data.data})`
+                        this.get_data()
+                        this.gift_count_1()
+                        this.gift_count_0()
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
+                })
+        },
+        //上架
+        gift_count_1() {
+            this.$http.get(`gift/count?status=1`)
+                .then((data)=>{
+                    
+                    if (data.code == '100000') {
+                        this.selectTab[0].name = `在线礼品(${data.data})`
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
+                })
+        },
+        gift_count_0() {
+            this.$http.get(`gift/count?status=0`)
+                .then((data)=>{
+                    
+                    if (data.code == '100000') {
+                        this.selectTab[1].name = `下架礼品(${data.data})`
+                       
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
+                })
+        },
         get_data() {
-            this.$http.post('gift/findAll')
+            this.$http.get(`gift/findAll?status=${this.statusId}`)
                 .then((data)=>{
                     
                     if (data.code == '100000') {
