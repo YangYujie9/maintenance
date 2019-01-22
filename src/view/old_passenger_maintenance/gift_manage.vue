@@ -91,7 +91,7 @@
                     label="状态"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.status}}
+                      {{scope.row.statusId == 1? '上架': '下架'}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -234,7 +234,7 @@ export default {
             this.giftdialog.pictureId = ""
             this.giftdialog.remark = ""
             this.giftdialog.sendOut = ""
-            this.giftdialog.status = ""
+            this.giftdialog.status = true
             this.giftdialog.typeName = ""
             this.giftdialog.dialogVisible = true
 
@@ -261,17 +261,17 @@ export default {
             return "table-head-th";
         },
         edit_ok() {
-            
-            this.$http.post(`gift/edit`, {
-                "giftName": this.giftdialog.giftName,   
-                "giftTypeCode": this.giftdialog.giftTypeCode,      
-                "id": this.giftdialog.id,          
-                "inventory": this.giftdialog.inventory,    
-                "pictureId": this.giftdialog.pictureId,      
-                "remark": this.giftdialog.remark,  
-                "sendOut": this.giftdialog.sendOut,      
-                "statusId": this.giftdialog.status? 1:0,  
-            })
+            if (this.giftdialog.id) {
+                this.$http.post(`gift/edit`, {
+                    "giftName": this.giftdialog.giftName,   
+                    "giftTypeCode": this.giftdialog.giftTypeCode,      
+                    "id": this.giftdialog.id,          
+                    "inventory": this.giftdialog.inventory,    
+                    "pictureId": this.giftdialog.pictureId,      
+                    "remark": this.giftdialog.remark,  
+                    "sendOut": this.giftdialog.sendOut,      
+                    "statusId": this.giftdialog.status? 1:0,  
+                })
                 .then((data)=>{
                     
                     if (data.code == '100000') {
@@ -295,6 +295,21 @@ export default {
                         })
                     }
                 })
+            } else {
+                this.$http.post(`gift/add`, {
+                    "giftName": this.giftdialog.giftName,   
+                    "giftTypeCode": this.giftdialog.giftTypeCode,      
+                    "inventory": this.giftdialog.inventory,    
+                    "pictureId": this.giftdialog.pictureId,      
+                    "remark": this.giftdialog.remark,  
+                    "statusId": this.giftdialog.status? 1:0,  
+                })
+                .then((data)=>{
+                    console.info(data)
+                })
+            }
+            
+            
         },
         //上架
         gift_count_1() {
