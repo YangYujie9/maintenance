@@ -41,13 +41,25 @@
         }],
         //当前活跃菜单
         nowActiveMenu: {
-          name: '安全账号',
+          name: '老客转介绍订单',
           index: 1,
         }
 
       }
     },
     mounted() {
+      if (this.$route.path == '/old_cus_order') {
+        this.nowActiveMenu.index = 1
+        this.nowActiveMenu.name = '老客转介绍订单'
+      }
+      if (this.$route.path == '/gift_manage') {
+        this.nowActiveMenu.index = 2
+        this.nowActiveMenu.name = '礼品管理'
+      }
+      if (this.$route.path == '/active_manage') {
+        this.nowActiveMenu.index = 3
+        this.nowActiveMenu.name = '活动管理'
+      }
       this.$router.push({
         path: this.nowActiveMenu.path
       })

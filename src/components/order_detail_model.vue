@@ -95,20 +95,20 @@
 
                 	<div class="ullist">
 	                    
-	                    <el-checkbox v-model="detail.oldkzchoose"></el-checkbox>
+	                    <el-checkbox @click.native="detail.oldkzmatechoose=false" v-model="detail.oldkzchoose"></el-checkbox>
 	                    <span class="input-span">老客户</span>
-	                    <el-input v-model="detail.oldKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input :readonly="true" v-model="detail.oldKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
 
 	                    <span class="input-span">电话</span>
-	                    <el-input size="mini" v-model="detail.oldKzPhone"  class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input size="mini" :readonly="true" v-model="detail.oldKzPhone"  class="input-new" placeholder="请输入内容"></el-input>
 	                </div>
 	                <div class="ullist">
-	                    <el-checkbox v-model="detail.oldkzmatechoose"></el-checkbox>
+	                    <el-checkbox @click.native="detail.oldkzchoose=false" v-model="detail.oldkzmatechoose"></el-checkbox>
 	                    <span class="input-span">老客户配偶</span>
-	                    <el-input  size="mini" v-model="detail.oldMateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input :readonly="true"  size="mini" v-model="detail.oldMateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
 
 	                    <span class="input-span">配偶电话</span>
-	                    <el-input size="mini" v-model="detail.oldMatePhone" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input size="mini" :readonly="true" v-model="detail.oldMatePhone" class="input-new" placeholder="请输入内容"></el-input>
 	                </div>
 	                <div class="ullist">
 	                    <span class="input-span">邮寄地址</span>
@@ -149,20 +149,20 @@
 
                   <div class="ullist">
                       
-                      <el-checkbox v-model="detail.newkzchoose"></el-checkbox>
+                      <el-checkbox @click.native="detail.newkzmatechoose=false"  v-model="detail.newkzchoose"></el-checkbox>
                       <span class="input-span">新客户</span>
-                      <el-input v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :readonly="true" v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
 
                       <span class="input-span">电话</span>
-                      <el-input size="mini" v-model="detail.kzPhone"  class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                   <div class="ullist">
-                      <el-checkbox v-model="detail.kzmatechoose"></el-checkbox>
+                      <el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.kzmatechoose"></el-checkbox>
                       <span class="input-span">新客户配偶</span>
-                      <el-input  size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
 
                       <span class="input-span">配偶电话</span>
-                      <el-input size="mini" v-model="detail.matePhone" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :readonly="true" size="mini" v-model="detail.matePhone" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄地址</span>
@@ -394,17 +394,17 @@ export default {
     props: {
 	    dialogVisible: Boolean,
 	    kzId: String
-	},
-	computed: {
+	  },
+	  computed: {
         ...mapGetters([
         	'getpageDict',
         ]),
     },
     data(){
         return{
-        	cityOptions: [],
-        	cityMap: cityMap,
-        	matchdialog: {
+          	cityOptions: [],
+          	cityMap: cityMap,
+          	matchdialog: {
                 dialogVisible: false
             },
             searchData: {
@@ -413,10 +413,10 @@ export default {
             	chooselist: []
             },
         	  giveType_list: [{
-              value: '1',
+              value: 1,
               label: '只送老客',
             },{
-              value: '2',
+              value: 2,
               label: '新老双送',
             }],
             select_cus_msg: [
@@ -468,9 +468,11 @@ export default {
     				addressNew: "",
     				addressOld: "",
     				addressOldarray: [],
-    				amount: 3,
-    				collectorName: "小利",
-    				createTime: "2018/06/22",
+    				amount: 0,
+            expressFlagNew: "",
+            expressFlagOld: "",
+    				collectorName: "",
+    				createTime: "",
     				expressNameNew: "",
     				expressNameOld: "",
     				expressNumNew: "",
@@ -512,6 +514,25 @@ export default {
 
       },
       edit_kz_detail() {
+        let expressFlagNew = ''
+        if (this.detail.newkzchoose) {
+          expressFlagNew = true
+        } 
+
+        if (this.detail.newkzmatechoose) {
+          expressFlagNew = false
+        } 
+
+        let expressFlagOld = ''
+        if (this.detail.oldkzchoose) {
+          expressFlagOld = true
+        } 
+
+        if (this.detail.oldkzmatechoose) {
+          expressFlagOld = false
+        } 
+
+
 
         this.$http.post(`info/edit_kz_detail`, {
             companyId: 2,
@@ -520,6 +541,8 @@ export default {
             statusOld: this.oldstatus.oldchecked,
             giftIdOld: this.detail.giftIdOld,
             giftIdNew: this.detail.giftIdNew,
+            expressFlagNew: expressFlagNew,
+            expressFlagOld: expressFlagOld,
             expressIdOld: this.detail.expressIdOld,
             expressNameOld: this.getexpressname(this.detail.expressIdOld),
             expressNumOld: this.detail.expressNumOld,
@@ -536,8 +559,14 @@ export default {
         .then((data)=>{
               
               if (data.code == '100000') {
-                  
+                
+                this.$message({
+                  message: data.msg,
+                  type: 'success'
+                })
+                this.$emit('close')
 
+                this.$emit('research')
                   //this.searchData.data = data.data
               } else {
                   this.$message({
@@ -634,7 +663,7 @@ export default {
 	    },
     	tableheaderClassName({ row, rowIndex }) {
             return "table-head-th";
-        },
+      },
     	handleClick(tab) {
           
           this.choosetab = this.select_cus_msg[tab.index].id
@@ -661,35 +690,72 @@ export default {
 	            
 		            if (data.code == '100000') {
 		            	
-			        this.detail.letterId = data.data.letterId
-			        this.detail.createTime = data.data.createTime
-			        this.detail.shopName = data.data.shopName
-			        this.detail.collectorName = data.data.collectorName
-			        this.detail.amount = data.data.amount
-			        this.detail.giveType = data.data.giveType
-			        this.detail.statusNew = data.data.statusNew
-			        this.detail.statusOld = data.data.statusOld
-    					this.detail.giftIdOld = data.data.giftIdOld
-    					this.detail.oldKzName = data.data.oldKzName
-    					this.detail.oldKzPhone = data.data.oldKzPhone
-    					this.detail.oldMateName = data.data.oldMateName
-    					this.detail.oldMatePhone = data.data.oldMatePhone
-    					this.detail.kzName = data.data.kzName
-              this.detail.kzPhone = data.data.kzPhone
-    					this.detail.mateName = data.data.mateName
-    					this.detail.matePhone = data.data.matePhone
-    					this.detail.expressNameNew = data.data.expressNameNew
-    					this.detail.expressNumNew = data.data.expressNumNew
-    					this.detail.addressNew = data.data.addressNew
-    					this.detail.address2New = data.data.address2New
-    					this.detail.expressNameOld = data.data.expressNameOld
-    					this.detail.expressNumOld = data.data.expressNumOld
+  			        this.detail.letterId = data.data.letterId
+  			        this.detail.createTime = data.data.createTime
+  			        this.detail.shopName = data.data.shopName
+  			        this.detail.collectorName = data.data.collectorName
+  			        this.detail.amount = data.data.amount
+  			        this.detail.giveType = data.data.giveType
+  			        this.detail.statusNew = data.data.statusNew
+  			        this.detail.statusOld = data.data.statusOld
+      					this.detail.giftIdOld = data.data.giftIdOld
+                this.detail.giftIdNew = data.data.giftIdNew
+      					this.detail.oldKzName = data.data.oldKzName
+      					this.detail.oldKzPhone = data.data.oldKzPhone
+      					this.detail.oldMateName = data.data.oldMateName
+      					this.detail.oldMatePhone = data.data.oldMatePhone
+      					this.detail.kzName = data.data.kzName
+                this.detail.kzPhone = data.data.kzPhone
+      					this.detail.mateName = data.data.mateName
+      					this.detail.matePhone = data.data.matePhone
+      					this.detail.expressNameNew = data.data.expressNameNew
+      					this.detail.expressNumNew = data.data.expressNumNew
+      					this.detail.addressNew = data.data.addressNew
+                this.detail.addressNewarray = data.data.addressNew.split(",")
 
-    					this.detail.addressOldarray = data.data.addressOld.split(",")
-    					this.detail.addressOld = data.data.addressOld
-    					this.detail.address2Old = data.data.address2Old
-    					this.detail.oldKzId = data.data.oldKzId
-              this.detail.kzId = this.kzId
+      					this.detail.address2New = data.data.address2New
+      					this.detail.expressNameOld = data.data.expressNameOld
+      					this.detail.expressNumOld = data.data.expressNumOld
+
+                this.detail.expressIdNew = data.data.expressIdNew
+                this.detail.expressIdOld = data.data.expressIdOld
+
+                this.detail.expressFlagOld = data.data.expressFlagOld
+                this.detail.expressFlagNew = data.data.expressFlagNew
+
+                
+                if (this.detail.expressFlagOld === true) {
+                  this.detail.oldkzchoose = true
+                  this.detail.oldkzmatechoose = false
+                } else if (this.detail.expressFlagOld === false) {
+                  this.detail.oldkzmatechoose = true
+                  this.detail.oldkzchoose = false
+                } else {
+                  this.detail.oldkzmatechoose = false
+                  this.detail.oldkzchoose = false
+                }
+
+                if (this.detail.expressFlagNew === true) {
+                  this.detail.newkzchoose = true
+                  this.detail.newkzmatechoose = false
+                } else if (this.detail.expressFlagNew === false) {
+                  this.detail.newkzmatechoose = true
+                  this.detail.newkzchoose = false
+                } else {
+                  this.detail.newkzmatechoose = false
+                  this.detail.newkzchoose = false
+                }
+
+      					this.detail.addressOldarray = data.data.addressOld.split(",")
+
+                
+      					this.detail.addressOld = data.data.addressOld
+      					this.detail.address2Old = data.data.address2Old
+      					this.detail.oldKzId = data.data.oldKzId
+                this.detail.kzId = this.kzId
+
+                this.oldstatus.newchecked = this.detail.statusNew
+                this.oldstatus.oldchecked = this.detail.statusOld
 
               
 		            } else {

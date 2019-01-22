@@ -135,7 +135,7 @@
                     label="类目"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.typeId}}
+                      {{scope.row.typeName}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -161,7 +161,7 @@
                     label="方式"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.zxStyle}}
+                      {{scope.row.zxName}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -185,15 +185,23 @@
                     label="送礼模式"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.giveType}}
+                      {{scope.row.givename}}
                     </template>
                 </el-table-column>
                 <el-table-column
                     width="120"
-                    label="礼物"
+                    label="新客礼物"
                     >
                     <template slot-scope="scope"> 
                       {{scope.row.giftIdNew}}
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    width="120"
+                    label="老客礼物"
+                    >
+                    <template slot-scope="scope"> 
+                      {{scope.row.giftIdOld}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -259,7 +267,7 @@
 
         </div>
 
-        <orderDetailModel v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
+        <orderDetailModel @research="search" v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
         <!--增加表格lei数-->
         
     </div>
@@ -360,6 +368,7 @@ export default {
               label: 'nickName'
             },
             stafflistvalue: '',
+            gift_lists: [],
             stafflistcheckdata: []
         }
     },
@@ -385,6 +394,7 @@ export default {
         this.getdata()
         this.get_all_dept_and_staff()
         //console.info(this.$store.state)
+        this.get_gift()
 
         setTimeout(()=>{
             this.table_height = this.$refs.middle.offsetHeight - 92
@@ -392,11 +402,20 @@ export default {
         },10)
     },
     methods:{
+        get_gift() {
+          this.$http.get(`gift/giftComboBox`)
+            .then((data)=>{
+              console.info(data)
+              this.gift_lists = data.data
+            })
+        },
         handleSizeChange(val) {
           this.searchItem.size = val
           this.getdata()
         },
-
+        tableheaderClassName({ row, rowIndex }) {
+            return "table-head-th";
+        },
         handleCurrentChange(val) {
           this.searchItem.currentPage = val
           this.getdata()
@@ -446,10 +465,36 @@ export default {
                 pageSize: this.searchItem.size,
             })
                 .then((data)=>{
-                    console.info(this.getpageDict)
+                    
                     if (data.code == '100000') {
                       for (let i=0; i<data.data.list.length; i++) {
+
                         data.data.list[i].srcName = this.getpageDict.sourceMap[data.data.list[i].sourceId].srcName
+
+                          let arr = this.getpageDict.commonMap.commonType.filter((list) => {
+                              return list.dicCode == data.data.list[i].typeId
+                          })
+                          data.data.list[i].typeName = arr[0].dicName
+
+
+                          let arr1 = this.getpageDict.commonMap.zxStyle.filter((list) => {
+                              return list.dicCode == data.data.list[i].zxStyle
+                          })
+
+                          if (arr1[0]) {
+                            data.data.list[i].zxName = arr1[0].dicName
+                          } else {
+                            data.data.list[i].zxName = '没有咨询方式'
+                          }
+                          data.data.list[i].givename = ''
+                          if (data.data.list[i].giveType==2) {
+                            data.data.list[i].givename = '新老双送'
+                          } 
+
+                          if (data.data.list[i].giveType==1) {
+                            data.data.list[i].givename = '只老双送'
+                          } 
+                          
                       }
                        this.searchdata=data.data.list
                        this.searchItem.total=data.data.total

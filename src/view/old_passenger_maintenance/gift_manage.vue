@@ -130,12 +130,12 @@
             <div class="edit_content">
                 <div class="ul">
                     <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类型</span>
-                    <el-select size="mini" v-model="giftdialog.giftTypeCode" class="input-new" placeholder="请选择">
+                    <el-select v-if="getpageDict.commonMap" size="mini" v-model="giftdialog.giftTypeCode" class="input-new" placeholder="请选择">
                         <el-option
-                          v-for="item in gifttype"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="item in getpageDict.commonMap.commonType"
+                          :key="item.dicCode"
+                          :label="item.dicName"
+                          :value="item.dicCode"
                           :disabled="item.disabled">
                         </el-option>
                     </el-select>
@@ -173,7 +173,7 @@
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex'
 export default {
     name: "gift_manage",
     components: {
@@ -191,7 +191,7 @@ export default {
                     "remark": "",  
                     "sendOut": '',      
                     "soldOutTime": "",     
-                    "status": false,       
+                    "status": true,       
             },
             gifttype: [],
             giftdata: [],
@@ -211,6 +211,11 @@ export default {
               
             ],
         }
+    },
+    computed: {
+        ...mapGetters([
+            'getpageDict',
+        ]),
     },
     mounted(){
         this.get_data()
@@ -239,6 +244,7 @@ export default {
           this.get_data()
         },
         handleEdit(index, row) {
+            console.info(row)
             this.giftdialog.giftName = row.giftName
             this.giftdialog.giftTypeCode = row.giftTypeCode
             this.giftdialog.id = row.id
@@ -246,7 +252,7 @@ export default {
             this.giftdialog.pictureId = row.pictureId
             this.giftdialog.remark = row.remark
             this.giftdialog.sendOut = row.sendOut
-            this.giftdialog.status = row.status
+            this.giftdialog.status = row.status == 1 ? true:false
             this.giftdialog.typeName = row.typeName
 
             this.giftdialog.dialogVisible = true
@@ -255,6 +261,7 @@ export default {
             return "table-head-th";
         },
         edit_ok() {
+            
             this.$http.post(`gift/edit`, {
                 "giftName": this.giftdialog.giftName,   
                 "giftTypeCode": this.giftdialog.giftTypeCode,      
@@ -263,7 +270,7 @@ export default {
                 "pictureId": this.giftdialog.pictureId,      
                 "remark": this.giftdialog.remark,  
                 "sendOut": this.giftdialog.sendOut,      
-                "status": this.giftdialog.status,  
+                "status": this.giftdialog.status? 1:0,  
             })
                 .then((data)=>{
                     
@@ -273,6 +280,11 @@ export default {
                           type: 'error'
                         })
                         //this.selectTab[0].name = `在线礼品(${data.data})`
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                        this.giftdialog.dialogVisible = false
                         this.get_data()
                         this.gift_count_1()
                         this.gift_count_0()
@@ -333,6 +345,11 @@ export default {
 </script>
 
 <style lang="less">
+.el-table .table-head-th{
+    background-color:#f4f4f4;
+    color: #000;
+    padding: 6px 0;
+}
 .gift_manage {
     .edit_content {
         font-size: 12px;
