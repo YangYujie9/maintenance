@@ -8,7 +8,7 @@
           width="680px"
           >
           <div style="font-size: 14px;position: relative;" slot="title">
-            {{detail.letterId }}
+            {{detail.letterId }}&nbsp;
             <span style="position: absolute;right: 10px;font-size: 12px;color: rgb(158, 158, 158)">录入时间：{{detail.createTime}}</span>
           </div>
           <div class="edit-content">

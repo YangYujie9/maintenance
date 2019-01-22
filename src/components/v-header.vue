@@ -21,7 +21,7 @@
           <el-button slot="append" @click.stop.prevent="searchok" icon="el-icon-search"></el-button>
         </el-input>
         <div v-if="searchresult" class="list-rt boxshadow cursor">
-          <div v-for="list in searchlist" class="order-detail">
+          <div @click="detailkz(list)" v-for="list in searchlist" class="order-detail">
               <!--<div class="order-detail-left">
                 <span">
                   
@@ -73,16 +73,18 @@
 
     </div>
 
-
+    <orderDetailModel v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
   </div>
 </template>
 
 <script>
   import Cookies from "js-cookie"
+  import orderDetailModel from './order_detail_model'
+
 
   export default {
     components: {
-
+      orderDetailModel
     },
     data() {
       return {
@@ -92,6 +94,10 @@
             choose: true
           }
         ],
+        editdialog: {
+          dialogVisible: false,
+          kzId: ''
+        },
         searchKey: '',
         //当前登录人
         loginUserInfo: {
@@ -125,6 +131,10 @@
         }
         this.category[index].choose = true
         this.$router.push(this.category[index].link)
+      },
+      detailkz(list) {
+        this.editdialog.kzId = list.kzId
+        this.editdialog.dialogVisible = true
       },
       //搜索
       searchok() {

@@ -277,13 +277,9 @@ export default {
                     if (data.code == '100000') {
                         this.$message({
                           message: data.msg,
-                          type: 'error'
+                          type: 'success'
                         })
-                        //this.selectTab[0].name = `在线礼品(${data.data})`
-                        this.$message({
-                          message: data.msg,
-                          type: 'error'
-                        })
+                        
                         this.giftdialog.dialogVisible = false
                         this.get_data()
                         this.gift_count_1()
@@ -305,7 +301,22 @@ export default {
                     "statusId": this.giftdialog.status? 1:0,  
                 })
                 .then((data)=>{
-                    console.info(data)
+                    if (data.code == '100000') {
+                        this.$message({
+                          message: data.msg,
+                          type: 'success'
+                        })
+                        
+                        this.giftdialog.dialogVisible = false
+                        this.get_data()
+                        this.gift_count_1()
+                        this.gift_count_0()
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
                 })
             }
             

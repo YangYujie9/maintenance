@@ -94,7 +94,11 @@
                 border
                 style="width: 100%;font-size: 12px;"> 
 
-                
+                <el-table-column
+                  type="index"
+                  label="编号"
+                  width="50">
+                </el-table-column>
                 <el-table-column
                     prop="name"
                     width="140"
@@ -458,7 +462,7 @@ export default {
                 timeType: this.searchItem.timeType,
                 start: this.searchItem.start/1000,
                 end: this.searchItem.end/1000,
-                collectorId: this.searchItem.collectorId,
+                collectorIds: this.searchItem.collectorId,
                 giveType: this.searchItem.giveType,
                 pageNum: this.searchItem.currentPage,
                 statusId: this.searchItem.statusId,
@@ -492,7 +496,7 @@ export default {
                           } 
 
                           if (data.data.list[i].giveType==1) {
-                            data.data.list[i].givename = '只老双送'
+                            data.data.list[i].givename = '只送老客'
                           } 
 
                           let arrnew = this.gift_lists.filter((list) => {
@@ -533,7 +537,7 @@ export default {
                 timeType: this.searchItem.timeType,
                 start: this.searchItem.start/1000,
                 end: this.searchItem.end/1000,
-                collectorId: this.searchItem.collectorId,
+                collectorIds: this.searchItem.collectorId,
                 giveType: this.searchItem.giveType,
                 pageNum: this.searchItem.currentPage,
                 statusId: this.searchItem.statusId,
@@ -548,7 +552,7 @@ export default {
                    this.selectTab[2].name=`确定地址(${data.data.knownAddress})`
                    this.selectTab[3].name=`已下单(${data.data.alreadyOrder})`
                    this.selectTab[4].name=`已送达(${data.data.alreadyGive})`
-                   this.selectTab[4].name=`保留(${data.data.hold})`
+                   this.selectTab[5].name=`保留(${data.data.hold})`
                 } else {
                     this.$message({
                       message: data.msg,
@@ -559,6 +563,8 @@ export default {
         },
         stafflistsave() {
             let checkData = this.$refs.stafflist.getCheckedNodes()
+
+            console.info(checkData)
             this.stafflistvalue = ''
             for (let i=0;i<checkData.length;i++) {
                 if (checkData[i].staffList) {
@@ -593,6 +599,7 @@ export default {
 
                 this.$refs.stafflist.setCheckedKeys(stafflistchecked)
               } else {
+
                 this.$refs.stafflist.setCheckedKeys([])
               }
               
