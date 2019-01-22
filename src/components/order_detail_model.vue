@@ -14,7 +14,7 @@
           <div class="edit-content">
             <div>
                <div class="ul">
-                   <span>订单点</span>
+                   <span>订单店</span>
                    <el-input size="mini" v-model="detail.shopName" :readonly="true" class="input-new" placeholder="请输入内容"></el-input>
                </div> 
                <div class="ul">
@@ -30,7 +30,7 @@
                 <div class="ul">
                    <span>送礼方式</span>
                    <!--摄影师-->
-                    <el-select clearable  class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼模式">
+                    <el-select clearable  class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
                       <el-option 
                         v-for="item in giveType_list" 
                         :key="item.value"
@@ -68,7 +68,7 @@
                 </div>
                 <div class="ul">
                    <span>礼品</span>
-                   <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="送礼模式">
+                   <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
                         v-for="item in gift_lists" 
                         :key="item.id"
@@ -130,7 +130,7 @@
 	                    <span class="input-span">邮寄</span>
 	                    
 
-	                    <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdOld" placeholder="快递">
+	                    <el-select clearable   class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdOld" placeholder="快递">
 	                      	<el-option 
 	                        v-for="item in getpageDict.commonMap.expressType" 
 	                        :key="item.id"
@@ -184,7 +184,7 @@
                       <span class="input-span">邮寄</span>
                       
 
-                      <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递时间">
+                      <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递">
                           <el-option 
                           v-for="item in getpageDict.commonMap.expressType" 
                           :key="item.id"
@@ -511,7 +511,13 @@ export default {
             return list.id == id
         })
 
-        return arr[0].dicName
+        if (arr[0]) {
+          return arr[0].dicName
+        } else {
+          ''
+        }
+
+        
 
       },
       edit_kz_detail() {
