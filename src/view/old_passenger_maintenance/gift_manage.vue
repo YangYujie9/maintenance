@@ -270,7 +270,7 @@ export default {
                 "pictureId": this.giftdialog.pictureId,      
                 "remark": this.giftdialog.remark,  
                 "sendOut": this.giftdialog.sendOut,      
-                "status": this.giftdialog.status? 1:0,  
+                "statusId": this.giftdialog.status? 1:0,  
             })
                 .then((data)=>{
                     
@@ -298,7 +298,7 @@ export default {
         },
         //上架
         gift_count_1() {
-            this.$http.get(`gift/count?status=1`)
+            this.$http.get(`gift/count?statusId=1`)
                 .then((data)=>{
                     
                     if (data.code == '100000') {
@@ -312,7 +312,7 @@ export default {
                 })
         },
         gift_count_0() {
-            this.$http.get(`gift/count?status=0`)
+            this.$http.get(`gift/count?statusId=0`)
                 .then((data)=>{
                     
                     if (data.code == '100000') {
@@ -327,7 +327,7 @@ export default {
                 })
         },
         get_data() {
-            this.$http.get(`gift/findAll?status=${this.statusId}`)
+            this.$http.get(`gift/findAll?statusId=${this.statusId}`)
                 .then((data)=>{
                     
                     if (data.code == '100000') {

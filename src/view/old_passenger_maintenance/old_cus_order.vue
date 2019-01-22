@@ -28,7 +28,7 @@
                 </el-date-picker>
                 <el-dropdown @command="handleCommand">
           
-                    <el-button @click="search" type="primary" style="padding: 6px 18px;margin-left: 10px;" size="small" icon="el-icon-search">搜索</el-button>
+                    <el-button @click.stop="search" type="primary" style="padding: 6px 18px;margin-left: 10px;" size="small" icon="el-icon-search">搜索</el-button>
                      <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item :key="index" :command="list.value" v-for="(list,index) in searchTime">{{list.label}}</el-dropdown-item>
                         
@@ -193,7 +193,7 @@
                     label="新客礼物"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.giftIdNew}}
+                      {{scope.row.giftoldName}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -201,7 +201,7 @@
                     label="老客礼物"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.giftIdOld}}
+                      {{scope.row.giftnewName}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -405,7 +405,7 @@ export default {
         get_gift() {
           this.$http.get(`gift/giftComboBox`)
             .then((data)=>{
-              console.info(data)
+              //console.info(data)
               this.gift_lists = data.data
             })
         },
@@ -494,6 +494,28 @@ export default {
                           if (data.data.list[i].giveType==1) {
                             data.data.list[i].givename = '只老双送'
                           } 
+
+                          let arrnew = this.gift_lists.filter((list) => {
+                              return list.id == data.data.list[i].giftIdNew
+                          })
+
+                          if (arrnew[0]) {
+                            data.data.list[i].giftnewName = arrnew[0].giftName
+                          } else {
+                            data.data.list[i].giftnewName = ''
+                          }
+
+
+                          let arrold = this.gift_lists.filter((list) => {
+                              return list.id == data.data.list[i].giftIdOld
+                          })
+
+                          if (arrold[0]) {
+                            data.data.list[i].giftoldName = arrold[0].giftName
+                          } else {
+                            data.data.list[i].giftoldName = ''
+                          }
+
                           
                       }
                        this.searchdata=data.data.list
@@ -584,7 +606,7 @@ export default {
             return "table-head-th";
         },
         handleCommand(type) {
-
+          
           let start = ''
           let end = ''
           switch (type) {
@@ -622,9 +644,10 @@ export default {
               break
           }
 
-          start = timeUtil.getStartDateByDateStr(start);
-          end = timeUtil.getEndDateByDateStr(end);
+          start = new Date(timeUtil.getStartDateByDateStr(start)).getTime()
+          end = new Date(timeUtil.getEndDateByDateStr(end)).getTime()
 
+         
 
           this.searchItem.start = start
           this.searchItem.end = end
