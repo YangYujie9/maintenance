@@ -226,10 +226,18 @@
                 </el-table-column>
                 <el-table-column
                     width="120"
-                    label="状态"
+                    label="状态（新）"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.collectorName}}
+                      {{scope.row.statusNewName}}
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    width="120"
+                    label="状态（老）"
+                    >
+                    <template slot-scope="scope"> 
+                      {{scope.row.statusOldName}}
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -330,6 +338,20 @@ export default {
                   choose: false
               },
             ],
+            list: [{
+              name: '确定地址',
+              id: '1',
+            },{
+              name: '下单',
+              id: '2',
+            },{
+              name: '送达',
+              id: '3',
+            },{
+              name: '保留',
+              id: '4',
+            }],
+              
             timeChoose: [{
               value: 'successtime',
               label: '订单时间',
@@ -519,6 +541,28 @@ export default {
                           } else {
                             data.data.list[i].giftoldName = ''
                           }
+
+                          let arrstatusold = this.list.filter((list) => {
+                              return list.id == data.data.list[i].statusOld
+                          })
+
+                          if (arrstatusold[0]) {
+                            data.data.list[i].statusOldName = arrstatusold[0].name
+                          } else {
+                            data.data.list[i].statusOldName = ''
+                          }
+
+
+                          let arrstatusnew = this.list.filter((list) => {
+                              return list.id == data.data.list[i].statusNew
+                          })
+
+                          if (arrstatusnew[0]) {
+                            data.data.list[i].statusNewName = arrstatusnew[0].name
+                          } else {
+                            data.data.list[i].statusNewName = ''
+                          }
+
 
                           
                       }

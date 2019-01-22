@@ -68,7 +68,7 @@
                 </div>
                 <div class="ul">
                    <span>礼品</span>
-                   <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
+                    <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
                         v-for="item in gift_lists" 
                         :key="item.id"
@@ -129,15 +129,15 @@
 	                <div class="ullist">
 	                    <span class="input-span">邮寄</span>
 	                    
-
+                      
 	                    <el-select clearable   class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdOld" placeholder="快递">
 	                      	<el-option 
 	                        v-for="item in getpageDict.commonMap.expressType" 
-	                        :key="item.id"
+	                        :key="item.dicCode"
 	                        :label="item.dicName"
-	                        :value="item.id">
+	                        :value="item.dicCode">
 	                      	</el-option>
-	                    </el-select> 
+	                    </el-select>
 
 	                    <span class="input-span">单号</span>
 	                    <el-input size="mini" v-model="detail.expressNumOld" class="input-new" placeholder="请输入内容"></el-input>
@@ -187,9 +187,9 @@
                       <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递">
                           <el-option 
                           v-for="item in getpageDict.commonMap.expressType" 
-                          :key="item.id"
+                          :key="item.dicCode"
                           :label="item.dicName"
-                          :value="item.id">
+                          :value="item.dicCode">
                           </el-option>
                       </el-select> 
 
@@ -197,7 +197,48 @@
                       <el-input size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                 </div>
-                
+                <div v-show="choosetab == 'introduce'" class="old">
+                  <el-table
+                    :data="detail.infolist"
+                    :header-cell-class-name="tableheaderClassName"
+                    class="border-q"
+                    :height="200"
+                    border
+                    style="width: 98%;font-size: 12px;margin-top: 20px;"> 
+                    <el-table-column
+                      type="index"
+                      label="编号"
+                      width="50">
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      width="180"
+                      label="姓名"
+                      >
+                    <template slot-scope="scope"> 
+                      {{scope.row.kzName}}
+                    </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      width="220"
+                      label="联系方式"
+                      >
+                    <template slot-scope="scope"> 
+                      {{scope.row.kzPhone}}
+                    </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      width="180"
+                      label="状态"
+                      >
+                    <template slot-scope="scope"> 
+                      {{scope.row.statusName}}
+                    </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
             </div>
           </div>
           <span slot="footer" class="dialog-footer">
@@ -233,9 +274,9 @@
                     border
                     style="width: 100%;font-size: 12px"> 
                     <el-table-column
-				      type="selection"
-				      width="55">
-				    </el-table-column>
+      				      type="selection"
+      				      width="55">
+      				    </el-table-column>
                     <el-table-column
 	                    prop="name"
 	                    width="120"
@@ -432,7 +473,7 @@ export default {
                     choose: false
                 },
                 {
-                    name: '累计介绍(4/6)',
+                    name: '累计介绍',
                     id: 'introduce',
                     choose: false
                 },
@@ -470,6 +511,7 @@ export default {
     				addressOld: "",
     				addressOldarray: [],
     				amount: 0,
+            infolist: [],
             expressFlagNew: "",
             expressFlagOld: "",
     				collectorName: "",
@@ -480,6 +522,8 @@ export default {
     				expressNumOld: "",
     				giftIdNew: "",
     				giftIdOld: "",
+            expressIdOld: "",
+            expressIdNew: "",
     				giveType: "",
     				kzName: "",
     				kzPhone: "",
@@ -508,7 +552,7 @@ export default {
 	    },
       getexpressname(id) {
         let arr = this.getpageDict.commonMap.expressType.filter((list) => {
-            return list.id == id
+            return list.dicCode == id
         })
 
         if (arr[0]) {
@@ -696,7 +740,20 @@ export default {
 	      		.then((data)=>{
 	            
 		            if (data.code == '100000') {
-		            	
+                  let infodata = 0
+                  if (data.data.infoList.length > 0) {
+                    for (let i=0; i<data.data.infoList.length; i++) {
+                      data.data.infoList[i].statusName = this.getpageDict.statusMap[data.data.infoList[i].statusId].statusName
+                      if (data.data.infoList[i].statusId == 30 || data.data.infoList[i].statusId == 40 || data.data.infoList[i].statusId == 9) {
+                        infodata++
+                      }
+                    }
+                  }
+
+                this.detail.infolist = data.data.infoList
+
+
+                this.select_cus_msg[2].name = `累计介绍(${infodata}/${data.data.infoList.length})`
   			        this.detail.letterId = data.data.letterId
   			        this.detail.createTime = data.data.createTime
   			        this.detail.shopName = data.data.shopName
