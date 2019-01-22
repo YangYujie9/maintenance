@@ -9,21 +9,23 @@
           >
           <div style="font-size: 14px;position: relative;" slot="title">
             {{detail.letterId }}&nbsp;
-            <span style="position: absolute;right: 10px;font-size: 12px;color: rgb(158, 158, 158)">录入时间：{{detail.createTime}}</span>
+            <span style="position: absolute;right: 40px;font-size: 12px;color: rgb(158, 158, 158)">录入时间：{{detail.createTime}}</span>
+
+            <button @click="$emit('close')" style="position: absolute;right: 8px;top: -2px" type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button>
           </div>
           <div class="edit-content">
             <div>
                <div class="ul">
                    <span>订单店</span>
-                   <el-input size="mini" v-model="detail.shopName" :readonly="true" class="input-new" placeholder="请输入内容"></el-input>
+                   <el-input :disabled="true" size="mini" v-model="detail.shopName" :readonly="true" class="input-new" placeholder=""></el-input>
                </div> 
                <div class="ul">
                    <span>渠道员工</span>
-                   <el-input size="mini" v-model="detail.collectorName" :readonly="true" class="input-new" placeholder="请输入内容"></el-input>
+                   <el-input size="mini" :disabled="true" v-model="detail.collectorName" :readonly="true" class="input-new" placeholder=""></el-input>
                </div> 
                <div class="ul">
                    <span>套餐价格</span>
-                   <el-input size="mini" v-model="detail.amount" :readonly="true" class="input-new" placeholder="请输入内容"></el-input>
+                   <el-input size="mini" :disabled="true" v-model="detail.amount" :readonly="true" class="input-new" placeholder=""></el-input>
                </div> 
             </div>
             <div>
@@ -32,8 +34,8 @@
                    <!--摄影师-->
                     <el-select clearable  class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
                       <el-option 
-                        v-for="item in giveType_list" 
-                        :key="item.value"
+                        v-for="(item,index) in giveType_list" 
+                        :key="item.index"
                         :label="item.label"
                         :value="item.value">
                       </el-option>
@@ -70,15 +72,15 @@
                    <span>礼品</span>
                     <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
-                        v-for="item in gift_lists" 
-                        :key="item.id"
+                        v-for="(item,index) in gift_lists" 
+                        :key="item.index"
                         :label="item.giftName"
                         :value="item.id">
                       </el-option>
                     </el-select> 
                </div> 
             </div>
-            <div>
+            <div class="content_height" :class="{introduce: choosetab == 'introduce'}" >
                 <div class="table_change table_positive" >
                     <el-tabs type="card" @tab-click="handleClick">
                         <el-tab-pane  class="item" :key="index" v-for="(list,index) in select_cus_msg" :label="list.name" >
@@ -91,25 +93,27 @@
                         累计介绍（4/6）
                     </div>-->
                 </div>
-                <div v-show="choosetab == 'old'" class="old">
+                <div v-show="choosetab == 'old'"   class="old">
                 	<div v-if="!detail.oldKzId" class="match_old">当前老客信息没有和现有老客户匹配<span @click="matchdata">查询匹配</span></div>
 
-                	<div class="ullist">
+                  <div v-if="detail.oldKzId" style="height: 20px"></div>
+
+                	<div  class="ullist">
 	                    
 	                    <el-checkbox @click.native="detail.oldkzmatechoose=false" v-model="detail.oldkzchoose"></el-checkbox>
 	                    <span class="input-span">老客户</span>
-	                    <el-input :readonly="true" v-model="detail.oldKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input :disabled="true" :readonly="true" v-model="detail.oldKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
 	                    <span class="input-span">电话</span>
-	                    <el-input size="mini" :readonly="true" v-model="detail.oldKzPhone"  class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input :disabled="true" size="mini" :readonly="true" v-model="detail.oldKzPhone"  class="input-new" placeholder=""></el-input>
 	                </div>
 	                <div class="ullist">
 	                    <el-checkbox @click.native="detail.oldkzchoose=false" v-model="detail.oldkzmatechoose"></el-checkbox>
 	                    <span class="input-span">老客户配偶</span>
-	                    <el-input :readonly="true"  size="mini" v-model="detail.oldMateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input :disabled="true" :readonly="true"  size="mini" v-model="detail.oldMateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
 	                    <span class="input-span">配偶电话</span>
-	                    <el-input size="mini" :readonly="true" v-model="detail.oldMatePhone" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input :disabled="true" size="mini" :readonly="true" v-model="detail.oldMatePhone" class="input-new" placeholder=""></el-input>
 	                </div>
 	                <div class="ullist">
 	                    <span class="input-span">邮寄地址</span>
@@ -140,30 +144,30 @@
 	                    </el-select>
 
 	                    <span class="input-span">单号</span>
-	                    <el-input size="mini" v-model="detail.expressNumOld" class="input-new" placeholder="请输入内容"></el-input>
+	                    <el-input  size="mini" v-model="detail.expressNumOld" class="input-new" placeholder="请输入内容"></el-input>
 	                </div>
                 </div>
                 
 
-                <div v-show="choosetab == 'new'" class="old">
+                <div v-show="choosetab == 'new'" style="position: relative;top: 20px;" class="old">
                   <!--<div v-if="!detail.KzId" class="match_old">当前老客信息没有和现有老客户匹配<span @click="matchdata">查询匹配</span></div>-->
 
                   <div class="ullist">
                       
                       <el-checkbox @click.native="detail.newkzmatechoose=false"  v-model="detail.newkzchoose"></el-checkbox>
                       <span class="input-span">新客户</span>
-                      <el-input :readonly="true" v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :disabled="true" :readonly="true" v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
                       <span class="input-span">电话</span>
-                      <el-input :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
                       <el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.kzmatechoose"></el-checkbox>
                       <span class="input-span">新客户配偶</span>
-                      <el-input :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
                       <span class="input-span">配偶电话</span>
-                      <el-input :readonly="true" size="mini" v-model="detail.matePhone" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.matePhone" class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄地址</span>
@@ -197,12 +201,12 @@
                       <el-input size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                 </div>
-                <div v-show="choosetab == 'introduce'" class="old">
+                <div v-show="choosetab == 'introduce'"  class="old">
                   <el-table
                     :data="detail.infolist"
                     :header-cell-class-name="tableheaderClassName"
                     class="border-q"
-                    :height="200"
+                    :height="230"
                     border
                     style="width: 98%;font-size: 12px;margin-top: 20px;"> 
                     <el-table-column
@@ -240,6 +244,7 @@
                   </el-table>
                 </div>
             </div>
+            <el-input v-show="choosetab != 'introduce'" v-model="detail.memo" size="mini" style="width: 100%;" type="textarea" class="input-new" placeholder="请输入备注"></el-input>
           </div>
           <span slot="footer" class="dialog-footer">
             <el-button size="small" @click="$emit('close')">取 消</el-button>
@@ -258,7 +263,7 @@
               <div class="match_content">
                 <div class="ul" style="margin-bottom: 26px;">
                    <span>查询</span>
-                   <el-input size="mini" v-model="searchData.searchkey" style="width:auto; font-size: 12px;" placeholder="请输入搜索内容" class="input-with-select">
+                   <el-input size="mini" v-model="searchData.searchkey" style="width:auto; font-size: 12px;" placeholder="姓名/电话" class="input-with-select">
                    	
                    	  <el-button size="mini" slot="append" @click.stop.prevent="searchok" icon="el-icon-search"></el-button>
                    </el-input>
@@ -277,145 +282,56 @@
       				      type="selection"
       				      width="55">
       				    </el-table-column>
-                    <el-table-column
-	                    prop="name"
-	                    width="120"
-	                    label="订单时间"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.successTime}}
-	                    </template>
-	                </el-table-column>
+                  
+	                
 	                <el-table-column
 	                    width="120"
-	                    label="提报时间"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.createTime}}
-	                    </template>
-                	</el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="老客户"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      <div>{{scope.row.oldKzName}}</div>
-	                      <div>{{scope.row.oldMateName}}</div>
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="老客电话"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      <div>{{scope.row.oldKzPhone}}</div>
-	                      <div>{{scope.row.oldMatePhone}}</div>
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="类目"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.typeId}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="新客户"
+	                    label="名字"
 	                    >
 	                    <template slot-scope="scope"> 
 	                      <div>{{scope.row.kzName}}</div>
 	                      <div>{{scope.row.mateName}}</div>
 	                    </template>
 	                </el-table-column>
+                  <el-table-column
+                      width="120"
+                      label="联系方式"
+                      >
+                      <template slot-scope="scope"> 
+                        <div>{{scope.row.kzPhone}}</div>
+                        <div>{{scope.row.matePhone}}</div>
+                      </template>
+                  </el-table-column>
 	                <el-table-column
 	                    width="120"
-	                    label="新客电话"
+	                    label="门店"
 	                    >
 	                    <template slot-scope="scope"> 
-	                      <div>{{scope.row.kzPhone}}</div>
-	                      <div>{{scope.row.matePhone}}</div>
+	                      <div>{{scope.row.shopName}}</div>
 	                    </template>
 	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="方式"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.zxStyle}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="渠道"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.sourceId}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="提报者"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.collectorName}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="送礼模式"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.giveType}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="礼物"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.giftIdNew}}
-	                    </template>
-	                </el-table-column>
-
-	                <el-table-column
-	                    width="120"
-	                    label="物流单号"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.expressNumNew}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="地址"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.addressNew}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="状态"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.collectorName}}
-	                    </template>
-	                </el-table-column>
-	                <el-table-column
-	                    width="120"
-	                    label="备注"
-	                    >
-	                    <template slot-scope="scope"> 
-	                      {{scope.row.memo}}
-	                    </template>
-	                </el-table-column>
+                  <el-table-column
+                      width="120"
+                      label="门市"
+                      >
+                      <template slot-scope="scope"> 
+                        <div>{{scope.row.receptorName}}</div>
+                      </template>
+                  </el-table-column>
+                  <el-table-column
+                      width="120"
+                      label="套系金额"
+                      >
+                      <template slot-scope="scope"> 
+                        <div>{{scope.row.amount}}</div>
+                      </template>
+                  </el-table-column>
+	                
                 </el-table>
               </div>
               <span slot="footer" class="dialog-footer">
                 <el-button size="small" @click="matchdialog.dialogVisible= false">取 消</el-button>
-                <el-button size="small" type="primary" @click="oldmsgok">确 定</el-button>
+                <el-button size="small" type="primary" @click="oldmsgok">确定绑定</el-button>
               </span>
         </el-dialog>
     </div>
@@ -425,7 +341,7 @@
 import cityMap from '../../static/cityMap.json'
 //console.info(cityMap)
 import { mapGetters } from 'vuex'
-
+import Cookies from 'js-cookie'
 
 
 export default {
@@ -530,6 +446,7 @@ export default {
     				letterId: "",
     				mateName: "",
     				matePhone: "",
+            memo: '',
     				oldKzId: "",
     				oldKzName: "",
     				oldKzPhone: "",
@@ -586,7 +503,7 @@ export default {
 
 
         this.$http.post(`info/edit_kz_detail`, {
-            companyId: 2,
+            companyId: Cookies.get('cid'),
             giveType: this.detail.giveType,
             statusNew: this.oldstatus.newchecked,
             statusOld: this.oldstatus.oldchecked,
@@ -604,7 +521,8 @@ export default {
             expressNumNew: this.detail.expressNumNew,
             addressNew: this.detail.addressNewarray.join(','),
             address2New: this.detail.address2New,
-            oldKzId: this.detail.oldKzId,
+            //oldKzId: this.detail.oldKzId,
+            memo: this.detail.memo,
             kzId: this.kzId,
         })
         .then((data)=>{
@@ -651,24 +569,9 @@ export default {
 	              type: 'error'
 	            })
     		} else if (this.searchData.chooselist.length==1) {
+
+    			this.match_old_kzid(this.searchData.chooselist[0].kzId)
     			
-    			this.matchdialog.dialogVisible = false
-    			this.detail.oldKzId=this.searchData.chooselist[0].kzId
-
-
-          this.detail.oldKzName = this.searchData.chooselist[0].kzName
-          this.detail.oldKzPhone = this.searchData.chooselist[0].kzPhone
-          this.detail.oldMateName = this.searchData.chooselist[0].mateName
-          this.detail.oldMatePhone = this.searchData.chooselist[0].matePhone
-           
-
-    			this.searchData.searchkey = ''
-    			this.searchData.data = []
-    			this.searchData.chooselist = []
-    			this.$message({
-	              message: '匹配成功',
-	              type: 'success'
-	            })
     		} else {
     			this.$message({
 	              message: '选择您要匹配的信息',
@@ -676,6 +579,41 @@ export default {
 	            })
     		}
     	},
+      match_old_kzid(oldKzId) {
+        this.$http.post(`info/match_old_kzid`,{
+          kzId: this.kzId,
+          oldKzId: oldKzId,
+        })
+        .then((data)=>{
+              
+              if (data.code == '100000') {
+                  this.matchdialog.dialogVisible = false
+                  this.detail.oldKzId=this.searchData.chooselist[0].kzId
+
+
+                  this.detail.oldKzName = this.searchData.chooselist[0].kzName
+                  this.detail.oldKzPhone = this.searchData.chooselist[0].kzPhone
+                  this.detail.oldMateName = this.searchData.chooselist[0].mateName
+                  this.detail.oldMatePhone = this.searchData.chooselist[0].matePhone
+                   
+
+                  this.searchData.searchkey = ''
+                  this.searchData.data = []
+                  this.searchData.chooselist = []
+                  this.$message({
+                        message: '匹配成功',
+                        type: 'success'
+                  })
+
+                  
+              } else {
+                  this.$message({
+                    message: data.msg,
+                    type: 'error'
+                  })
+              }
+          })
+      },
     	handleSelectionChange(val) {
 
     		this.searchData.chooselist = val
@@ -778,6 +716,7 @@ export default {
                 this.detail.addressNewarray = data.data.addressNew.split(",")
 
       					this.detail.address2New = data.data.address2New
+                this.detail.memo = data.data.memo
       					this.detail.expressNameOld = data.data.expressNameOld
       					this.detail.expressNumOld = data.data.expressNumOld
 
@@ -839,6 +778,13 @@ export default {
     background-color:#f4f4f4;
     color: #000;
     padding: 6px 0;
+}
+
+.content_height {
+  height: 260px;
+  &.introduce {
+    height: 280px;
+  }
 }
 
 .order_detail_model {

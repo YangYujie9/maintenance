@@ -12,8 +12,8 @@
 
             </div>
             <div class="input-cus">
+                <el-button type="primary" plain @click="giftadd" class="btninput cursor" size="small">分类</el-button>
                 <el-button type="primary" plain @click="giftadd" class="btninput cursor" size="small">新增</el-button>
-                
             </div>
             <el-table
                 :data="giftdata"
@@ -22,6 +22,11 @@
                 :height="table_height"
                 border
                 style="width: 100%;font-size: 12px;"> 
+                <el-table-column
+                  type="index"
+                  label="编号"
+                  width="50">
+                </el-table-column>
                 <el-table-column
                     prop="name"
                     width="120"

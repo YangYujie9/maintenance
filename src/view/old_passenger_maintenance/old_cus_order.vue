@@ -193,21 +193,15 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    width="120"
-                    label="新客礼物"
+                    width="140"
+                    label="礼物"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.giftoldName}}
+                      <div>{{scope.row.giftoldName ? `(老)${scope.row.giftoldName}`:''}}</div>
+                      <div>{{scope.row.giftnewName ? `(新)${scope.row.giftnewName}`:''}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column
-                    width="120"
-                    label="老客礼物"
-                    >
-                    <template slot-scope="scope"> 
-                      {{scope.row.giftnewName}}
-                    </template>
-                </el-table-column>
+                
                 <el-table-column
                     width="120"
                     label="物流单号"
@@ -226,20 +220,15 @@
                 </el-table-column>
                 <el-table-column
                     width="120"
-                    label="状态（新）"
+                    label="状态"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.statusNewName}}
+                      <div>{{scope.row.statusOldName ? `（老）${scope.row.statusOldName}`: ''}}</div>
+                      <div>{{scope.row.statusNewName ? `（新）${scope.row.statusNewName}`: ''}}</div>
+                      
                     </template>
                 </el-table-column>
-                <el-table-column
-                    width="120"
-                    label="状态（老）"
-                    >
-                    <template slot-scope="scope"> 
-                      {{scope.row.statusOldName}}
-                    </template>
-                </el-table-column>
+                
                 <el-table-column
                     width="120"
                     label="备注"
