@@ -8,7 +8,7 @@
           width="680px"
           >
           <div style="font-size: 14px;position: relative;" slot="title">
-            {{detail.letterId }}&nbsp;
+            {{detail.letterId ? detail.letterId:detail.id}}&nbsp;
             <span style="position: absolute;right: 40px;font-size: 12px;color: rgb(158, 158, 158)">录入时间：{{detail.createTime}}</span>
 
             <button @click="$emit('close')" style="position: absolute;right: 8px;top: -2px" type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button>
@@ -32,7 +32,7 @@
                 <div class="ul">
                    <span>送礼方式</span>
                    <!--摄影师-->
-                    <el-select clearable  class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
+                    <el-select clearable   class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
                       <el-option 
                         v-for="(item,index) in giveType_list" 
                         :key="item.index"
@@ -52,7 +52,7 @@
                 <div class="ul">
                    <span>礼品</span>
                    
-                   <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdOld" placeholder="礼品">
+                   <el-select clearable  class="input-new" :disabled="oldstatus.oldchecked==3" size="mini" v-model="detail.giftIdOld" placeholder="礼品">
                       <el-option 
                         v-for="item in gift_lists" 
                         :key="item.id"
@@ -70,7 +70,7 @@
                 </div>
                 <div class="ul">
                    <span>礼品</span>
-                    <el-select clearable  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
+                    <el-select clearable :disabled="oldstatus.newchecked==3"  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
                         v-for="(item,index) in gift_lists" 
                         :key="item.index"
@@ -162,7 +162,7 @@
                       <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
-                      <el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.kzmatechoose"></el-checkbox>
+                      <el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.newkzmatechoose"></el-checkbox>
                       <span class="input-span">新客户配偶</span>
                       <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
@@ -417,6 +417,7 @@ export default {
             	newchecked: ''
             },
         	detail: {
+            id: '',
         		oldkzchoose: false,
         		oldkzmatechoose: false,
             newkzmatechoose: false,
@@ -673,7 +674,7 @@ export default {
     			}
     		}
     	},
-      	get_detail_data() {
+      get_detail_data() {
 	      	this.$http.get(`info/get_info_detail_by_kzid?kzId=${this.kzId}`)
 	      		.then((data)=>{
 	            
@@ -716,6 +717,7 @@ export default {
                 this.detail.addressNewarray = data.data.addressNew.split(",")
 
       					this.detail.address2New = data.data.address2New
+                this.detail.id = data.data.id
                 this.detail.memo = data.data.memo
       					this.detail.expressNameOld = data.data.expressNameOld
       					this.detail.expressNumOld = data.data.expressNumOld

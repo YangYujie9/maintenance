@@ -134,6 +134,8 @@
                 分类
 
                 <el-button style="position: absolute;right: 40px;top: -8px;" type="primary" plain @click="gift_type_name_add" class="btninput cursor" size="small">新增分类</el-button>
+
+                <el-button style="position: absolute;right: 160px;top: -8px;" type="primary" plain @click="gift_type_name_add_num" class="btninput cursor" size="small">批量修改</el-button>
             </div>
             <div class="category_edit">
                 <el-table
@@ -152,7 +154,7 @@
                     <el-table-column
                         prop="name"
                         width="160"
-                        label="分类名字"
+                        label="礼品分类"
                         >
                         <template slot-scope="scope"> 
                           {{scope.row.dicName}}
@@ -200,7 +202,7 @@
             </div>
             <div class="gift_type_name_dialog_class">
                 <div class="ul">
-                    <span>分类</span>
+                    <span>礼品分类</span>
                     <el-input size="mini" v-model="gift_type_name_dialog.dicName" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
             </div>
@@ -223,7 +225,7 @@
             </span>
             <div class="edit_content">
                 <div class="ul">
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类型</span>
+                    <span>礼品分类</span>
                     <el-select v-if="getpageDict.commonMap" size="mini" v-model="giftdialog.giftTypeCode" class="input-new" placeholder="请选择">
                         <el-option
                           v-for="item in typelist"
@@ -290,7 +292,8 @@ export default {
             gift_type_name_dialog: {
                 dialogVisible: false,
                 dicName: '',
-                dicCode: ''
+                dicCode: '',
+                status: 'add'
             },
             category: {
                 dialogVisible: false,
@@ -314,6 +317,7 @@ export default {
               },
               
             ],
+            editgifttype: []
         }
     },
     computed: {
@@ -370,23 +374,68 @@ export default {
             this.gift_type_name_dialog.dialogVisible = true
             this.gift_type_name_dialog.dicName = ''
             this.gift_type_name_dialog.dicCode = ''
-
+            this.gift_type_name_dialog.status = 'add'
+        },
+        gift_type_name_add_num() {
+            this.gift_type_name_dialog.dialogVisible = true
+            this.gift_type_name_dialog.dicName = ''
+            this.gift_type_name_dialog.dicCode = ''
+            this.gift_type_name_dialog.status = 'edit'
         },
         gifttypeshow() {
             this.category.dialogVisible = true
             this.gift_type()
         },
-        handleSelectionChange() {
+        handleSelectionChange(val) {
+            this.editgifttype = val
 
         },
         handlegift_type_name_dialogEdit(index,row) {
             this.gift_type_name_dialog.dialogVisible = true
             this.gift_type_name_dialog.dicName = row.dicName
             this.gift_type_name_dialog.dicCode = row.dicCode
+            this.gift_type_name_dialog.status = 'edit'
+            this.editgifttype = []
+            this.editgifttype.push(row)
+
         },
         gift_type_name_add_ok() {
-            if (this.gift_type_name_dialog.dicCode) {
+            if (this.gift_type_name_dialog.status == 'edit') {
 
+                if (this.editgifttype.length == 0) {
+                    this.$message({
+                      message: '请选择你要修改的礼品分类',
+                      type: 'error'
+                    })
+                }
+
+             
+                let editarray = []
+                for (let i=0; i<this.editgifttype.length; i++) {
+                    editarray.push({dicCode: this.editgifttype[i].dicCode,dicName: this.gift_type_name_dialog.dicName})
+                }
+
+               
+
+                this.$http.post(`giftType/edit`,
+                     editarray
+                )
+                .then((data)=>{
+                    if (data.code == '100000') {
+                        this.gift_type_name_dialog.dialogVisible = false
+                        this.editgifttype = []
+                        this.gift_type() 
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
+
+                    
+                })
+
+            } else {
                 this.$http.post(`giftType/add`, {
                     dicName: this.gift_type_name_dialog.dicName
                 })
@@ -403,7 +452,6 @@ export default {
 
                     
                 })
-
             }
         },
         giftadd() {
@@ -437,7 +485,6 @@ export default {
           this.get_data()
         },
         handleEdit(index, row) {
-            console.info(row)
             this.giftdialog.giftName = row.giftName
             this.giftdialog.giftTypeCode = row.giftTypeCode
             this.giftdialog.id = row.id

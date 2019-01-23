@@ -207,15 +207,26 @@
                     label="物流单号"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.expressNumNew}}
+                      <div>{{scope.row.expressNumOld ? `（老）${scope.row.expressNumOld}`: ''}}</div>
+                      <div>{{scope.row.expressNumNew ? `（新）${scope.row.expressNumNew}`: ''}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    width="120"
+                    width="180"
                     label="地址"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.addressNew}}
+                      <div>{{scope.row.addressOld ? `（老）${scope.row.addressOld}`: ''}}</div>
+                      <div>{{scope.row.addressNew ? `（新）${scope.row.addressNew}`: ''}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    width="180"
+                    label="详细地址"
+                    >
+                    <template slot-scope="scope"> 
+                      <div>{{scope.row.address2Old ? `（老）${scope.row.address2Old}`: ''}}</div>
+                      <div>{{scope.row.address2New ? `（新）${scope.row.address2New}`: ''}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
