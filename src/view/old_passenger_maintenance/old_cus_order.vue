@@ -212,23 +212,15 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    width="180"
+                    width="280"
                     label="地址"
                     >
                     <template slot-scope="scope"> 
-                      <div>{{scope.row.addressOld ? `（老）${scope.row.addressOld}`: ''}}</div>
-                      <div>{{scope.row.addressNew ? `（新）${scope.row.addressNew}`: ''}}</div>
+                      <div>{{scope.row.addressOld ? `（老）${scope.row.addressOld} ${scope.row.address2Old}`: ''}}</div>
+                      <div>{{scope.row.addressNew ? `（新）${scope.row.addressNew} ${scope.row.address2New}`: ''}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column
-                    width="180"
-                    label="详细地址"
-                    >
-                    <template slot-scope="scope"> 
-                      <div>{{scope.row.address2Old ? `（老）${scope.row.address2Old}`: ''}}</div>
-                      <div>{{scope.row.address2New ? `（新）${scope.row.address2New}`: ''}}</div>
-                    </template>
-                </el-table-column>
+                
                 <el-table-column
                     width="120"
                     label="状态"
@@ -244,7 +236,7 @@
                     width="120"
                     label="备注"
                     >
-                    <template slot-scope="scope"> 
+                    <template slot-scope="scope">  
                       {{scope.row.memo}}
                     </template>
                 </el-table-column>
@@ -423,7 +415,7 @@ export default {
         this.get_gift()
 
         setTimeout(()=>{
-            this.table_height = this.$refs.middle.offsetHeight - 92
+            this.table_height = this.$refs.middle.offsetHeight - 102
             
         },10)
     },
@@ -894,9 +886,27 @@ export default {
 
       .lan {
         position: absolute;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        height: 48px;
+        background: #f4f4f4;;
+        line-height: 48px;
+        padding-left: 30px;
+        font-size: 12px;
 
-        bottom: 10px;
-        right: 20px;
+
+        .block-a {
+          position: absolute;
+          right: 16px;
+          bottom: -10px;
+          top: 8px;
+          
+
+        }
+
+        
+
       }
 
       

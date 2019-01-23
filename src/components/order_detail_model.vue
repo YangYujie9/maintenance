@@ -57,6 +57,7 @@
                         v-for="item in gift_lists" 
                         :key="item.id"
                         :label="item.giftName"
+                        :disabled="item.statusId==1?false:true"
                         :value="item.id">
                       </el-option>
                     </el-select> 
@@ -74,6 +75,7 @@
                       <el-option 
                         v-for="(item,index) in gift_lists" 
                         :key="item.index"
+                        :disabled="item.statusId==1?false:true"
                         :label="item.giftName"
                         :value="item.id">
                       </el-option>

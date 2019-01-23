@@ -62,8 +62,9 @@
         </el-popover>-->
 
         <el-button style="padding: 3px 10px;" slot="reference">
-            <img class="head" :src="loginUserInfo.headImg" />
-            {{loginUserInfo.nickName}}
+            <img class="head" v-if="getstaffVO.headImg" :src="getstaffVO.headImg" />
+            <img class="head" v-else src="../assets/head-o.png" />
+            {{getstaffVO.nickName}}
           </el-button>
       </div>
       <!--个人信息-->
@@ -79,8 +80,8 @@
 
 <script>
   import Cookies from "js-cookie"
-  import orderDetailModel from './order_detail_model'
-
+  import orderDetailModel from './order_detail_model' 
+  import { mapGetters } from 'vuex'
 
   export default {
     components: {
@@ -99,12 +100,7 @@
           kzId: ''
         },
         searchKey: '',
-        //当前登录人
-        loginUserInfo: {
-          companyName: '',
-          nickName: '888',
-          headImg: 'https://oss.aliyuncs.com/hmcrm/beidou/home_img/beidou_logo.png'
-        },
+        
         searchlist: [],
         //公司信息
         companyInfo: {
@@ -112,6 +108,11 @@
         },
         searchresult: false
       }
+    },
+    computed: {
+        ...mapGetters([
+          'getstaffVO',
+        ]),
     },
     mounted() {
       //获取登录信息
@@ -194,12 +195,7 @@
           })
       },
       //获取公司新消息
-      getCompanyInfo() {
-        this.$http.get('company/get_company_info_by_id')
-          .then((res) => {
-            this.companyInfo = res.data
-          })
-      }
+      
     },
   }
 </script>

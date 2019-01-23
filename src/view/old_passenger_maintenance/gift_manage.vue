@@ -128,14 +128,14 @@
         <el-dialog
             :close-on-click-modal="false"
             :visible.sync="category.dialogVisible"
-            width="580px"
+            width="480px"
             >
             <div style="position: relative;" slot="title">
                 分类
 
                 <el-button style="position: absolute;right: 40px;top: -8px;" type="primary" plain @click="gift_type_name_add" class="btninput cursor" size="small">新增分类</el-button>
 
-                <el-button style="position: absolute;right: 160px;top: -8px;" type="primary" plain @click="gift_type_name_add_num" class="btninput cursor" size="small">批量修改</el-button>
+                
             </div>
             <div class="category_edit">
                 <el-table
@@ -145,24 +145,23 @@
                     :height="230"
                     border
                     style="width: 98%;font-size: 12px;"
-                    @selection-change="handleSelectionChange"
+                    
                     > 
-                    <el-table-column
-                      type="selection"
-                      width="55">
-                    </el-table-column>
+                   
                     <el-table-column
                         prop="name"
-                        width="160"
+                        width="220"
                         label="礼品分类"
                         >
                         <template slot-scope="scope"> 
-                          {{scope.row.dicName}}
+                            <div>
+                                <el-input size="mini" v-model="scope.row.dicName" class="input-new" placeholder="请输入内容"></el-input>
+                            </div>
                         </template>
                     </el-table-column>
                     <el-table-column
                         prop="name"
-                        width="160"
+                        width="220"
                         label="开启"
                         >
                         <template slot-scope="scope"> 
@@ -173,22 +172,13 @@
                         </template>
 
                     </el-table-column>
-                        <el-table-column
-                        prop="name"
-                        width="160"
-                        label="操作"
-                        >
-                        <template slot-scope="scope"> 
-                            <el-button
-                              size="mini"
-                              @click="handlegift_type_name_dialogEdit(scope.$index, scope.row)">编辑
-                            </el-button>
-                        </template>
-                    </el-table-column>
-
+                    
                 </el-table>
             </div>
-
+            <span slot="footer" class="dialog-footer">
+                <el-button size="small" @click="category.dialogVisible= false">取 消</el-button>
+                <el-button size="small" @click="gift_type_name_add_ok" type="primary" >保存</el-button>
+            </span>
 
 
         </el-dialog>
@@ -198,7 +188,7 @@
             width="380px"
             >
             <div slot="title">
-                新增分类
+                编辑分类
             </div>
             <div class="gift_type_name_dialog_class">
                 <div class="ul">
@@ -208,7 +198,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button size="small" @click="gift_type_name_dialog.dialogVisible= false">取 消</el-button>
-                <el-button size="small" @click="gift_type_name_add_ok" type="primary" >确 定</el-button>
+                <el-button size="small" @click="gift_and_activity_type_add" type="primary" >确 定</el-button>
             </span>
         </el-dialog>
 
@@ -340,7 +330,7 @@ export default {
     methods:{
         typeshow(index, row) {
             let status = row.show?1:0
-            this.$http.post(`giftType/show?dicCode=${row.dicCode}&status=${status}`)
+            this.$http.post(`gift_and_activity_type/show?dicCode=${row.dicCode}&status=${status}&dicType=gift_type`)
             .then((data)=>{
                 if (data.code == '100000') {
                     this.$message({
@@ -357,16 +347,16 @@ export default {
             })
         },
         gift_type_list() {
-            this.$http.get(`giftType/findAll`)
+            this.$http.get(`gift_and_activity_type/findAll?dicType=gift_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {
-                        let arr = data.data.filter((list) => {
-                            return list.isShow == 1
-                        })
+                        for (let i=0; i<data.data.length; i++) {
+                            data.data[i].disabled = data.data[i].isShow == 1? false: true
+                        }
 
 
-                        this.typelist = arr
+                        this.typelist = data.data
                     }
                 })  
         },
@@ -400,38 +390,24 @@ export default {
 
         },
         gift_type_name_add_ok() {
-            if (!this.gift_type_name_dialog.dicName) {
-                return this.$message({
-                  message: "礼品分类不能为空",
-                  type: 'error'
-                })
-                
-            }
-            if (this.gift_type_name_dialog.status == 'edit') {
-
-                if (this.editgifttype.length == 0) {
-                    this.$message({
-                      message: '请选择你要修改的礼品分类',
-                      type: 'error'
-                    })
+            let editarray = []
+                for (let i=0; i<this.category.tablelist.length; i++) {
+                    editarray.push({dicCode: this.category.tablelist[i].dicCode,dicName: this.category.tablelist[i].dicName, dicType: "gift_type"})
                 }
 
-             
-                let editarray = []
-                for (let i=0; i<this.editgifttype.length; i++) {
-                    editarray.push({dicCode: this.editgifttype[i].dicCode,dicName: this.gift_type_name_dialog.dicName})
-                }
-
-               
-
-                this.$http.post(`giftType/edit`,
+                this.$http.post(`gift_and_activity_type/edit`,
                      editarray
                 )
                 .then((data)=>{
                     if (data.code == '100000') {
-                        this.gift_type_name_dialog.dialogVisible = false
+                        this.$message({
+                          message: data.msg,
+                          type: 'success'
+                        })
+
                         this.editgifttype = []
                         this.gift_type() 
+                        this.category.dialogVisible= false
                     } else {
                         this.$message({
                           message: data.msg,
@@ -441,13 +417,25 @@ export default {
 
                     
                 })
-
-            } else {
-                this.$http.post(`giftType/add`, {
-                    dicName: this.gift_type_name_dialog.dicName
+        },
+        gift_and_activity_type_add() {
+            if (!this.gift_type_name_dialog.dicName) {
+                return this.$message({
+                  message: "分类名字不能为空",
+                  type: 'error'
+                })
+                
+            }
+            this.$http.post(`gift_and_activity_type/add`, {
+                    dicName: this.gift_type_name_dialog.dicName,
+                    dicType: 'gift_type'
                 })
                 .then((data)=>{
                     if (data.code == '100000') {
+                        this.$message({
+                          message: data.msg,
+                          type: 'success'
+                        })
                         this.gift_type_name_dialog.dialogVisible = false
                         this.gift_type() 
                     } else {
@@ -459,7 +447,6 @@ export default {
 
                     
                 })
-            }
         },
         giftadd() {
             this.giftdialog.giftName = ""
@@ -475,7 +462,7 @@ export default {
             this.gift_type_list()
         },
         gift_type() {
-            this.$http.get(`giftType/findAll`)
+            this.$http.get(`gift_and_activity_type/findAll?dicType=gift_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {

@@ -8,6 +8,11 @@ const state = {
   userCompany: {},
   pageDict: {
     
+  },
+  staffVO: {
+    headImg: "",
+    nickName: "",
+    staffId: '',
   }
   
 }
@@ -23,6 +28,11 @@ const getters = {
     
     return state.pageDict
   },
+  getstaffVO: state => {
+    
+    return state.staffVO
+  },
+  
   
 }
 
@@ -36,8 +46,11 @@ const mutations = {
   },
   setpageDict(state, data) {
 
-    state.pageDict = data
-    //console.info(state.pageDict)
+    state.pageDict = data.pageDict
+
+
+    state.staffVO = data.staffVO
+    
   }
 
 }
@@ -51,7 +64,7 @@ const actions = {
     .then((data) => {
 
         if (data.code === 100000) {
-          context.commit('setpageDict', data.data.pageDict)
+          context.commit('setpageDict', data.data)
 
         }
       
