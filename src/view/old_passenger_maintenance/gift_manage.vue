@@ -12,8 +12,8 @@
 
             </div>
             <div class="input-cus">
-                <el-button type="primary" plain @click="giftadd" class="btninput cursor" size="small">分类</el-button>
-                <el-button type="primary" plain @click="giftadd" class="btninput cursor" size="small">新增</el-button>
+                <el-button type="primary" plain @click="gifttypeshow" class="btninput cursor" size="small">分类</el-button>
+                <el-button type="primary" plain  @click="giftadd" class="btninput cursor" size="small">新增</el-button>
             </div>
             <el-table
                 :data="giftdata"
@@ -123,7 +123,96 @@
             </el-table>
         </div>
 
-        <!--增加表格lei数-->
+
+        <!--分类-->
+        <el-dialog
+            :close-on-click-modal="false"
+            :visible.sync="category.dialogVisible"
+            width="580px"
+            >
+            <div style="position: relative;" slot="title">
+                分类
+
+                <el-button style="position: absolute;right: 40px;top: -8px;" type="primary" plain @click="gift_type_name_add" class="btninput cursor" size="small">新增分类</el-button>
+            </div>
+            <div class="category_edit">
+                <el-table
+                    :data="category.tablelist"
+                    :header-cell-class-name="tableheaderClassName"
+                    class="border-q"
+                    :height="230"
+                    border
+                    style="width: 98%;font-size: 12px;"
+                    @selection-change="handleSelectionChange"
+                    > 
+                    <el-table-column
+                      type="selection"
+                      width="55">
+                    </el-table-column>
+                    <el-table-column
+                        prop="name"
+                        width="160"
+                        label="分类名字"
+                        >
+                        <template slot-scope="scope"> 
+                          {{scope.row.dicName}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                        prop="name"
+                        width="160"
+                        label="开启"
+                        >
+                        <template slot-scope="scope"> 
+                            <el-switch @change="typeshow(scope.$index, scope.row)"
+                              v-model="scope.row.show"
+                              >
+                            </el-switch>
+                        </template>
+
+                    </el-table-column>
+                        <el-table-column
+                        prop="name"
+                        width="160"
+                        label="操作"
+                        >
+                        <template slot-scope="scope"> 
+                            <el-button
+                              size="mini"
+                              @click="handlegift_type_name_dialogEdit(scope.$index, scope.row)">编辑
+                            </el-button>
+                        </template>
+                    </el-table-column>
+
+                </el-table>
+            </div>
+
+
+
+        </el-dialog>
+        <el-dialog
+            :close-on-click-modal="false"
+            :visible.sync="gift_type_name_dialog.dialogVisible"
+            width="380px"
+            >
+            <div slot="title">
+                新增分类
+            </div>
+            <div class="gift_type_name_dialog_class">
+                <div class="ul">
+                    <span>分类</span>
+                    <el-input size="mini" v-model="gift_type_name_dialog.dicName" class="input-new" placeholder="请输入内容"></el-input>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button size="small" @click="gift_type_name_dialog.dialogVisible= false">取 消</el-button>
+                <el-button size="small" @click="gift_type_name_add_ok" type="primary" >确 定</el-button>
+            </span>
+        </el-dialog>
+
+
+        <!--分类-->
+        <!--增加表格数-->
         <el-dialog
             :close-on-click-modal="false"
             :visible.sync="giftdialog.dialogVisible"
@@ -137,7 +226,7 @@
                     <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类型</span>
                     <el-select v-if="getpageDict.commonMap" size="mini" v-model="giftdialog.giftTypeCode" class="input-new" placeholder="请选择">
                         <el-option
-                          v-for="item in getpageDict.commonMap.commonType"
+                          v-for="item in typelist"
                           :key="item.dicCode"
                           :label="item.dicName"
                           :value="item.dicCode"
@@ -187,17 +276,27 @@ export default {
     data(){
         return{
             giftdialog: {
-                    dialogVisible: false,
-                    "giftName": "",   
-                    "giftTypeCode": '',      
-                    "id": '',          
-                    "inventory": '',    
-                    "pictureId": '',      
-                    "remark": "",  
-                    "sendOut": '',      
-                    "soldOutTime": "",     
-                    "status": true,       
+                dialogVisible: false,
+                "giftName": "",   
+                "giftTypeCode": '',      
+                "id": '',          
+                "inventory": '',    
+                "pictureId": '',      
+                "remark": "",  
+                "sendOut": '',      
+                "soldOutTime": "",     
+                "status": true,       
             },
+            gift_type_name_dialog: {
+                dialogVisible: false,
+                dicName: '',
+                dicCode: ''
+            },
+            category: {
+                dialogVisible: false,
+                tablelist: [],
+            },
+            typelist: [],
             gifttype: [],
             giftdata: [],
             table_height: '300',
@@ -229,8 +328,84 @@ export default {
         setTimeout(()=>{
             this.table_height = this.$refs.middle.offsetHeight - 82
         },0)
+
+        this.gift_type_list()
+
+        
     },
     methods:{
+        typeshow(index, row) {
+            let status = row.show?1:0
+            this.$http.post(`giftType/show?dicCode=${row.dicCode}&status=${status}`)
+            .then((data)=>{
+                if (data.code == '100000') {
+                    this.$message({
+                      message: "操作成功",
+                      type: 'success'
+                    })
+                    this.gift_type() 
+                } else {
+                    this.$message({
+                      message: data.msg,
+                      type: 'error'
+                    })
+                }
+            })
+        },
+        gift_type_list() {
+            this.$http.get(`giftType/findAll`)
+              .then((data)=>{
+                    
+                    if (data.code == '100000') {
+                        let arr = data.data.filter((list) => {
+                            return list.isShow == 1
+                        })
+
+
+                        this.typelist = arr
+                    }
+                })  
+        },
+        gift_type_name_add() {
+            this.gift_type_name_dialog.dialogVisible = true
+            this.gift_type_name_dialog.dicName = ''
+            this.gift_type_name_dialog.dicCode = ''
+
+        },
+        gifttypeshow() {
+            this.category.dialogVisible = true
+            this.gift_type()
+        },
+        handleSelectionChange() {
+
+        },
+        handlegift_type_name_dialogEdit(index,row) {
+            this.gift_type_name_dialog.dialogVisible = true
+            this.gift_type_name_dialog.dicName = row.dicName
+            this.gift_type_name_dialog.dicCode = row.dicCode
+        },
+        gift_type_name_add_ok() {
+            if (this.gift_type_name_dialog.dicCode) {
+
+                this.$http.post(`giftType/add`, {
+                    dicName: this.gift_type_name_dialog.dicName
+                })
+                .then((data)=>{
+                    if (data.code == '100000') {
+                        this.gift_type_name_dialog.dialogVisible = false
+                        this.gift_type() 
+                    } else {
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        })
+                    }
+
+                    
+                })
+
+            }
+        },
         giftadd() {
             this.giftdialog.giftName = ""
             this.giftdialog.giftTypeCode = ""
@@ -242,7 +417,20 @@ export default {
             this.giftdialog.status = true
             this.giftdialog.typeName = ""
             this.giftdialog.dialogVisible = true
+            this.gift_type_list()
+        },
+        gift_type() {
+            this.$http.get(`giftType/findAll`)
+              .then((data)=>{
+                    
+                    if (data.code == '100000') {
+                        for (let i=0; i<data.data.length; i++) {
 
+                            data.data[i].show=data.data[i].isShow == 1? true: false
+                        }
+                        this.category.tablelist = data.data
+                    }
+                })  
         },
         handleClick(tab) {
           this.statusId = this.selectTab[tab.index].id
@@ -257,7 +445,7 @@ export default {
             this.giftdialog.pictureId = row.pictureId
             this.giftdialog.remark = row.remark
             this.giftdialog.sendOut = row.sendOut
-            this.giftdialog.status = row.status == 1 ? true:false
+            this.giftdialog.status = row.statusId == 1 ? true:false
             this.giftdialog.typeName = row.typeName
 
             this.giftdialog.dialogVisible = true
@@ -376,25 +564,30 @@ export default {
 </script>
 
 <style lang="less">
+.gift_type_name_dialog_class {
+
+}
 .el-table .table-head-th{
     background-color:#f4f4f4;
     color: #000;
     padding: 6px 0;
 }
+
 .gift_manage {
+    .ul {
+        margin-bottom: 22px;
+        span {
+            padding-right: 16px;
+        }
+
+        .input-new {
+            display: inline-block;
+            width: 160px;
+        }
+    }
     .edit_content {
         font-size: 12px;
-        .ul {
-            margin-bottom: 22px;
-            span {
-                padding-right: 16px;
-            }
-
-            .input-new {
-                display: inline-block;
-                width: 160px;
-            }
-        }
+        
     }
     .middle {
      padding: 20px 16px 10px 16px;
