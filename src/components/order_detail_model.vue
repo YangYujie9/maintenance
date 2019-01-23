@@ -206,9 +206,9 @@
                     :data="detail.infolist"
                     :header-cell-class-name="tableheaderClassName"
                     class="border-q"
-                    :height="230"
+                    :height="260"
                     border
-                    style="width: 98%;font-size: 12px;margin-top: 20px;"> 
+                    style="width: 100%;font-size: 12px;margin-top: 20px;"> 
                     <el-table-column
                       type="index"
                       label="编号"
@@ -216,7 +216,7 @@
                     </el-table-column>
                     <el-table-column
                       prop="name"
-                      width="180"
+                      width="190"
                       label="姓名"
                       >
                     <template slot-scope="scope"> 
@@ -785,7 +785,7 @@ export default {
 .content_height {
   height: 260px;
   &.introduce {
-    height: 280px;
+    height: 310px;
   }
 }
 

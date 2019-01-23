@@ -11,9 +11,34 @@ import "./assets/font/iconfont.css"
 import erpAxios from './common/http' 
 import store from './vuex'
 Vue.use(ElementUI)
+import Cookies from 'js-cookie'
 
 //路由拦截
 router.beforeEach((to, from, next) => {
+
+    console.info(to.query)
+    console.info('to.888')
+   console.info(from.query)
+   console.info('form.888')
+
+    if (to.query.cid) {
+        Cookies.remove('cid')
+        Cookies.remove('uid')
+        Cookies.remove('token')
+        Cookies.set("token", to.query.token);
+        Cookies.set("cid", to.query.cid);
+        Cookies.set("uid", to.query.uid);
+    }
+
+    if (from.query.cid) {
+        Cookies.remove('cid')
+        Cookies.remove('uid')
+        Cookies.remove('token')
+        Cookies.set("token", from.query.token);
+        Cookies.set("cid", from.query.cid);
+        Cookies.set("uid", from.query.uid);
+    }
+
 
     if (store.state.person.pageDict.channelMap) {
     } else {

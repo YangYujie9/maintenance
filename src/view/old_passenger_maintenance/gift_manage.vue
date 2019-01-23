@@ -400,6 +400,13 @@ export default {
 
         },
         gift_type_name_add_ok() {
+            if (!this.gift_type_name_dialog.dicName) {
+                return this.$message({
+                  message: "礼品分类不能为空",
+                  type: 'error'
+                })
+                
+            }
             if (this.gift_type_name_dialog.status == 'edit') {
 
                 if (this.editgifttype.length == 0) {
@@ -501,6 +508,27 @@ export default {
             return "table-head-th";
         },
         edit_ok() {
+            if (!this.giftdialog.giftName) {
+                return this.$message({
+                  message: "礼品名字不能为空",
+                  type: 'error'
+                })
+
+            }
+            if (!this.giftdialog.giftTypeCode) {
+                return this.$message({
+                  message: "礼品分类不能为空",
+                  type: 'error'
+                })
+                
+            }
+            if (!this.giftdialog.inventory) {
+                return this.$message({
+                  message: "礼品库存不能为空",
+                  type: 'error'
+                })
+                
+            }
             if (this.giftdialog.id) {
                 this.$http.post(`gift/edit`, {
                     "giftName": this.giftdialog.giftName,   
