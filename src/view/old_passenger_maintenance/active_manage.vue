@@ -336,7 +336,7 @@ export default {
             this.category.dialogVisible = true
         },
         gift_type_list() {
-            this.$http.get(`gift_and_activity_type/findAll?dicType=activity_type`)
+            this.$http.get(`gift_and_activity_type/find_all?dicType=activity_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {
@@ -446,7 +446,7 @@ export default {
             this.gift_type_name_dialog.status = 'add'
         },
         gift_type() {
-            this.$http.get(`gift_and_activity_type/findAll?dicType=activity_type`)
+            this.$http.get(`gift_and_activity_type/find_all?dicType=activity_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {

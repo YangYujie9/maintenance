@@ -556,7 +556,7 @@ export default {
     		
     	},
       get_gift() {
-        this.$http.get(`gift/giftComboBox`)
+        this.$http.get(`gift/gift_combobox`)
           .then((data)=>{
             this.gift_lists = data.data
           })

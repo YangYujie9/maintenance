@@ -347,7 +347,7 @@ export default {
             })
         },
         gift_type_list() {
-            this.$http.get(`gift_and_activity_type/findAll?dicType=gift_type`)
+            this.$http.get(`gift_and_activity_type/find_all?dicType=gift_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {
@@ -462,7 +462,7 @@ export default {
             this.gift_type_list()
         },
         gift_type() {
-            this.$http.get(`gift_and_activity_type/findAll?dicType=gift_type`)
+            this.$http.get(`gift_and_activity_type/find_all?dicType=gift_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {
@@ -608,7 +608,7 @@ export default {
                 })
         },
         get_data() {
-            this.$http.get(`gift/findAll?statusId=${this.statusId}`)
+            this.$http.get(`gift/find_all?statusId=${this.statusId}`)
                 .then((data)=>{
                     
                     if (data.code == '100000') {
