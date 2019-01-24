@@ -36,7 +36,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="140"
                     label="活动名字"
                     >
                     <template slot-scope="scope"> 
@@ -78,7 +78,7 @@
                     label="内容图片"
                     >
                     <template slot-scope="scope"> 
-                      <img v-if="scope.row.picturePOS.length>0" v-for="list in scope.row.picturePOS" style="width: 120px;height: 120px;object-fit: cover;" :src="list.pictureCode"/>
+                      <img v-if="scope.row.picturePOS.length>0" v-for="list in scope.row.picturePOS" style="width: 120px;height: 120px;object-fit: cover;" :src="list.pictureRemotePath"/>
                       <span v-else>没有图片</span>
                     </template>
                 </el-table-column>
@@ -205,7 +205,7 @@
                             </a>
                             <label class="el-upload-list__item-status-label">
                             <i class="el-icon-upload-success el-icon-check"></i></label>
-                            <i @click="deleteuploadlist(list.name)" class="el-icon-close"></i>
+                            <i @click="deletecontentuploadlist(list.name)" class="el-icon-close"></i>
                             <i  class="el-icon-close-tip">按 delete 键可删除</i>
                         </li>
 
@@ -409,6 +409,20 @@ export default {
             }
 
             this.giftdialog.headimglist.splice(j,1)
+
+
+        },
+        deletecontentuploadlist(name) {
+
+            let j=0
+            for (let i=0; i<this.giftdialog.contentimglist.length; i++) {
+                if (this.giftdialog.contentimglist[i].name == name) {
+                    j=i 
+                    break
+                }
+            }
+
+            this.giftdialog.contentimglist.splice(j,1)
 
 
         },
@@ -637,6 +651,18 @@ export default {
             } else {
                 this.giftdialog.headimglist = []
             }
+
+            this.giftdialog.contentimglist = []
+
+            if (row.picturePOS.length>0) {
+                for (let i=0;i<row.picturePOS.length;i++) {
+                   this.giftdialog.contentimglist.push({progressa: 100,name: row.picturePOS[i].pictureRemotePath,upload:true, imgurl: row.picturePOS[i].pictureRemotePath, imguploadname: row.picturePOS[i].pictureRemotePath}) 
+                }
+                
+            } else {
+                this.giftdialog.contentimglist = []
+            }
+
             this.giftdialog.activityTypeCode =row.activityTypeCode
             this.giftdialog.status = row.statusId == 1 ? true:false 
             this.gift_type_list()
