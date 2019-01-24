@@ -83,11 +83,12 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="160"
                     label="图片"
                     >
                     <template slot-scope="scope"> 
-                      {{scope.row.typeName}}
+                      <img v-if="scope.row.pictureIP" style="width: 120px;height: 120px;object-fit: cover;" :src="scope.row.pictureIP"/>
+                      <span v-else>没有图片</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -192,7 +193,7 @@
             </div>
             <div class="gift_type_name_dialog_class">
                 <div class="ul">
-                    <span>礼品分类</span>
+                    <span class="span">礼品分类</span>
                     <el-input size="mini" v-model="gift_type_name_dialog.dicName" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
             </div>
@@ -211,27 +212,28 @@
             width="580px"
             >
             <span slot="title">
-             礼品编辑
+             {{giftdialog.id? '礼品编辑':'礼品新增'}}
             </span>
             <div class="edit_content">
                 <div class="ul">
-                    <span>礼品分类</span>
+                    <span class="span">礼品分类</span>
                     <el-select v-if="getpageDict.commonMap" size="mini" v-model="giftdialog.giftTypeCode" class="input-new" placeholder="请选择">
                         <el-option
                           v-for="item in typelist"
                           :key="item.dicCode"
                           :label="item.dicName"
+                          v-show="giftdialog.id || (!giftdialog.id && !item.disabled)"
                           :value="item.dicCode"
                           :disabled="item.disabled">
                         </el-option>
                     </el-select>
                 </div>
                 <div class="ul">
-                    <span>礼品名字</span>
+                    <span class="span">礼品名字</span>
                     <el-input size="mini" v-model="giftdialog.giftName" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片</span>
+                    <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片</span>
                     <el-upload
                       class="upload-demo"
                       style="display: inline"
@@ -241,22 +243,57 @@
 
 
                       <el-button size="small" type="primary">点击上传</el-button>
-                      
+                      <span ></span>
                     </el-upload>
+
+                    <ul v-show="giftdialog.progressa>0" style="display: block;" class="el-upload-list el-upload-list--text">
+                        <li style="margin-bottom: 10px;" class="el-upload-list__item is-success el-list-enter-to">
+                            <a class="el-upload-list__item-name"><i class="el-icon-document"></i>
+                                {{giftdialog.filename}}
+                            </a>
+                            <div style="padding-left: 0px;">
+                                <el-progress style="padding-left: 10px;width: 90%;" :percentage="giftdialog.progressa"></el-progress>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul v-if="giftdialog.uploadlist.length>0" style="width: 80%;max-height: 220px;overflow-y: scroll;" class="el-upload-list el-upload-list--picture">
+                        <li v-for="list in giftdialog.uploadlist" v-if="list.upload==true" tabindex="0" class="el-upload-list__item is-success">
+                            <img :src="list.imgurl" alt="" class="el-upload-list__item-thumbnail">
+                            <a class="el-upload-list__item-name">
+                            <i class="el-icon-document"> 
+                            </i>{{list.name}}
+                            </a>
+                            <label class="el-upload-list__item-status-label">
+                            <i class="el-icon-upload-success el-icon-check"></i></label>
+                            <i @click="deleteuploadlist(list.name)" class="el-icon-close"></i>
+                            <i  class="el-icon-close-tip">按 delete 键可删除</i><!----><!---->
+                        </li>
+
+                        <li tabindex="0" v-for="list in giftdialog.uploadlist" v-if="list.upload==false" class="el-upload-list__item is-uploading"><!----><a class="el-upload-list__item-name"><i class="el-icon-document"></i>{{list.name}}
+                            </a><label class="el-upload-list__item-status-label"><i class="el-icon-upload-success el-icon-check"></i></label><i class="el-icon-close"></i>
+                            <i class="el-icon-close-tip">按 delete 键可删除</i>
+                            <div role="progressbar" :aria-valuenow="list.progressa" aria-valuemin="0" aria-valuemax="100" class="el-progress el-progress--line">
+                                <div class="el-progress-bar"><div class="el-progress-bar__outer" style="height: 2px;">
+                                    <div class="el-progress-bar__inner" :style="{width: list.progressa}"><!----></div>
+                                </div></div><div class="el-progress__text" style="font-size: 12.8px;">{{list.progressa}}%</div>
+                            </div><!---->
+                        </li>
+                    </ul>
                 </div>
                 <div class="ul">
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库存</span>
+                    <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库存</span>
                     <el-input size="mini" v-model="giftdialog.inventory" class="input-new" placeholder="请输入内容"></el-input>
 
-                    <span style="padding-left: 16px;">已使用</span>
+                    <span class="span" style="padding-left: 16px;">已使用</span>
                     <el-input size="mini" v-model="giftdialog.sendOut" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注</span>
+                    <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注</span>
                     <el-input size="mini" style="width:200px;" v-model="giftdialog.remark" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上架</span>
+                    <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上架</span>
                     <el-switch
                       v-model="giftdialog.status"
                       active-color="#13ce66"
@@ -291,7 +328,8 @@ export default {
                 "remark": "",  
                 "sendOut": '',      
                 "soldOutTime": "",     
-                "status": true,       
+                "status": true,
+                uploadlist: [],     
             },
             gift_type_name_dialog: {
                 dialogVisible: false,
@@ -321,7 +359,8 @@ export default {
               },
               
             ],
-            editgifttype: []
+            
+
         }
     },
     computed: {
@@ -342,20 +381,45 @@ export default {
         
     },
     methods:{
+        deleteuploadlist(name) {
+
+            let j=0
+            for (let i=0; i<this.giftdialog.uploadlist.length; i++) {
+                if (this.giftdialog.uploadlist[i].name == name) {
+                    j=i 
+                    break
+                }
+            }
+
+            this.giftdialog.uploadlist.splice(j,1)
+
+
+        },
         async uploadpicture(filestatus) {
+
+            if (this.giftdialog.uploadlist.length>0) {
+                return this.$message({
+                      message: "已经有图片，请删除之后再上传",
+                      type: 'success'
+                    })
+            }
 
             let ext= filestatus.file.name.substr(filestatus.file.name.lastIndexOf(".")+1)
             
 
+            this.giftdialog.uploadlist.push({progressa: 0,name: filestatus.file.name,upload:false, imgurl: '',imguploadname: ''})
+
             let uploadobj = await this.get_policy()
+            let that = this
+
             
             const formData = new FormData()
             formData.append('key', `${uploadobj.key}.${ext}`)
-            formData.append('file', filestatus.file)
             formData.append('signature', uploadobj.signature)
             formData.append('OSSAccessKeyId', uploadobj.accessid)
             formData.append('success_action_status', 200)
             formData.append('policy', uploadobj.policy)
+            formData.append('file', filestatus.file)
 
             this.$http({
                 url:  `https://crm-jupiter.oss-cn-hangzhou.aliyuncs.com`,
@@ -364,6 +428,15 @@ export default {
                 headers: {'Content-Type': 'multipart/form-data'},
                 onUploadProgress (a){
 
+                    let dlItem = that.giftdialog.uploadlist.find((item) => {
+                        return item.name === filestatus.file.name
+                    })
+
+                    
+
+                    let precent = (a.loaded / a.total).toFixed(2)
+                    //filestatus.progressa = precent
+                    dlItem.progressa = precent * 100
                     
                     
 
@@ -372,7 +445,25 @@ export default {
                 //console.info(res)
                 //res.fileName = filestatus.newfile.name
 
-                console.info(res)
+                if (!res) {
+                    let dlItem = that.giftdialog.uploadlist.find((item) => {
+                        return item.name === filestatus.file.name
+                    })
+
+                    dlItem.upload = true
+                    dlItem.imgurl = `${uploadobj.host}/${uploadobj.key}.${ext}`
+                    dlItem.imguploadname = `${uploadobj.host}/${uploadobj.key}.${ext}`
+
+
+                    this.giftdialog.pictureId = `${uploadobj.host}/${uploadobj.key}.${ext}`
+                } else {
+                    this.$message({
+                      message: "图片上传失败",
+                      type: 'success'
+                    })
+                }
+
+                
 
             })
             
@@ -404,15 +495,15 @@ export default {
                 }
             })
         },
-        gift_type_list() {
+        gift_type_list(status) {
             this.$http.get(`gift_and_activity_type/find_all?dicType=gift_type`)
               .then((data)=>{
                     
                     if (data.code == '100000') {
                         for (let i=0; i<data.data.length; i++) {
+
                             data.data[i].disabled = data.data[i].isShow == 1? false: true
                         }
-
 
                         this.typelist = data.data
                     }
@@ -453,6 +544,14 @@ export default {
                     editarray.push({dicCode: this.category.tablelist[i].dicCode,dicName: this.category.tablelist[i].dicName, dicType: "gift_type"})
                 }
 
+
+                if (editarray.length == 0) {
+                    return this.$message({
+                      message: '请输入您要保存的分类',
+                      type: 'error'
+                    })
+                }
+
                 this.$http.post(`gift_and_activity_type/edit`,
                      editarray
                 )
@@ -477,9 +576,9 @@ export default {
                 })
         },
         gift_and_activity_type_add() {
-            if (!this.gift_type_name_dialog.dicName) {
+            if (this.gift_type_name_dialog.uploadimg) {
                 return this.$message({
-                  message: "分类名字不能为空",
+                  message: "图片正在上传中",
                   type: 'error'
                 })
                 
@@ -512,6 +611,7 @@ export default {
             this.giftdialog.id = ""
             this.giftdialog.inventory = ""
             this.giftdialog.pictureId = ""
+            this.giftdialog.uploadlist = []
             this.giftdialog.remark = ""
             this.giftdialog.sendOut = ""
             this.giftdialog.status = true
@@ -541,7 +641,14 @@ export default {
             this.giftdialog.giftTypeCode = row.giftTypeCode
             this.giftdialog.id = row.id
             this.giftdialog.inventory = row.inventory
-            this.giftdialog.pictureId = row.pictureId
+            this.giftdialog.pictureIp = row.pictureIP
+            this.giftdialog.uploadlist = []
+            if (row.pictureIP) {
+                this.giftdialog.uploadlist.push({progressa: 100,name: row.pictureIP,upload:true, imgurl: row.pictureIP, imguploadname: row.pictureIP})
+            } else {
+                this.giftdialog.uploadlist = []
+            }
+            
             this.giftdialog.remark = row.remark
             this.giftdialog.sendOut = row.sendOut
             this.giftdialog.status = row.statusId == 1 ? true:false
@@ -560,6 +667,31 @@ export default {
                 })
 
             }
+            
+
+            let dlItem = this.giftdialog.uploadlist.find((item) => {
+                return !item.upload
+            })
+
+            if (dlItem) {
+                return this.$message({
+                  message: "图片没有上传完，稍后再保存",
+                  type: 'error'
+                })
+            }
+
+            let pictureId = ''
+            if (this.giftdialog.uploadlist.length>0) {
+                pictureId=this.giftdialog.uploadlist[0].imgurl
+            }
+            if (!this.giftdialog.giftTypeCode) {
+                return this.$message({
+                  message: "礼品分类不能为空",
+                  type: 'error'
+                })
+                
+            }
+
             if (!this.giftdialog.giftTypeCode) {
                 return this.$message({
                   message: "礼品分类不能为空",
@@ -590,7 +722,7 @@ export default {
                     "giftTypeCode": this.giftdialog.giftTypeCode,      
                     "id": this.giftdialog.id,          
                     "inventory": this.giftdialog.inventory,    
-                    "pictureId": this.giftdialog.pictureId,      
+                    "pictureIP": pictureId,  
                     "remark": this.giftdialog.remark,  
                     "sendOut": this.giftdialog.sendOut,      
                     "statusId": this.giftdialog.status? 1:0,  
@@ -615,11 +747,13 @@ export default {
                     }
                 })
             } else {
+
+                
                 this.$http.post(`gift/add`, {
                     "giftName": this.giftdialog.giftName,   
                     "giftTypeCode": this.giftdialog.giftTypeCode,      
                     "inventory": this.giftdialog.inventory,    
-                    "pictureId": this.giftdialog.pictureId,      
+                    "pictureIP": pictureId,      
                     "remark": this.giftdialog.remark,  
                     "statusId": this.giftdialog.status? 1:0,  
                 })
@@ -703,10 +837,14 @@ export default {
     padding: 6px 0;
 }
 
+.upload-demo .el-upload-list {
+    display: none;
+}
+
 .gift_manage {
     .ul {
         margin-bottom: 22px;
-        span {
+        .span {
             padding-right: 16px;
         }
 

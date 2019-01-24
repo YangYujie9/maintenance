@@ -16,21 +16,21 @@
           <div class="edit-content">
             <div>
                <div class="ul">
-                   <span>订单店</span>
+                   <span class="span">订单店</span>
                    <el-input :disabled="true" size="mini" v-model="detail.shopName" :readonly="true" class="input-new" placeholder=""></el-input>
                </div> 
                <div class="ul">
-                   <span>渠道员工</span>
+                   <span class="span">渠道员工</span>
                    <el-input size="mini" :disabled="true" v-model="detail.collectorName" :readonly="true" class="input-new" placeholder=""></el-input>
                </div> 
                <div class="ul">
-                   <span>套餐价格</span>
+                   <span class="span">套餐价格</span>
                    <el-input size="mini" :disabled="true" v-model="detail.amount" :readonly="true" class="input-new" placeholder=""></el-input>
                </div> 
             </div>
             <div>
                 <div class="ul">
-                   <span>送礼方式</span>
+                   <span class="span">送礼方式</span>
                    <!--摄影师-->
                     <el-select clearable   class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
                       <el-option 
@@ -50,7 +50,7 @@
                     -->
                 </div>
                 <div class="ul">
-                   <span>礼品</span>
+                   <span class="span">礼品</span>
                    
                    <el-select clearable  class="input-new" :disabled="oldstatus.oldchecked==3" size="mini" v-model="detail.giftIdOld" placeholder="礼品">
                       <el-option 
@@ -70,7 +70,7 @@
                     -->
                 </div>
                 <div class="ul">
-                   <span>礼品</span>
+                   <span class="span">礼品</span>
                     <el-select clearable :disabled="oldstatus.newchecked==3"  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
                         v-for="(item,index) in gift_lists" 
@@ -264,7 +264,7 @@
               </span>
               <div class="match_content">
                 <div class="ul" style="margin-bottom: 26px;">
-                   <span>查询</span>
+                   <span class="span">查询</span>
                    <el-input size="mini" v-model="searchData.searchkey" style="width:auto; font-size: 12px;" placeholder="姓名/电话" class="input-with-select">
                    	
                    	  <el-button size="mini" slot="append" @click.stop.prevent="searchok" icon="el-icon-search"></el-button>
@@ -885,7 +885,7 @@ export default {
         margin-right: 16px;
         margin-bottom: 10px;
 
-        span {
+        .span {
             padding-right: 10px;
         }
 

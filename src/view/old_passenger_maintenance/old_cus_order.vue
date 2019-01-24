@@ -216,8 +216,8 @@
                     label="地址"
                     >
                     <template slot-scope="scope"> 
-                      <div>{{scope.row.addressOld ? `（老）${scope.row.addressOld} ${scope.row.address2Old}`: ''}}</div>
-                      <div>{{scope.row.addressNew ? `（新）${scope.row.addressNew} ${scope.row.address2New}`: ''}}</div>
+                      <div>{{scope.row.addressOld ? '（老）'+ dealaddress(scope.row.addressOld+scope.row.address2Old): ''}}</div>
+                      <div>{{scope.row.addressNew ? '（新）'+ dealaddress(scope.row.addressNew+scope.row.address2New): ''}}</div>
                     </template>
                 </el-table-column>
                 
@@ -426,6 +426,14 @@ export default {
               //console.info(data)
               this.gift_lists = data.data
             })
+        },
+        dealaddress(value) {
+          if (value.length > 18) {
+            return value.slice(0,18) + '...'
+          } else {
+            return value
+          }
+
         },
         handleSizeChange(val) {
           this.searchItem.size = val
