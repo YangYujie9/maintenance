@@ -787,7 +787,7 @@ export default {
 .content_height {
   height: 260px;
   &.introduce {
-    height: 310px;
+    height: 308px;
   }
 }
 

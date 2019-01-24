@@ -38,7 +38,7 @@
                 <div class="order-select">
                     <!--摄影师-->
                     <el-dropdown  class="custom-width" trigger="click" size="mini" placement="bottom">
-                      <el-button size="mini" style="width: 120px;">
+                      <el-button :class="{colorgrey: stafflistvalue.length==0}" size="mini" style="width: 120px;">
                         {{stafflistvaluedeal}}<i class="el-icon-arrow-down el-icon--right"></i>
                       </el-button>
                       <el-dropdown-menu slot="dropdown">
@@ -56,7 +56,7 @@
                     </el-dropdown>
 
                     <!--摄影师-->
-                    <el-select clearable  class="custom-width"  size="mini" v-model="searchItem.giveType" placeholder="送礼模式">
+                    <el-select clearable  class="custom-width select-hover"  size="mini" v-model="searchItem.giveType" placeholder="送礼模式">
                       <el-option 
                         v-for="item in giveType_list" 
                         :key="item.value"
@@ -203,7 +203,7 @@
                 </el-table-column>
                 
                 <el-table-column
-                    width="120"
+                    width="160"
                     label="物流单号"
                     >
                     <template slot-scope="scope"> 
@@ -400,7 +400,7 @@ export default {
               }
 
             } else {
-              return '渠道员工'
+              return `选择渠道员工`
             }
 
         },
@@ -726,6 +726,17 @@ export default {
   }
 
   
+
+}
+
+.select-hover:hover .el-input__inner {
+    color: #409EFF !important;
+    background: #ecf5ff !important;
+    border-color: #b3d8ff !important;
+}
+
+.colorgrey {
+  color: #c0c4cc;
 
 }
 

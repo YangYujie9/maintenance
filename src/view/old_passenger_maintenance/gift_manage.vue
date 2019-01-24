@@ -231,6 +231,20 @@
                     <el-input size="mini" v-model="giftdialog.giftName" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片</span>
+                    <el-upload
+                      class="upload-demo"
+                      style="display: inline"
+                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :http-request="uploadpicture"
+                      >
+
+
+                      <el-button size="small" type="primary">点击上传</el-button>
+                      
+                    </el-upload>
+                </div>
+                <div class="ul">
                     <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库存</span>
                     <el-input size="mini" v-model="giftdialog.inventory" class="input-new" placeholder="请输入内容"></el-input>
 
@@ -328,6 +342,50 @@ export default {
         
     },
     methods:{
+        async uploadpicture(filestatus) {
+
+            let ext= filestatus.file.name.substr(filestatus.file.name.lastIndexOf(".")+1)
+            
+
+            let uploadobj = await this.get_policy()
+            
+            const formData = new FormData()
+            formData.append('key', `${uploadobj.key}.${ext}`)
+            formData.append('file', filestatus.file)
+            formData.append('signature', uploadobj.signature)
+            formData.append('OSSAccessKeyId', uploadobj.accessid)
+            formData.append('success_action_status', 200)
+            formData.append('policy', uploadobj.policy)
+
+            this.$http({
+                url:  `https://crm-jupiter.oss-cn-hangzhou.aliyuncs.com`,
+                method: 'POST',
+                data: formData,
+                headers: {'Content-Type': 'multipart/form-data'},
+                onUploadProgress (a){
+
+                    
+                    
+
+                },
+            }).then((res) => {
+                //console.info(res)
+                //res.fileName = filestatus.newfile.name
+
+                console.info(res)
+
+            })
+            
+        },
+        get_policy() {
+            return new Promise((resolve, reject) => {
+                this.$http.get(`oss/get_policy`)
+                    .then((data)=>{
+                        resolve(data.data)
+                    })
+            })
+            
+        },
         typeshow(index, row) {
             let status = row.show?1:0
             this.$http.post(`gift_and_activity_type/show?dicCode=${row.dicCode}&status=${status}&dicType=gift_type`)
@@ -509,13 +567,23 @@ export default {
                 })
                 
             }
-            if (!this.giftdialog.inventory) {
+
+
+            if (!this.giftdialog.inventory || (this.giftdialog.inventory && !(/^\d+$/.test(this.giftdialog.inventory)))) {
                 return this.$message({
-                  message: "礼品库存不能为空",
+                  message: "输入正确的礼品库存",
                   type: 'error'
                 })
                 
             }
+            if (this.giftdialog.sendOut && !(/^\d+$/.test(this.giftdialog.sendOut))) {
+                return this.$message({
+                  message: "输入正确的送出礼品",
+                  type: 'error'
+                })
+                
+            }
+
             if (this.giftdialog.id) {
                 this.$http.post(`gift/edit`, {
                     "giftName": this.giftdialog.giftName,   

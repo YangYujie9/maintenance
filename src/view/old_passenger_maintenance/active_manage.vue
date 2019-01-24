@@ -549,7 +549,7 @@ export default {
                     }
                 })
             } else {
-                this.$http.post(`gift/add`, {
+                this.$http.post(`activity/add`, {
                     "activityTypeCode": this.giftdialog.activityTypeCode,   
                     "activityName": this.giftdialog.activityName,      
                     "putawayTime": new Date(this.giftdialog.putawayTime).getTime()/1000,    
