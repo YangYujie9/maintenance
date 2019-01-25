@@ -154,7 +154,7 @@
 
 
                       <el-button size="small" type="primary">点击上传</el-button>
-                      <span ></span>
+                      <span style="margin-left: 10px;">只能上传1张图</span>
                     </el-upload>
 
                     <ul v-if="giftdialog.headimglist.length>0" style="width: 80%;max-height: 220px;overflow-y: scroll;" class="el-upload-list el-upload-list--picture">
@@ -193,7 +193,7 @@
 
 
                       <el-button size="small" type="primary">点击上传</el-button>
-                      <span ></span>
+                      <span style="margin-left: 10px;">只能上传12张图</span>
                     </el-upload>
 
                     <ul v-if="giftdialog.contentimglist.length>0" style="width: 80%;max-height: 220px;overflow-y: scroll;" class="el-upload-list el-upload-list--picture">
@@ -807,6 +807,8 @@ export default {
             this.giftdialog.remark =""
             this.giftdialog.activityTypeCode =""
             this.giftdialog.headimglist = []
+            this.giftdialog.contentimglist = []
+            
             this.giftdialog.status = true
             this.gift_type_list()
             

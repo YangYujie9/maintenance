@@ -243,7 +243,7 @@
 
 
                       <el-button size="small" type="primary">点击上传</el-button>
-                      <span ></span>
+                      <span style="margin-left: 10px;">只能上传1张图</span>
                     </el-upload>
 
                     <ul v-show="giftdialog.progressa>0" style="display: block;" class="el-upload-list el-upload-list--text">

@@ -6,6 +6,7 @@
           :visible.sync="dialogVisible"
           :show-close="false"
           width="680px"
+          
           >
           <div style="font-size: 14px;position: relative;" slot="title">
             {{detail.letterId ? detail.letterId:detail.id}}&nbsp;
@@ -13,7 +14,7 @@
 
             <button @click="$emit('close')" style="position: absolute;right: 8px;top: -2px" type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button>
           </div>
-          <div class="edit-content">
+          <div v-loading="loading" class="edit-content">
             <div>
                <div class="ul">
                    <span class="span">订单店</span>
@@ -231,7 +232,7 @@
                       label="联系方式"
                       >
                     <template slot-scope="scope"> 
-                      {{scope.row.kzPhone}}
+                      {{scope.row.kzPhone ? scope.row.kzPhone:scope.row.kzWechat}}
                     </template>
                     </el-table-column>
                     <el-table-column
@@ -364,6 +365,7 @@ export default {
         return{
           	cityOptions: [],
           	cityMap: cityMap,
+            loading: true,
           	matchdialog: {
                 dialogVisible: false
             },
@@ -677,6 +679,7 @@ export default {
     		}
     	},
       get_detail_data() {
+          this.loading = true
 	      	this.$http.get(`info/get_info_detail_by_kzid?kzId=${this.kzId}`)
 	      		.then((data)=>{
 	            
@@ -764,7 +767,7 @@ export default {
                 this.oldstatus.newchecked = this.detail.statusNew
                 this.oldstatus.oldchecked = this.detail.statusOld
 
-              
+                this.loading = false
 		            } else {
 		                this.$message({
 		                  message: data.msg,
