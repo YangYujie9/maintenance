@@ -99,6 +99,9 @@
                   type="index"
                   label="编号"
                   width="50">
+                    <template slot-scope="scope"> 
+                      {{scope.row.indexi}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="name"
@@ -262,7 +265,7 @@
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
                   layout="total,sizes, prev, pager, next"
-                  :page-sizes="[20, 30, 40, 50]"
+                  :page-sizes="[10,20, 30, 40, 50]"
                   :page-size="searchItem.size"
                   :current-page="searchItem.currentPage"
                   :total="searchItem.total">
@@ -376,7 +379,7 @@ export default {
                start: new Date(new Date(new Date().toLocaleDateString()).getTime()),
                collectorId: '',
                giveType: '',
-               size: 20,
+               size: 10,
                total: 0,
                statusId: '',
                currentPage: 1,
@@ -438,6 +441,7 @@ export default {
         },
         handleSizeChange(val) {
           this.searchItem.size = val
+          this.searchItem.currentPage = 1
           this.getdata()
         },
         tableheaderClassName({ row, rowIndex }) {
@@ -582,6 +586,11 @@ export default {
 
                           
                       }
+
+                        for (let i=0; i<data.data.list.length; i++) {
+                            //console.info(999)
+                            data.data.list[i].indexi=(this.searchItem.currentPage-1)*this.searchItem.size+i+1
+                        }
                        this.searchdata=data.data.list
                        this.searchItem.total=data.data.total
                     } else {

@@ -4,7 +4,7 @@
     <div class="wrap">
 
       <div class="left boxshadow">
-        <div class="btndislplay"><i class="iconfont icon-setting"></i>老客维护</div>
+        <div class="btndislplay"><i class="iconfont icon-setting"></i>客户维护</div>
         <div class="list cursor" v-for="menu in menuList" :key="menu.index" @click="goPage(menu.index)" :class="{active: nowActiveMenu.index==menu.index}">
           <div class="line" v-if="nowActiveMenu.index==menu.index"></div>
           {{menu.name}}
@@ -27,7 +27,7 @@
     data() {
       return {
         menuList: [{
-          name: '老客转介绍订单',
+          name: '客户转介绍订单',
           index: 1,
           path: '/old_cus_order'
         }, {
@@ -41,7 +41,7 @@
         }],
         //当前活跃菜单
         nowActiveMenu: {
-          name: '老客转介绍订单',
+          name: '客户转介绍订单',
           index: 1,
         }
 
@@ -50,7 +50,7 @@
     mounted() {
       if (this.$route.path == '/old_cus_order') {
         this.nowActiveMenu.index = 1
-        this.nowActiveMenu.name = '老客转介绍订单'
+        this.nowActiveMenu.name = '客户转介绍订单'
       }
       if (this.$route.path == '/gift_manage') {
         this.nowActiveMenu.index = 2

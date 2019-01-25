@@ -24,10 +24,13 @@
                   type="index"
                   label="编号"
                   width="50">
+                    <template slot-scope="scope"> 
+                      {{scope.row.indexi}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="110"
                     label="活动分类"
                     >
                     <template slot-scope="scope"> 
@@ -36,7 +39,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="140"
+                    width="120"
                     label="活动名字"
                     >
                     <template slot-scope="scope"> 
@@ -45,7 +48,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="160"
+                    width="140"
                     label="建立时间"
                     >
                     <template slot-scope="scope"> 
@@ -54,7 +57,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="160"
+                    width="140"
                     label="下架时间"
                     >
                     <template slot-scope="scope"> 
@@ -74,7 +77,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="320"
+                    width="280"
                     label="内容图片"
                     >
                     <template slot-scope="scope"> 
@@ -84,7 +87,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="160"
+                    width="100"
                     label="状态"
                     >
                     <template slot-scope="scope"> 
@@ -93,7 +96,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="180"
+                    width="120"
                     label="备注"
                     >
                     <template slot-scope="scope"> 
@@ -434,7 +437,7 @@ export default {
         },
         handleSizeChange(val) {
           this.searchItem.size = val
-          this.searchItem.currentPage = 0
+          this.searchItem.currentPage = 1
           this.get_data()
         },
         handleCurrentChange(val) {
@@ -457,6 +460,7 @@ export default {
         },
         handleClick(tab) {
           this.statusId = this.selectTab[tab.index].id
+          this.searchItem.currentPage = 1
           this.get_data()
         },
         async uploadpicturecontent(filestatus) {
@@ -985,8 +989,12 @@ export default {
                 .then((data)=>{
                     
                     if (data.code == '100000') {
-                       this.giftdata = data.data.list
-                       this.searchItem.total = data.data.total
+                        for (let i=0; i<data.data.list.length; i++) {
+                            //console.info(999)
+                            data.data.list[i].indexi=(this.searchItem.currentPage-1)*this.searchItem.size+i+1
+                        }
+                        this.giftdata = data.data.list
+                        this.searchItem.total = data.data.total
                     } else {
                         this.$message({
                           message: data.msg,

@@ -26,6 +26,9 @@
                   type="index"
                   label="编号"
                   width="50">
+                    <template slot-scope="scope"> 
+                      {{scope.row.indexi}}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="name"
@@ -38,7 +41,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="160"
+                    width="140"
                     label="礼品名字"
                     >
                     <template slot-scope="scope"> 
@@ -102,7 +105,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="180"
+                    width="160"
                     label="备注"
                     >
                     <template slot-scope="scope"> 
@@ -417,7 +420,7 @@ export default {
         },
         handleSizeChange(val) {
           this.searchItem.size = val
-          this.searchItem.currentPage = 0
+          this.searchItem.currentPage =1
           this.get_data()
         },
         handleCurrentChange(val) {
@@ -663,6 +666,8 @@ export default {
         },
         handleClick(tab) {
           this.statusId = this.selectTab[tab.index].id
+
+          this.searchItem.currentPage = 1
           this.get_data()
         },
         handleEdit(index, row) {
@@ -844,8 +849,12 @@ export default {
                 .then((data)=>{
                     
                     if (data.code == '100000') {
-                       this.giftdata = data.data.list
-                       this.searchItem.total = data.data.total
+                        for (let i=0; i<data.data.list.length; i++) {
+                            //console.info(999)
+                            data.data.list[i].indexi=(this.searchItem.currentPage-1)*this.searchItem.size+i+1
+                        }
+                        this.giftdata = data.data.list
+                        this.searchItem.total = data.data.total
                     } else {
                         this.$message({
                           message: data.msg,

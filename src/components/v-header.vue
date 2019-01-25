@@ -90,7 +90,7 @@
     data() {
       return {
         category: [{
-            name: '老客维护',
+            name: '客户维护',
             link: '/online_sales',
             choose: true
           }
