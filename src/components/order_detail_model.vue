@@ -33,7 +33,7 @@
                 <div class="ul">
                    <span class="span">送礼方式</span>
                    <!--摄影师-->
-                    <el-select clearable   class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
+                    <el-select clearable  :disabled="!detail.giveTypeChoose" class="input-new"  size="mini" v-model="detail.giveType" placeholder="送礼方式">
                       <el-option 
                         v-for="(item,index) in giveType_list" 
                         :key="item.index"
@@ -444,6 +444,7 @@ export default {
             expressIdOld: "",
             expressIdNew: "",
     				giveType: "",
+            giveTypeChoose: true,
     				kzName: "",
     				kzPhone: "",
     				letterId: "",
@@ -707,8 +708,19 @@ export default {
   			        this.detail.collectorName = data.data.collectorName
   			        this.detail.amount = data.data.amount
   			        this.detail.giveType = data.data.giveType
+
+
+
   			        this.detail.statusNew = data.data.statusNew
   			        this.detail.statusOld = data.data.statusOld
+
+
+                //新老双送。新客送达
+                if (data.data.giveType==2 && data.data.statusNew==3) {
+                  this.detail.giveTypeChoose=false
+                } else {
+                  this.detail.giveTypeChoose=true
+                }
       					this.detail.giftIdOld = data.data.giftIdOld
                 this.detail.giftIdNew = data.data.giftIdNew
       					this.detail.oldKzName = data.data.oldKzName
