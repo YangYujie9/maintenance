@@ -74,11 +74,11 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="260"
+                    width="240"
                     label="内容图片"
                     >
                     <template slot-scope="scope"> 
-                      <img v-if="scope.row.picturePOS.length>0" v-for="list in scope.row.picturePOS" style="width: 120px;height: 120px;object-fit: cover;" :src="list.pictureRemotePath"/>
+                      <img v-if="scope.row.picturePOS.length>0" v-for="list in scope.row.picturePOS" style="margin-right: 10px;width: 60px;height: 60px;object-fit: cover;" :src="list.pictureRemotePath"/>
                       <span v-else>没有图片</span>
                     </template>
                 </el-table-column>
@@ -338,6 +338,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 
 export default {
     name: "active_manage",
@@ -916,6 +918,9 @@ export default {
                         })
                     }
                 })
+
+                
+
             } else {
                 this.$http.post(`activity/add`, {
                     "activityTypeCode": this.giftdialog.activityTypeCode, 
