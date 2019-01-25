@@ -475,6 +475,7 @@ export default {
         search() {
             this.getdata()
         },
+        //搜素列表
         getdata() {
             let collectorId = ''
             for (let i=0;i<this.stafflistcheckdata.length;i++) {
@@ -581,6 +582,7 @@ export default {
                     }
                 })
         },
+        //状态总数统计
         get_cal_data() {
             this.$http.post('info/get_info_num',{
                 timeType: this.searchItem.timeType,

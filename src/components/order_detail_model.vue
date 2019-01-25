@@ -178,14 +178,12 @@
                       <el-cascader
                         size="mini"
                         style="margin-right: 20px" 
-                :options="cityMap"
-                v-model="detail.addressNewarray"
-                @change="handleChange"
-                >
-                </el-cascader>
-                <el-input size="mini" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>
-
-                      
+                        :options="cityMap"
+                        v-model="detail.addressNewarray"
+                        @change="handleChange"
+                        >
+                        </el-cascader>
+                        <el-input size="mini" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄</span>
@@ -472,6 +470,7 @@ export default {
     	handleChange(value) {
 	        console.log(value);
 	    },
+      //获取快递名字
       getexpressname(id) {
         let arr = this.getpageDict.commonMap.expressType.filter((list) => {
             return list.dicCode == id
@@ -486,6 +485,7 @@ export default {
         
 
       },
+      //编辑客资
       edit_kz_detail() {
         let expressFlagNew = ''
         if (this.detail.newkzchoose) {
@@ -557,6 +557,7 @@ export default {
     		this.matchdialog.dialogVisible = true
     		
     	},
+      //礼物下拉列表
       get_gift() {
         this.$http.get(`gift/gift_combobox`)
           .then((data)=>{
@@ -584,6 +585,7 @@ export default {
 	            })
     		}
     	},
+      //老客匹配
       match_old_kzid(oldKzId) {
         this.$http.post(`info/match_old_kzid`,{
           kzId: this.kzId,
@@ -678,6 +680,7 @@ export default {
     			}
     		}
     	},
+      /*详情填充*/
       get_detail_data() {
           this.loading = true
 	      	this.$http.get(`info/get_info_detail_by_kzid?kzId=${this.kzId}`)
