@@ -45,7 +45,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="160"
                     label="建立时间"
                     >
                     <template slot-scope="scope"> 
@@ -54,7 +54,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="160"
                     label="下架时间"
                     >
                     <template slot-scope="scope"> 
@@ -64,7 +64,7 @@
                 
                 <el-table-column
                     prop="name"
-                    width="80"
+                    width="100"
                     label="头部图片"
                     >
                     <template slot-scope="scope"> 
@@ -74,7 +74,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="240"
+                    width="320"
                     label="内容图片"
                     >
                     <template slot-scope="scope"> 
@@ -84,7 +84,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="160"
                     label="状态"
                     >
                     <template slot-scope="scope"> 
@@ -93,7 +93,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="180"
                     label="备注"
                     >
                     <template slot-scope="scope"> 
@@ -102,7 +102,6 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
                     label="操作"
                     >
                     <template slot-scope="scope"> 
@@ -113,7 +112,21 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="lan">
+              
 
+              <div class="block-a">
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  layout="total,sizes, prev, pager, next"
+                  :page-sizes="[10, 20, 30, 40, 50]"
+                  :page-size="searchItem.size"
+                  :current-page="searchItem.currentPage"
+                  :total="searchItem.total">
+                </el-pagination>
+              </div>
+            </div>
 
         </div>
         <!--增加表格数-->
@@ -358,6 +371,11 @@ export default {
                 dicCode: '',
                 status: 'add'
             },
+            searchItem: {
+                size: 10,
+                currentPage: 1,
+                total: 10
+            },
             statusId: '1',
             giftdata: [],
             table_height: '300',
@@ -395,7 +413,7 @@ export default {
         this.gift_count_1()
         this.gift_count_0()
         setTimeout(()=>{
-            this.table_height = this.$refs.middle.offsetHeight - 82
+            this.table_height = this.$refs.middle.offsetHeight - 122
         },0)
         this.gift_type_list()
     },
@@ -413,6 +431,15 @@ export default {
             this.giftdialog.headimglist.splice(j,1)
 
 
+        },
+        handleSizeChange(val) {
+          this.searchItem.size = val
+          this.searchItem.currentPage = 0
+          this.get_data()
+        },
+        handleCurrentChange(val) {
+          this.searchItem.currentPage = val
+          this.get_data()
         },
         deletecontentuploadlist(name) {
 
@@ -808,7 +835,7 @@ export default {
             this.giftdialog.activityTypeCode =""
             this.giftdialog.headimglist = []
             this.giftdialog.contentimglist = []
-            
+
             this.giftdialog.status = true
             this.gift_type_list()
             
@@ -819,14 +846,14 @@ export default {
             if (!this.giftdialog.activityName) {
                 return this.$message({
                   message: "活动名字不能为空",
-                  type: 'error'
+                  type: 'warning'
                 })
 
             }
             if (!this.giftdialog.activityTypeCode) {
                 return this.$message({
                   message: "活动分类不能为空",
-                  type: 'error'
+                  type: 'warning'
                 })
                 
             }
@@ -839,7 +866,7 @@ export default {
             if (dlItem) {
                 return this.$message({
                   message: "图片没有上传完，稍后再保存",
-                  type: 'error'
+                  type: 'warning'
                 })
             }
 
@@ -857,7 +884,7 @@ export default {
             if (dlItemcontentimg) {
                 return this.$message({
                   message: "图片没有上传完，稍后再保存",
-                  type: 'error'
+                  type: 'warning'
                 })
             }
 
@@ -877,14 +904,14 @@ export default {
             if (!this.giftdialog.putawayTime) {
                 return this.$message({
                   message: "上架时间不能为空",
-                  type: 'error'
+                  type: 'warning'
                 })
                 
             }
             if (!this.giftdialog.soldOutTime) {
                 return this.$message({
                   message: "下架时间不能为空",
-                  type: 'error'
+                  type: 'warning'
                 })
                 
             }
@@ -954,11 +981,12 @@ export default {
             }
         },
         get_data() {
-            this.$http.get(`activity/find_all?status=${this.statusId}`)
+            this.$http.get(`activity/find_all?status=${this.statusId}&pageNum=${this.searchItem.currentPage}&pageSize=${this.searchItem.size}`)
                 .then((data)=>{
                     
                     if (data.code == '100000') {
-                       this.giftdata = data.data
+                       this.giftdata = data.data.list
+                       this.searchItem.total = data.data.total
                     } else {
                         this.$message({
                           message: data.msg,
@@ -1003,8 +1031,35 @@ export default {
     }
     .middle {
      padding: 20px 16px 10px 16px;
-     height: calc(100vh - 100px);
+     height: calc(100vh - 80px);
      position: relative;
+
+
+
+     .lan {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        height: 48px;
+        background: #f4f4f4;;
+        line-height: 48px;
+        padding-left: 30px;
+        font-size: 12px;
+
+
+        .block-a {
+          position: absolute;
+          right: 16px;
+          bottom: -10px;
+          top: 8px;
+          
+
+        }
+
+        
+
+      }
 
      .input-cus {
         position: absolute;

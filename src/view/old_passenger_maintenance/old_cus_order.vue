@@ -42,7 +42,7 @@
                         {{stafflistvaluedeal}}<i class="el-icon-arrow-down el-icon--right"></i>
                       </el-button>
                       <el-dropdown-menu slot="dropdown">
-                        <el-tree  node-key="staffId" :data="dept_and_stafflist" :props="defaultmakeup" ref="stafflist" @check="stafflistsave" show-checkbox class="custom-width-order">
+                        <el-tree  node-key="nodekey" :data="dept_and_stafflist" :props="defaultmakeup" ref="stafflist" @check="stafflistsave" show-checkbox class="custom-width-order">
                         </el-tree>
                         <div class="allorfalse">
                           <div @click="stafflistcheckall(true)" class="cursor">
@@ -267,8 +267,8 @@
                   :current-page="searchItem.currentPage"
                   :total="searchItem.total">
                 </el-pagination>
+              </div>
             </div>
-        </div>
 
         </div>
 
@@ -459,11 +459,21 @@ export default {
                     
                     if (data.code == '100000') {
 
-                       for (let i=0; i<data.data.length; i++) {
+                        for (let i=0; i<data.data.length; i++) {
                           data.data[i].nickName = data.data[i].groupName
+                          data.data[i].nodekey = i
+                          if (data.data[i].staffList && data.data[i].staffList.length && data.data[i].staffList.length>0) {
+                            for (let j=0; j<data.data[i].staffList.length; j++) {
+                              data.data[i].staffList[j].nodekey = `${i}${j}`
+                            }
+                          }
+                          
                         }
 
+
                        this.dept_and_stafflist = data.data
+
+                       //console.info(this.dept_and_stafflist)
                     } else {
                         this.$message({
                           message: data.msg,
@@ -615,7 +625,7 @@ export default {
         stafflistsave() {
             let checkData = this.$refs.stafflist.getCheckedNodes()
 
-            console.info(checkData)
+            
             this.stafflistvalue = ''
             for (let i=0;i<checkData.length;i++) {
                 if (checkData[i].staffList) {
@@ -638,9 +648,10 @@ export default {
             if (flag) {
                 let stafflistchecked = []
                 for (let i=0; i<this.dept_and_stafflist.length; i++) {
+                  stafflistchecked.push(this.dept_and_stafflist[i].nodekey)
                   for (let j=0;j<this.dept_and_stafflist[i].staffList.length;j++) {
                     //console.info(this.dept_and_stafflist[i].staffList)
-                    stafflistchecked.push(this.dept_and_stafflist[i].staffList[j].staffId)
+                    stafflistchecked.push(this.dept_and_stafflist[i].staffList[j].nodekey)
                   }
                   
                 }
@@ -649,12 +660,18 @@ export default {
 
 
                 this.$refs.stafflist.setCheckedKeys(stafflistchecked)
+                this.stafflistsave()
               } else {
-
+                let stafflistchecked = []
                 this.$refs.stafflist.setCheckedKeys([])
+
+                this.stafflistvalue = ''
+                this.stafflistcheckdata = []
+
+                
               }
               
-              this.stafflistsave()
+              //
         },
         handleEdit(index, row) {
           this.editdialog.dialogVisible = true
@@ -721,6 +738,12 @@ export default {
 </script>
 
 <style lang="less">
+
+
+.el-dropdown-menu {
+  max-height: 400px;
+  overflow-y: scroll;
+}
 
 .allorfalse {
  
