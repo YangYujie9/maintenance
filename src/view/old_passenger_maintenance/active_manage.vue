@@ -64,11 +64,11 @@
                 
                 <el-table-column
                     prop="name"
-                    width="160"
+                    width="80"
                     label="头部图片"
                     >
                     <template slot-scope="scope"> 
-                      <img v-if="scope.row.headPictureIP" style="width: 120px;height: 120px;object-fit: cover;" :src="scope.row.headPictureIP"/>
+                      <img v-if="scope.row.headPictureIP" style="width: 60px;height: 60px;object-fit: cover;" :src="scope.row.headPictureIP"/>
                       <span v-else>没有图片</span>
                     </template>
                 </el-table-column>

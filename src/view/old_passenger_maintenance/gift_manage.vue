@@ -74,7 +74,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="120"
+                    width="100"
                     label="送出"
                     >
                     <template slot-scope="scope"> 
@@ -83,11 +83,11 @@
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    width="160"
+                    width="80"
                     label="图片"
                     >
                     <template slot-scope="scope"> 
-                      <img v-if="scope.row.pictureIP" style="width: 120px;height: 120px;object-fit: cover;" :src="scope.row.pictureIP"/>
+                      <img v-if="scope.row.pictureIP" style="width: 60px;height: 60px;object-fit: cover;" :src="scope.row.pictureIP"/>
                       <span v-else>没有图片</span>
                     </template>
                 </el-table-column>
@@ -283,10 +283,10 @@
                 </div>
                 <div class="ul">
                     <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库存</span>
-                    <el-input size="mini" v-model="giftdialog.inventory" class="input-new" placeholder="请输入内容"></el-input>
+                    <el-input type="number" size="mini" v-model="giftdialog.inventory" class="input-new" placeholder="请输入内容"></el-input>
 
                     <span class="span" style="padding-left: 16px;">已使用</span>
-                    <el-input size="mini" v-model="giftdialog.sendOut" class="input-new" placeholder="请输入内容"></el-input>
+                    <el-input type="number"  size="mini" v-model="giftdialog.sendOut" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
                     <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注</span>

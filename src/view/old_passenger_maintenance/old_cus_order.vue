@@ -38,7 +38,7 @@
                 <div class="order-select">
                     <!--摄影师-->
                     <el-dropdown  class="custom-width" trigger="click" size="mini" placement="bottom">
-                      <el-button :class="{colorgrey: stafflistvalue.length==0}" size="mini" style="width: 120px;">
+                      <el-button class="colorgrey-icon" :class="{colorgrey: stafflistvalue.length==0}" size="mini" style="width: 120px;">
                         {{stafflistvaluedeal}}<i class="el-icon-arrow-down el-icon--right"></i>
                       </el-button>
                       <el-dropdown-menu slot="dropdown">
@@ -92,6 +92,7 @@
                 class="border-q"
                 :height="table_height"
                 border
+                @row-dblclick="dblclickdetail"
                 style="width: 100%;font-size: 12px;"> 
 
                 <el-table-column
@@ -400,7 +401,7 @@ export default {
               }
 
             } else {
-              return `选择渠道员工`
+              return `渠道员工`
             }
 
         },
@@ -445,6 +446,10 @@ export default {
         handleCurrentChange(val) {
           this.searchItem.currentPage = val
           this.getdata()
+        },
+        dblclickdetail(index,row) {
+          this.editdialog.dialogVisible = true
+          this.editdialog.kzId = index.kzId
         },
         //人员下拉列表
         get_all_dept_and_staff() {
@@ -744,8 +749,20 @@ export default {
 }
 
 .colorgrey {
-  color: #c0c4cc;
+  color: #c0c4cc !important;
+  
+  
 
+  
+
+}
+.colorgrey-icon {
+  text-align: left !important;
+  position: relative;
+  .el-icon--right {
+      position: absolute;
+      right: 12px;
+  }
 }
 
 .custom-width-order .el-tree-node__label {
