@@ -1,5 +1,5 @@
 <template>
-    <div class="old_cus_order">
+    <div v-loading="loading" class="old_cus_order">
     	<div class="top">
             <div class="top-order">
                 <el-select size="mini" class="widthone" v-model="searchItem.timeType" placeholder="请选择">
@@ -297,6 +297,7 @@ export default {
             table_height: 300,
             tableData: [],
             searchdata: [],
+            loading: true,
             editdialog: {
                 dialogVisible: false,
                 kzId: ''
@@ -497,6 +498,7 @@ export default {
                   collectorId += this.stafflistcheckdata[i].staffId+','
                 }
             }
+            this.loading = true
 
             this.searchItem.collectorId = collectorId.slice(0,collectorId.length-1)
             this.get_cal_data()
@@ -587,12 +589,13 @@ export default {
                           
                       }
 
-                        for (let i=0; i<data.data.list.length; i++) {
-                            //console.info(999)
-                            data.data.list[i].indexi=(this.searchItem.currentPage-1)*this.searchItem.size+i+1
-                        }
-                       this.searchdata=data.data.list
-                       this.searchItem.total=data.data.total
+                      for (let i=0; i<data.data.list.length; i++) {
+                          //console.info(999)
+                          data.data.list[i].indexi=(this.searchItem.currentPage-1)*this.searchItem.size+i+1
+                      }
+                      this.loading = false
+                      this.searchdata=data.data.list
+                      this.searchItem.total=data.data.total
                     } else {
                         this.$message({
                           message: data.msg,
