@@ -67,7 +67,7 @@
                 <div class="ul">
                    <span class="span">礼品</span>
                    
-                   <el-select clearable  class="input-new" :disabled="oldstatus.oldchecked==3" size="mini" v-model="detail.giftIdOld" placeholder="礼品">
+                   <el-select clearable  class="input-new" :disabled="detail.statusOld==3" size="mini" v-model="detail.giftIdOld" placeholder="礼品">
                       <el-option 
                         v-for="item in gift_lists" 
                         :key="item.id"
@@ -86,7 +86,7 @@
                 </div>
                 <div class="ul">
                    <span class="span">礼品</span>
-                    <el-select clearable :disabled="oldstatus.newchecked==3"  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
+                    <el-select clearable :disabled="detail.statusNew==3"  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
                         v-for="(item,index) in gift_lists" 
                         :key="item.index"
