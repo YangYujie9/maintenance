@@ -49,7 +49,7 @@
                     <span class="lable">老客状态</span>
                     <div style="display: inline-block;" class="el-checkbox-group">
 
-                      <label @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{'is-checked': oldstatus.oldchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
+                      <label @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{'is-checkeda': oldstatus.oldchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
                         <span class="el-checkbox-button__inner">{{list.name}}</span>
                       </label>
 
@@ -80,7 +80,7 @@
 
                     <div style="display: inline-block;" class="el-checkbox-group">
 
-                      <label @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{'is-checked': oldstatus.newchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
+                      <label @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{'is-checkeda': oldstatus.newchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
                         <span class="el-checkbox-button__inner">{{list.name}}</span>
                       </label>
 
@@ -815,6 +815,16 @@ export default {
 </script>
 
 <style lang="less">
+.el-checkbox-button.is-checkeda .el-checkbox-button__inner {
+  background-color: #0057ff;
+  color: #ffffff;
+}
+.el-checkbox-button.is-checkeda .el-checkbox-button__inner {
+      border-color: #0057ff;
+      box-shadow: -1px 0 0 0 #0057ff;
+
+}
+
 .el-table .table-head-th{
     background-color:#f4f4f4;
     color: #000;
