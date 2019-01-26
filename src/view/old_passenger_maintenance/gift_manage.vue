@@ -303,7 +303,7 @@
                     <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;库存</span>
                     <el-input type="number" size="mini" v-model="giftdialog.inventory" class="input-new" placeholder="请输入内容"></el-input>
 
-                    <span class="span" style="padding-left: 16px;">已使用</span>
+                    <span class="span" style="padding-left: 16px;">已送出</span>
                     <el-input type="number"  size="mini" v-model="giftdialog.sendOut" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
