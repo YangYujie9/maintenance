@@ -47,21 +47,16 @@
             <div>
                 <div class="ul1">
                     <span class="lable">老客状态</span>
+                    <div style="display: inline-block;" class="el-checkbox-group">
 
-                    <!--<div role="group" aria-label="checkbox-group" class="el-checkbox-group">
-                      <label role="checkbox" aria-checked="true" class="el-checkbox-button el-checkbox-button--small is-checked">
-                        <input type="checkbox" class="el-checkbox-button__original" value="上海"><span class="el-checkbox-button__inner">上海</span>
+                      <label @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{'is-checked': oldstatus.oldchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
+                        <span class="el-checkbox-button__inner">{{list.name}}</span>
                       </label>
-                      <label role="checkbox" aria-disabled="true" class="el-checkbox-button el-checkbox-button--small is-disabled"><input type="checkbox" disabled="disabled" class="el-checkbox-button__original" value="北京"><span class="el-checkbox-button__inner">北京</span>
-                      </label>
-                      <label role="checkbox" class="el-checkbox-button el-checkbox-button--small is-checked" aria-checked="true"><input type="checkbox" class="el-checkbox-button__original" value="广州"><span class="el-checkbox-button__inner">广州</span>
-                      </label>
-                      <label role="checkbox" class="el-checkbox-button el-checkbox-button--small is-checked" aria-checked="true"><input type="checkbox" class="el-checkbox-button__original" value="深圳"><span class="el-checkbox-button__inner">深圳</span>
-                      </label>
-                    </div>-->
+
+                    </div>
 
                     
-                    <span @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{blue: oldstatus.oldchecked ==list.statusOld}"  class="el-tag cursor">{{list.name}}</span><!--
+                    <!--<span @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{blue: oldstatus.oldchecked ==list.statusOld}"  class="el-tag cursor">{{list.name}}</span>
                     -->
                 </div>
                 <div class="ul">
@@ -81,7 +76,17 @@
             <div v-show="!detail.giveType || detail.giveType==2">
                 <div class="ul1">
                     <span class="lable">新客状态</span>
-                    <span @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{blue: oldstatus.newchecked ==list.statusOld}"  class="el-tag cursor">{{list.name}}</span><!--
+
+
+                    <div style="display: inline-block;" class="el-checkbox-group">
+
+                      <label @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{'is-checked': oldstatus.newchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
+                        <span class="el-checkbox-button__inner">{{list.name}}</span>
+                      </label>
+
+                    </div>
+
+                    <!--<span @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{blue: oldstatus.newchecked ==list.statusOld}"  class="el-tag cursor">{{list.name}}</span>
                     -->
                 </div>
                 <div class="ul">
