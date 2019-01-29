@@ -134,8 +134,8 @@
                     label="老客电话"
                     >
                     <template slot-scope="scope"> 
-                      <div>{{scope.row.oldKzPhone}}</div>
-                      <div>{{scope.row.oldMatePhone}}</div>
+                        <div class="cursor" @click="copytext(scope.row.oldKzPhone)">{{scope.row.oldKzPhone}}</div>
+                        <div @click="copytext(scope.row.oldKzPhone)" class="cursor">{{scope.row.oldMatePhone}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -275,7 +275,7 @@
 
         </div>
 
-        <orderDetailModel @research="search" v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
+        <orderDetailModel :searchDatatoatl="searchItem" @acumulate="acumulate" @research="search" v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
         <!--增加表格lei数-->
         
     </div>
@@ -285,7 +285,7 @@
 import timeUtil from '../../../static/js/timeUtil.js'
 import orderDetailModel from '../../components/order_detail_model'
 import { mapGetters } from 'vuex'
-
+import clipboard from 'clipboard-polyfill'
 
 export default {
     name: "old_cus_order",
@@ -432,6 +432,14 @@ export default {
               this.gift_lists = data.data
             })
         },
+        copytext(text) {
+          clipboard.writeText(text)
+
+          this.$message({
+            message: "复制成功",
+            type: 'success'
+          })
+        },
         dealaddress(value) {
           if (value.length > 18) {
             return value.slice(0,18) + '...'
@@ -455,6 +463,14 @@ export default {
         dblclickdetail(index,row) {
           this.editdialog.dialogVisible = true
           this.editdialog.kzId = index.kzId
+        },
+        acumulate(kzId) {
+          this.editdialog.dialogVisible = false
+          this.$nextTick(()=>{
+            this.editdialog.dialogVisible = true
+            this.editdialog.kzId = kzId
+          })
+          
         },
         //人员下拉列表
         get_all_dept_and_staff() {

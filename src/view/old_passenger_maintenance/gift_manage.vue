@@ -307,8 +307,8 @@
                     <el-input type="number"  size="mini" v-model="giftdialog.sendOut" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
-                    <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注</span>
-                    <el-input size="mini" style="width:200px;" v-model="giftdialog.remark" class="input-new" placeholder="请输入内容"></el-input>
+                    <span style="position: relative;top: -30px" class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注</span>
+                    <el-input type="textarea" style="width:300px;height: 60px;font-size: 12px;" v-model="giftdialog.remark" class="input-new" placeholder="请输入内容"></el-input>
                 </div>
                 <div class="ul">
                     <span class="span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上架</span>

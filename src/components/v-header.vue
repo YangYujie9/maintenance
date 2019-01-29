@@ -30,7 +30,7 @@
               </div>-->
               <div class="order-detail-right">
                 <div>
-                  <p>新客<span>{{list.kzName}}  </span><span> {{list.kzPhone}}</span>  <span> {{list.mateName}}</span> <span> {{list.matePhone}}</span></p>
+                  <p>新客<span>{{list.kzName}}  </span><span :class="{red: list.kzPhone== searchKey}"> {{list.kzPhone}}</span>  <span> {{list.mateName}}</span> <span :class="{red: list.kzPhone== searchKey}"> {{list.matePhone}}</span></p>
 
                   <p>老客<span>{{list.oldKzName}}  </span><span> {{list.oldKzPhone}}</span>  <span> {{list.oldMateName}}</span><span> {{list.oldMatePhone}}</span> </p>
                   
@@ -273,6 +273,10 @@
           right: 16px;
           height: 32px;
           left: 52px;
+
+          .red {
+            background: pink;
+          }
 
 
           p {

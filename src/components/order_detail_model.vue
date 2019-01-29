@@ -117,41 +117,58 @@
                 </div>
                 <div v-show="choosetab == 'old'"   class="old">
                 	<div v-if="!detail.oldKzId" class="match_old">当前老客信息没有和现有老客户匹配<span @click="matchdata">查询匹配</span></div>
+                  <div v-if="detail.oldKzId" class="match_old">匹配错误？<span @click="matchclear">清空匹配</span></div>
 
                   <div v-if="detail.oldKzId" style="height: 20px"></div>
 
                 	<div  class="ullist">
 	                    
-	                    <el-checkbox @click.native="detail.oldkzmatechoose=false" v-model="detail.oldkzchoose"></el-checkbox>
-	                    <span class="input-span">老客户</span>
-	                    <el-input :disabled="true" :readonly="true" v-model="detail.oldKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+	                    
+	                    <span  class="input-span">老客户</span>
+	                    <el-input @click.native="copytext(detail.oldKzName)" :disabled="true" :readonly="true" v-model="detail.oldKzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
 	                    <span class="input-span">电话</span>
-	                    <el-input :disabled="true" size="mini" :readonly="true" v-model="detail.oldKzPhone"  class="input-new" placeholder=""></el-input>
+	                    <el-input @click.native="copytext(detail.oldKzPhone)" :disabled="true" size="mini" :readonly="true" v-model="detail.oldKzPhone"  class="input-new" placeholder=""></el-input>
 	                </div>
 	                <div class="ullist">
-	                    <el-checkbox @click.native="detail.oldkzchoose=false" v-model="detail.oldkzmatechoose"></el-checkbox>
+	                    
 	                    <span class="input-span">老客户配偶</span>
-	                    <el-input :disabled="true" :readonly="true"  size="mini" v-model="detail.oldMateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+	                    <el-input :disabled="true" :readonly="true" @click.native="copytext(detail.oldMateName)"  size="mini" v-model="detail.oldMateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
 	                    <span class="input-span">配偶电话</span>
-	                    <el-input :disabled="true" size="mini" :readonly="true" v-model="detail.oldMatePhone" class="input-new" placeholder=""></el-input>
+	                    <el-input :disabled="true" @click.native="copytext(detail.oldMatePhone)" size="mini" :readonly="true" v-model="detail.oldMatePhone" class="input-new" placeholder=""></el-input>
 	                </div>
+                  <div class="ullist">
+                      
+                      <span class="input-span">收货人姓名</span>
+                      <el-input  size="mini" v-model="detail.receiveNameOld" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+
+                      <span class="input-span">收货人电话</span>
+                      <el-input size="mini" v-model="detail.receivePhoneOld" class="input-new" placeholder=""></el-input>
+                  </div>
 	                <div class="ullist">
 	                    <span class="input-span">邮寄地址</span>
 	                    
 	                    <el-cascader
 	                    	size="mini"
-	                    	style="margin-right: 20px" 
+	                    	style="width: 300px" 
         						    :options="cityMap"
         						    v-model="detail.addressOldarray"
         						    @change="handleChange"
         						    >
         						  </el-cascader>
-						      <el-input size="mini" class="input-new" v-model="detail.address2Old" placeholder="请输入详细地址"></el-input>
-
-	                    
+						      
 	                </div>
+                  <div class="ullist">
+                      <span class="input-span">详细地址</span>
+                      
+                      
+                      <el-input size="mini" style="width: 300px" class="input-new" v-model="detail.address2Old" placeholder="请输入详细地址"></el-input>
+
+                      
+                  </div>
+
+
 	                <div class="ullist">
 	                    <span class="input-span">邮寄</span>
 	                    
@@ -176,7 +193,7 @@
 
                   <div class="ullist">
                       
-                      <el-checkbox @click.native="detail.newkzmatechoose=false"  v-model="detail.newkzchoose"></el-checkbox>
+                      <!--<el-checkbox @click.native="detail.newkzmatechoose=false"  v-model="detail.newkzchoose"></el-checkbox>-->
                       <span class="input-span">新客户</span>
                       <el-input :disabled="true" :readonly="true" v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
@@ -184,7 +201,7 @@
                       <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
-                      <el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.newkzmatechoose"></el-checkbox>
+                      <!--<el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.newkzmatechoose"></el-checkbox>-->
                       <span class="input-span">新客户配偶</span>
                       <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
@@ -192,23 +209,38 @@
                       <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.matePhone" class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
+                      
+                      <span class="input-span">收货人姓名</span>
+                      <el-input  :disabled="detail.giveType==2" size="mini" v-model="detail.receiveNameNew" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+
+                      <span class="input-span">收货人电话</span>
+                      <el-input :disabled="detail.giveType==2" size="mini" v-model="detail.receivePhoneNew" class="input-new" placeholder=""></el-input>
+                  </div>
+                  <div class="ullist">
                       <span class="input-span">邮寄地址</span>
                       
                       <el-cascader
+                        :disabled="detail.giveType==2"
                         size="mini"
-                        style="margin-right: 20px" 
+                        style="width: 300px" 
                         :options="cityMap"
                         v-model="detail.addressNewarray"
                         @change="handleChange"
                         >
                       </el-cascader>
-                      <el-input size="mini" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
+                        
+                  </div>
+                  <div class="ullist">
+                      <span class="input-span">详细地址</span>
+                      
+                      
+                      <el-input style="width: 300px"  size="mini" :disabled="detail.giveType==2" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄</span>
                       
 
-                      <el-select clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递">
+                      <el-select :disabled="detail.giveType==2" clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递">
                           <el-option 
                           v-for="item in getpageDict.commonMap.expressType" 
                           :key="item.dicCode"
@@ -218,13 +250,15 @@
                       </el-select> 
 
                       <span class="input-span">单号</span>
-                      <el-input size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :disabled="detail.giveType==2" size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                 </div>
                 <div v-show="choosetab == 'introduce'"  class="old">
                   <el-table
                     :data="detail.infolist"
                     :header-cell-class-name="tableheaderClassName"
+                    @row-dblclick="acumulate"
+                    :row-class-name="tableRowClassName"
                     class="border-q"
                     :height="260"
                     border
@@ -293,6 +327,7 @@
                 <el-table
                     :data="searchData.data"
                     :header-cell-class-name="tableheaderClassName"
+
                     class="border-q"
                     :height="200"
                     @selection-change="handleSelectionChange"
@@ -362,6 +397,7 @@ import cityMap from '../../static/cityMap.json'
 //console.info(cityMap)
 import { mapGetters } from 'vuex'
 import Cookies from 'js-cookie'
+import clipboard from 'clipboard-polyfill'
 
 
 export default {
@@ -371,7 +407,8 @@ export default {
     },
     props: {
 	    dialogVisible: Boolean,
-	    kzId: String
+	    kzId: String,
+      searchDatatoatl: Object
 	  },
 	  computed: {
         ...mapGetters([
@@ -443,6 +480,10 @@ export default {
         		oldkzmatechoose: false,
             newkzmatechoose: false,
             newkzchoose: false,
+            receiveNameOld: "",
+            receivePhoneOld: "",
+            receiveNameNew: "",
+            receivePhoneNew: "",
         		address2New: "",
     				address2Old: "",
     				addressNew: "",
@@ -487,6 +528,62 @@ export default {
       this.get_gift()
     },
     methods:{
+      acumulate(row) {
+        this.$emit('acumulate',row.kzId)
+      },
+      tableRowClassName({row, rowIndex}) {
+        console.info(row)
+        console.info(88888)
+        if (row.flag === 1) {
+          return 'success-row-a';
+        }
+        return '';
+      },
+      matchclear() {
+        this.$http.get(`info/clear_old_kzid?kzId=${this.detail.oldKzId}`)
+          .then((data)=>{
+              
+              if (data.code == '100000') {
+                  
+                  this.detail.oldKzId=""
+
+
+                  this.detail.oldKzName = ""
+                  this.detail.oldKzPhone = ""
+                  this.detail.oldMateName = ""
+                  this.detail.oldMatePhone = ""
+                   
+                  this.$message({
+                        message: '操作成功',
+                        type: 'success'
+                  })
+
+                  
+              } else {
+                  this.$message({
+                    message: data.msg,
+                    type: 'error'
+                  })
+              }
+          })
+
+      },
+      copytext(text) {
+        if (text) {
+          clipboard.writeText(text)
+
+          this.$message({
+            message: "复制成功",
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: "没有消息需要复制",
+            type: 'warning'
+          })
+        }
+        
+      },
     	handleChange(value) {
 	        console.log(value);
 	    },
@@ -507,7 +604,7 @@ export default {
       },
       //编辑客资
       edit_kz_detail() {
-        let expressFlagNew = ''
+        /*let expressFlagNew = ''
         if (this.detail.newkzchoose) {
           expressFlagNew = true
         } 
@@ -523,7 +620,7 @@ export default {
 
         if (this.detail.oldkzmatechoose) {
           expressFlagOld = false
-        } 
+        }*/ 
 
 
 
@@ -534,8 +631,8 @@ export default {
             statusOld: this.oldstatus.oldchecked,
             giftIdOld: this.detail.giftIdOld,
             giftIdNew: this.detail.giftIdNew,
-            expressFlagNew: expressFlagNew,
-            expressFlagOld: expressFlagOld,
+            //expressFlagNew: expressFlagNew,
+            //expressFlagOld: expressFlagOld,
             expressIdOld: this.detail.expressIdOld,
             expressNameOld: this.getexpressname(this.detail.expressIdOld),
             expressNumOld: this.detail.expressNumOld,
@@ -548,6 +645,10 @@ export default {
             address2New: this.detail.address2New,
             //oldKzId: this.detail.oldKzId,
             memo: this.detail.memo,
+            receivePhoneNew: this.detail.receivePhoneNew,
+            receiveNameOld: this.detail.receiveNameOld,
+            receiveNameNew: this.detail.receiveNameNew,
+            receivePhoneOld: this.detail.receivePhoneOld,
             kzId: this.kzId,
         })
         .then((data)=>{
@@ -708,16 +809,45 @@ export default {
 	            
 		            if (data.code == '100000') {
                   let infodata = 0
+
+                  //flag == 1 新客id相同
+                  //flag == 2 下单时间在搜索范围
+                  console.info(data.data.infoList)
+
+                  console.info(new Date(this.searchDatatoatl.end).getTime()/1000)
+                  console.info(new Date(this.searchDatatoatl.start).getTime()/1000)
+
+
                   if (data.data.infoList.length > 0) {
                     for (let i=0; i<data.data.infoList.length; i++) {
                       data.data.infoList[i].statusName = this.getpageDict.statusMap[data.data.infoList[i].statusId].statusName
+
+                      if (this.kzId==data.data.infoList[i].kzId) {
+                        data.data.infoList[i].flag = 1
+                      } else {
+                        data.data.infoList[i].flag = 0
+                      }
+
+
+
                       if (data.data.infoList[i].statusId == 30 || data.data.infoList[i].statusId == 40 || data.data.infoList[i].statusId == 9) {
-                        infodata++
+
+                        if (data.data.infoList[i].successTime > new Date(this.searchDatatoatl.start).getTime()/1000 && data.data.infoList[i].successTime<new Date(this.searchDatatoatl.end).getTime()/1000) {
+                          infodata++
+                        }
+                        
                       }
                     }
                   }
 
+
                 this.detail.infolist = data.data.infoList
+
+                
+
+
+
+                
 
 
                 this.select_cus_msg[2].name = `累计介绍(${infodata}/${data.data.infoList.length})`
@@ -768,7 +898,7 @@ export default {
                 this.detail.expressFlagNew = data.data.expressFlagNew
 
                 
-                if (this.detail.expressFlagOld === true) {
+                /*if (this.detail.expressFlagOld === true) {
                   this.detail.oldkzchoose = true
                   this.detail.oldkzmatechoose = false
                 } else if (this.detail.expressFlagOld === false) {
@@ -788,7 +918,14 @@ export default {
                 } else {
                   this.detail.newkzmatechoose = false
                   this.detail.newkzchoose = false
-                }
+                }*/
+
+                this.detail.receiveNameOld = data.data.receiveNameOld
+                this.detail.receivePhoneOld = data.data.receivePhoneOld
+                this.detail.receiveNameNew = data.data.receiveNameNew
+                this.detail.receivePhoneNew = data.data.receivePhoneNew
+
+
 
       					this.detail.addressOldarray = data.data.addressOld.split(",")
 
@@ -815,6 +952,11 @@ export default {
 </script>
 
 <style lang="less">
+
+
+.el-table .success-row-a {
+  background: pink;
+}
 .el-checkbox-button.is-checkeda .el-checkbox-button__inner {
   background-color: #0057ff;
   color: #ffffff;
@@ -832,9 +974,9 @@ export default {
 }
 
 .content_height {
-  height: 260px;
+  height: 330px;
   &.introduce {
-    height: 308px;
+    height: 378px;
   }
 }
 
