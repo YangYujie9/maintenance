@@ -159,10 +159,10 @@
 						      
 	                </div>
                   <div class="ullist">
-                      <span class="input-span">详细地址</span>
+                      <span class="input-span" style="position: relative;top: -20px">详细地址</span>
                       
                       
-                      <el-input size="mini" style="width: 300px" class="input-new" v-model="detail.address2Old" placeholder="请输入详细地址"></el-input>
+                      <el-input size="mini" type="textarea"  style="width: 300px" class="input-new" v-model="detail.address2Old" placeholder="请输入详细地址"></el-input>
 
                       
                   </div>
@@ -230,10 +230,10 @@
                         
                   </div>
                   <div class="ullist">
-                      <span class="input-span">详细地址</span>
+                      <span style="position: relative;top: -20px" class="input-span">详细地址</span>
                       
                       
-                      <el-input style="width: 300px"  size="mini" :disabled="detail.giveType==1" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
+                      <el-input type="textarea" style="width: 300px;"  size="mini" :disabled="detail.giveType==1" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄</span>
@@ -259,7 +259,7 @@
                     @row-dblclick="acumulate"
                     :row-class-name="tableRowClassName"
                     class="border-q"
-                    :height="260"
+                    :height="340"
                     border
                     style="width: 100%;font-size: 12px;margin-top: 20px;"> 
                     <el-table-column
@@ -525,7 +525,7 @@ export default {
     mounted(){
       this.get_detail_data()
       this.get_gift()
-      //this.get_gifts()
+      this.get_gifts()
     },
     methods:{
       acumulate(row) {
@@ -977,9 +977,9 @@ export default {
 }
 
 .content_height {
-  height: 330px;
+  height: 350px;
   &.introduce {
-    height: 378px;
+    height: 398px;
   }
 }
 

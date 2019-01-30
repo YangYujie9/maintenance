@@ -21,7 +21,7 @@
           <el-button slot="append" @click.stop.prevent="searchok" icon="el-icon-search"></el-button>
         </el-input>
         <div v-if="searchresult" class="list-rt boxshadow cursor">
-          <div @click="detailkz(list)" v-for="list in searchlist" class="order-detail">
+          <div @click="detailkz(list)" v-for="list in searchlist" :class="{red: (list.kzPhone== searchKey || list.kzPhone== searchKey) }" class="order-detail">
               <!--<div class="order-detail-left">
                 <span">
                   
@@ -30,7 +30,10 @@
               </div>-->
               <div class="order-detail-right">
                 <div>
-                  <p>新客<span>{{list.kzName}}  </span><span :class="{red: list.kzPhone== searchKey}"> {{list.kzPhone}}</span>  <span> {{list.mateName}}</span> <span :class="{red: list.kzPhone== searchKey}"> {{list.matePhone}}</span></p>
+                  <p>新客<span>{{list.kzName}}  </span>
+                    <span> {{list.kzPhone}}</span>  
+                    <span> {{list.mateName}}</span> 
+                    <span> {{list.matePhone}}</span></p>
 
                   <p>老客<span>{{list.oldKzName}}  </span><span> {{list.oldKzPhone}}</span>  <span> {{list.oldMateName}}</span><span> {{list.oldMatePhone}}</span> </p>
                   
@@ -247,6 +250,10 @@
         height: 48px;
         position: relative;
         font-size: 12px;
+
+        &.red {
+            background: pink;
+          }
 
 
         &:hover {
