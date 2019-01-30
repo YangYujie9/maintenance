@@ -303,6 +303,7 @@ import timeUtil from '../../../static/js/timeUtil.js'
 import orderDetailModel from '../../components/order_detail_model'
 import { mapGetters } from 'vuex'
 import clipboard from 'clipboard-polyfill'
+import axios from 'axios'
 let sizeexportcvs = 10000
 
 
@@ -470,7 +471,7 @@ export default {
 
 
 
-          this.$http.post('info/export_client_list', {
+          this.$exporthttp.post('info/export_client_list', {
                 timeType: this.searchItem.timeType,
                 start: this.searchItem.start/1000,
                 end: this.searchItem.end/1000,
@@ -491,7 +492,13 @@ export default {
             responseType: 'arraybuffer'
           }).then((data) => {
 
+            if(data.status === 200){
               this.exportExcel(data,index)
+            }else{
+              this.$Message.error('网络不稳定'+data.status)
+            }
+
+              //this.exportExcel(data,index)
             
           }, true)
 
@@ -508,11 +515,10 @@ export default {
         },
         //下载
         exportExcel(res,index) {
-          let data = res
+          let data = res.data
 
-
-          
-          let fileName = `${this.getYMDTime(this.searchItem.start)}--${this.getYMDTime(this.searchItem.end)}${index}订单.xlsx`
+         
+          let fileName = decodeURI(res.headers['file-name'])
 
           
           if (data && !data.byteLength) {

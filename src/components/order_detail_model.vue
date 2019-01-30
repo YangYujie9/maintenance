@@ -194,18 +194,18 @@
                       
                       <!--<el-checkbox @click.native="detail.newkzmatechoose=false"  v-model="detail.newkzchoose"></el-checkbox>-->
                       <span class="input-span">新客户</span>
-                      <el-input :disabled="true" :readonly="true" v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+                      <el-input @click.native="copytext(detail.kzName)" :disabled="true" :readonly="true" v-model="detail.kzName" size="mini" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
                       <span class="input-span">电话</span>
-                      <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder=""></el-input>
+                      <el-input @click.native="copytext(detail.kzPhone)" :disabled="true" :readonly="true" size="mini" v-model="detail.kzPhone"  class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
                       <!--<el-checkbox @click.native="detail.newkzchoose=false" v-model="detail.newkzmatechoose"></el-checkbox>-->
                       <span class="input-span">新客户配偶</span>
-                      <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+                      <el-input @click.native="copytext(detail.mateName)" :disabled="true" :readonly="true" size="mini" v-model="detail.mateName" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
                       <span class="input-span">配偶电话</span>
-                      <el-input :disabled="true" :readonly="true" size="mini" v-model="detail.matePhone" class="input-new" placeholder=""></el-input>
+                      <el-input @click.native="copytext(detail.matePhone)" :disabled="true" :readonly="true" size="mini" v-model="detail.matePhone" class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
                       
@@ -396,7 +396,7 @@ import cityMap from '../../static/cityMap.json'
 //console.info(cityMap)
 import { mapGetters } from 'vuex'
 import Cookies from 'js-cookie'
-import clipboard from 'clipboard-polyfill'
+import * as clipboard from "clipboard-polyfill"
 
 
 export default {
@@ -525,21 +525,20 @@ export default {
     mounted(){
       this.get_detail_data()
       this.get_gift()
+      //this.get_gifts()
     },
     methods:{
       acumulate(row) {
         this.$emit('acumulate',row.kzId)
       },
       tableRowClassName({row, rowIndex}) {
-        console.info(row)
-        console.info(88888)
         if (row.flag === 1) {
           return 'success-row-a';
         }
         return '';
       },
       matchclear() {
-        this.$http.get(`info/clear_old_kzid?kzId=${this.detail.oldKzId}`)
+        this.$http.get(`info/clear_old_kzid?kzId=${this.kzId}`)
           .then((data)=>{
               
               if (data.code == '100000') {
@@ -547,13 +546,11 @@ export default {
                   this.detail.oldKzId=""
 
 
-                  this.detail.oldKzName = ""
-                  this.detail.oldKzPhone = ""
-                  this.detail.oldMateName = ""
-                  this.detail.oldMatePhone = ""
+                  this.get_detail_data()
+                  this.get_gift()
                    
                   this.$message({
-                        message: '操作成功',
+                        message: data.msg,
                         type: 'success'
                   })
 
@@ -685,6 +682,16 @@ export default {
           })
 
       },
+      get_gifts() {
+        this.$http.get(`gift/gift_comboboxs`)
+          .then((data)=>{
+            console.info(data)
+            //this.gift_lists = data.data
+          })
+
+      },
+
+
     	oldmsgok() {
     		//console.info(this.searchData.chooselist)
     		if (this.searchData.chooselist.length>1) {
@@ -811,10 +818,7 @@ export default {
 
                   //flag == 1 新客id相同
                   //flag == 2 下单时间在搜索范围
-                  console.info(data.data.infoList)
-
-                  console.info(new Date(this.searchDatatoatl.end).getTime()/1000)
-                  console.info(new Date(this.searchDatatoatl.start).getTime()/1000)
+                  
 
 
                   if (data.data.infoList.length > 0) {
@@ -831,7 +835,7 @@ export default {
 
                       if (data.data.infoList[i].statusId == 30 || data.data.infoList[i].statusId == 40 || data.data.infoList[i].statusId == 9) {
 
-                        if (data.data.infoList[i].successTime > new Date(this.searchDatatoatl.start).getTime()/1000 && data.data.infoList[i].successTime<new Date(this.searchDatatoatl.end).getTime()/1000) {
+                        if ((data.data.infoList[i].successTime-(new Date(this.searchDatatoatl.start).getTime()/1000) > 0  || data.data.infoList[i].successTime-(new Date(this.searchDatatoatl.start).getTime()/1000) == 0) && (new Date(this.searchDatatoatl.end).getTime()/1000-data.data.infoList[i].successTime>0 || new Date(this.searchDatatoatl.end).getTime()/1000-data.data.infoList[i].successTime==0)) {
                           infodata++
                         }
                         

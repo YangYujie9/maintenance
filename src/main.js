@@ -8,7 +8,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './init.less'
 import './reset.css'
 import "./assets/font/iconfont.css"
-import erpAxios from './common/http' 
+import erpAxios from './common/http'
+import exportAxios from './common/exporthttp' 
 import store from './vuex'
 Vue.use(ElementUI)
 import Cookies from 'js-cookie'
@@ -54,6 +55,7 @@ router.beforeEach((to, from, next) => {
 })
 
 Vue.$http = Vue.prototype.$http = erpAxios
+Vue.$exporthttp = Vue.prototype.$exporthttp = exportAxios
 
 
 Vue.config.productionTip = false 
