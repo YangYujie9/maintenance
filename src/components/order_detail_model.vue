@@ -46,10 +46,12 @@
             </div>
             <div>
                 <div class="ul1">
-                    <span class="lable">老客状态</span>
+                    <span class="lable" style="position: relative;top: 3px;">老客状态</span>
                     <div style="display: inline-block;" class="el-checkbox-group">
 
-                      <label @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{'is-checkeda': oldstatus.oldchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
+                      <label @click="changestatus('old',list)" v-for="list in oldstatus.list" :class="{'is-checkeda': oldstatus.oldchecked ==list.statusOld,'is-disabled':list.oldstatusdisable}" class="el-checkbox-button el-checkbox-button--small">
+                        <input type="radio" :disabled="list.oldstatusdisable" tabindex="-1" class="el-radio-button__orig-radio" :value="list.name">
+
                         <span class="el-checkbox-button__inner">{{list.name}}</span>
                       </label>
 
@@ -62,7 +64,7 @@
                 <div class="ul">
                    <span class="span">礼品</span>
                    
-                   <el-select clearable  class="input-new" :disabled="detail.statusOld==3" size="mini" v-model="detail.giftIdOld" placeholder="礼品">
+                   <!--<el-select clearable  class="input-new" :disabled="detail.statusOld==3" size="mini" v-model="detail.giftIdOld" placeholder="礼品">
                       <el-option 
                         v-for="item in gift_lists" 
                         :key="item.id"
@@ -70,17 +72,26 @@
                         :disabled="item.statusId==1?false:true"
                         :value="item.id">
                       </el-option>
-                    </el-select> 
+                    </el-select>-->
+                    <el-cascader
+                      :clearable="true"
+                      size="mini"
+                      :disabled="detail.statusOld==3 || detail.statusOld==2"
+                      :options="giftarray"
+                      v-model="giftOptionsold"
+                    ></el-cascader> 
                </div> 
             </div>
             <div v-show="!detail.giveType || detail.giveType==2">
                 <div class="ul1">
-                    <span class="lable">新客状态</span>
+                    <span class="lable" style="position: relative;top: 3px;">新客状态</span>
 
 
                     <div style="display: inline-block;" class="el-checkbox-group">
 
-                      <label @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{'is-checkeda': oldstatus.newchecked ==list.statusOld}" class="el-checkbox-button el-checkbox-button--small">
+                      <label @click="changestatus('new',list)" v-for="list in oldstatus.list" :class="{'is-checkeda': oldstatus.newchecked ==list.statusOld,'is-disabled':list.newstatusdisable}" class="el-checkbox-button el-checkbox-button--small">
+
+                        <input type="radio" :disabled="list.newstatusdisable" tabindex="-1" class="el-radio-button__orig-radio" :value="list.name">
                         <span class="el-checkbox-button__inner">{{list.name}}</span>
                       </label>
 
@@ -91,7 +102,7 @@
                 </div>
                 <div class="ul">
                    <span class="span">礼品</span>
-                    <el-select clearable :disabled="detail.statusNew==3"  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
+                    <!--<el-select clearable :disabled="detail.statusNew==3"  class="input-new"  size="mini" v-model="detail.giftIdNew" placeholder="礼品">
                       <el-option 
                         v-for="(item,index) in gift_lists" 
                         :key="item.index"
@@ -99,7 +110,14 @@
                         :label="item.giftName"
                         :value="item.id">
                       </el-option>
-                    </el-select> 
+                    </el-select> -->
+                    <el-cascader
+                      size="mini"
+                      :clearable="true"
+                      :disabled="detail.statusNew==3 || detail.statusNew==2"
+                      :options="giftarray"
+                      v-model="giftOptionsnew"
+                    ></el-cascader>
                </div> 
             </div>
             <div class="content_height" :class="{introduce: choosetab == 'introduce'}" >
@@ -416,6 +434,9 @@ export default {
     },
     data(){
         return{
+            giftarray: [],
+            giftOptionsnew: [],
+            giftOptionsold: [],
           	cityOptions: [],
           	cityMap: cityMap,
             loading: true,
@@ -454,21 +475,33 @@ export default {
             choosetab: 'old',
             oldstatus: {
             	list: [{
+                name: '保留',
+                statusOld: 4,
+                checked: 'false',
+                oldstatusdisable: false,
+                newstatusdisable: false,
+                index: 0
+              },{
             		name: '确定地址',
-            		statusOld: '1',
-            		checked: 'false'
+            		statusOld: 1,
+            		checked: 'false',
+                oldstatusdisable: false,
+                newstatusdisable: false,
+                index: 1
             	},{
             		name: '下单',
-            		statusOld: '2',
-            		checked: 'false'
+            		statusOld: 2,
+            		checked: 'false',
+                oldstatusdisable: false,
+                newstatusdisable: false,
+                index: 2
             	},{
             		name: '送达',
-            		statusOld: '3',
-            		checked: 'false'
-            	},{
-            		name: '保留',
-            		statusOld: '4',
-            		checked: 'false'
+            		statusOld: 3,
+            		checked: 'false',
+                oldstatusdisable: false,
+                newstatusdisable: false,
+                index: 3
             	}],
             	oldchecked: '',
             	newchecked: ''
@@ -523,8 +556,7 @@ export default {
         }
     },
     mounted(){
-      this.get_detail_data()
-      this.get_gift()
+      
       this.get_gifts()
     },
     methods:{
@@ -617,6 +649,7 @@ export default {
         if (this.detail.oldkzmatechoose) {
           expressFlagOld = false
         }*/ 
+        
 
 
 
@@ -625,8 +658,8 @@ export default {
             giveType: this.detail.giveType,
             statusNew: this.oldstatus.newchecked,
             statusOld: this.oldstatus.oldchecked,
-            giftIdOld: this.detail.giftIdOld,
-            giftIdNew: this.detail.giftIdNew,
+            giftIdOld: this.giftOptionsold.length== 2 ? this.giftOptionsold[1]:'',
+            giftIdNew: this.giftOptionsnew.length== 2 ? this.giftOptionsnew[1]:'',
             //expressFlagNew: expressFlagNew,
             //expressFlagOld: expressFlagOld,
             expressIdOld: this.detail.expressIdOld,
@@ -685,8 +718,35 @@ export default {
       get_gifts() {
         this.$http.get(`gift/gift_comboboxs`)
           .then((data)=>{
-            console.info(data)
-            //this.gift_lists = data.data
+
+           // let datalist = data.data
+
+            
+
+            for (let i=0; i<data.data.length; i++) {
+              data.data[i].value = data.data[i].dicCode
+              data.data[i].label = data.data[i].dicName
+              data.data[i].children = []
+
+
+              if (data.data[i].giftVOS && data.data[i].giftVOS.length) {
+                for (let j=0; j<data.data[i].giftVOS.length; j++) {
+
+                  data.data[i].children.push({
+                    value: data.data[i].giftVOS[j].id,
+                    label: data.data[i].giftVOS[j].giftName,
+                    disabled: data.data[i].giftVOS[j].statusId==1 ? false: true
+                  })
+                }
+              }
+            }
+
+            this.giftarray = data.data
+            
+
+            this.get_detail_data()
+
+            //console.info(data.data)
           })
 
       },
@@ -794,19 +854,57 @@ export default {
       }, 
     	changestatus(flag,list) {
     		if (flag=='old') {
-    			if (this.detail.statusOld !=3) {
-    				this.oldstatus.oldchecked = list.statusOld
-    			} else {
-    				return 
-    			}
+
+          let dlItem = this.oldstatus.list.find((item) => {
+              return item.statusOld == this.detail.statusOld
+          })
+
+
+          
+
+          if (dlItem) {
+            if (list.index > dlItem.index || list.index == dlItem.index) {
+              this.oldstatus.oldchecked = list.statusOld
+            } else {
+              /*this.$message({
+                message: '请输入清晰的条件',
+                type: 'error'
+              })*/
+            }
+          } else {
+            this.oldstatus.oldchecked = list.statusOld
+          }
     		} else {
-    			if (this.detail.statusNew !=3) {
-    				this.oldstatus.newchecked = list.statusOld
-    			} else {
-    				return 
-    			}
+          let dlItem = this.oldstatus.list.find((item) => {
+              return item.statusOld == this.detail.statusNew
+          })
+
+          if (dlItem) {
+            if (list.index > dlItem.index || list.index == dlItem.index) {
+              this.oldstatus.newchecked = list.statusOld
+            }
+          } else {
+            this.oldstatus.newchecked = list.statusOld
+          }
     		}
     	},
+      getarraygift(id) {
+        let array = []
+        if (id) {
+          for (let i=0; i<this.giftarray.length; i++) {
+            for (let j=0; j<this.giftarray[i].children.length;j++) {
+              if (this.giftarray[i].children[j].value==id) {
+                array.push(this.giftarray[i].value)
+                array.push(id)
+                break
+              }
+            }
+          }
+        }
+        //console.info(array)
+        return array
+       
+      },
       /*详情填充*/
       get_detail_data() {
           this.loading = true
@@ -864,6 +962,9 @@ export default {
 
 
   			        this.detail.statusNew = data.data.statusNew
+
+
+
   			        this.detail.statusOld = data.data.statusOld
 
 
@@ -875,6 +976,16 @@ export default {
                 }
       					this.detail.giftIdOld = data.data.giftIdOld
                 this.detail.giftIdNew = data.data.giftIdNew
+                this.giftOptionsnew = []
+                this.giftOptionsold = []
+
+                //console.info(this.detail.giftIdNew)
+                this.giftOptionsnew = this.getarraygift(this.detail.giftIdNew)
+                this.giftOptionsold = this.getarraygift(this.detail.giftIdOld)
+
+                //console.info(this.giftOptionsnew)
+
+
       					this.detail.oldKzName = data.data.oldKzName
       					this.detail.oldKzPhone = data.data.oldKzPhone
       					this.detail.oldMateName = data.data.oldMateName
@@ -939,7 +1050,41 @@ export default {
                 this.detail.kzId = this.kzId
 
                 this.oldstatus.newchecked = this.detail.statusNew
+
+
+
                 this.oldstatus.oldchecked = this.detail.statusOld
+
+                
+
+
+
+
+                let dlItem = this.oldstatus.list.find((item) => {
+                    return item.statusOld == this.detail.statusOld
+                })
+
+
+                let dlItem2 = this.oldstatus.list.find((item) => {
+                    return item.statusOld == this.detail.statusNew
+                })
+
+                if (dlItem2) {
+                  for (let i=0; i<dlItem2.index; i++) {
+                    this.oldstatus.list[i].newstatusdisable = true
+                  }
+                  
+                }
+
+
+                
+
+                if (dlItem) {
+                  for (let i=0; i<dlItem.index; i++) {
+                    this.oldstatus.list[i].oldstatusdisable = true
+                  }
+                  
+                }
 
                 this.loading = false
 		            } else {

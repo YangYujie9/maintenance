@@ -30,12 +30,18 @@
               </div>-->
               <div class="order-detail-right">
                 <div>
-                  <p>新客<span>{{list.kzName}}  </span>
-                    <span> {{list.kzPhone}}</span>  
-                    <span> {{list.mateName}}</span> 
-                    <span> {{list.matePhone}}</span></p>
+                  <p>新客
+                    <span class="span-right">{{list.kzName}}  </span>
+                    <span class="span-right"> {{list.kzPhone}}</span>  
+                    <span class="span-right"> {{list.mateName}}</span> 
+                    <span class="span-right"> {{list.matePhone}}</span></p>
 
-                  <p>老客<span>{{list.oldKzName}}  </span><span> {{list.oldKzPhone}}</span>  <span> {{list.oldMateName}}</span><span> {{list.oldMatePhone}}</span> </p>
+                  <p>老客
+                    <span  class="span-right">{{list.oldKzName}}  </span>   
+                    <span class="span-right"> {{list.oldKzPhone}}</span>  
+                    <span class="span-right"> {{list.oldMateName}}</span>
+                    <span class="span-right"> {{list.oldMatePhone}}</span> 
+                  </p>
                   
                 </div>
               </div>
@@ -281,8 +287,8 @@
           height: 32px;
           left: 52px;
 
-          .red {
-            background: pink;
+          .span-right {
+            padding-right: 5px;
           }
 
 
