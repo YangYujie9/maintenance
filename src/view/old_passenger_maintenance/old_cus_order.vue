@@ -81,10 +81,10 @@
                 </el-tabs>
             </div>
 
-            <!--<div class="input-cus">
-              <el-button type="primary" plain @click.native="editdialog_edit" class="btninput cursor" size="small">导入</el-button>
-              <el-button type="primary" plain class="btninput cursor" @click="matchdialog.dialogVisible = true" size="small">导出</el-button>
-            </div>-->
+            <div class="input-cus">
+              <!--<el-button type="primary" plain @click.native="editdialog_edit" class="btninput cursor" size="small">导入</el-button>-->
+              <!--<el-button type="primary" plain class="btninput cursor" @click="exportcus" size="small">导出</el-button>-->
+            </div>
 
             <el-table
                 :data="searchdata"
@@ -277,6 +277,23 @@
 
         <orderDetailModel :searchDatatoatl="searchItem" @acumulate="acumulate" @research="search" v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
         <!--增加表格lei数-->
+
+
+        <!-- 导出 -->
+        <el-dialog title="导出" :visible.sync="exportModal" width="580px">
+          <div>
+            <div v-for="(item,index) in exportMaxPage" :key="index" class="progre-con">
+              <el-progress class="progres" :text-inside="true" :stroke-width="18" :percentage="item.status"></el-progress>
+              <span class="progress-span">{{item.start}} - {{item.end}} 条</span>
+              <el-button @click="uploadStart(index)" class="btn" :disabled="item.disabled" type="primary">下载</el-button>
+            </div>
+            
+          </div>
+          
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="exportModal = false" class="btnstyle btnblue">关闭</el-button>
+          </span>
+        </el-dialog>
         
     </div>
 </template>
@@ -286,6 +303,8 @@ import timeUtil from '../../../static/js/timeUtil.js'
 import orderDetailModel from '../../components/order_detail_model'
 import { mapGetters } from 'vuex'
 import clipboard from 'clipboard-polyfill'
+let sizeexportcvs = 10000
+
 
 export default {
     name: "old_cus_order",
@@ -294,6 +313,8 @@ export default {
     },
     data(){
         return{
+            exportModal: false,
+            exportMaxPage: [],
             table_height: 300,
             tableData: [],
             searchdata: [],
@@ -425,6 +446,134 @@ export default {
         },10)
     },
     methods:{
+        //开始下载
+        uploadStart(index){
+          this.exportMaxPage[index].disabled = true
+          /*let content = {
+            page:parseInt(index + 1),
+            size:10000,
+            timetype: this.receiveType,
+            start: timeUtil.getTimeStamp(this.timeNode.startTime),
+            end: timeUtil.getTimeStampPlus59s(this.timeNode.endTime),
+            // channelid: this.conditionIds.channelSelect,
+            sourceid: this.conditionIds.sourcelSelect,
+            shopid: this.conditionIds.shopSelect,
+            staffid: this.conditionIds.staffSelect,
+            typeid: '',
+            pmslimit: this.pmsIds,
+            linklimit: this.selectKzType,
+            action: this.oSearchConfig.selectState,
+            filtersql: this.filterString,
+            sparesql: this.sparesql
+          }*/
+
+
+
+          let content = {
+            ...this.search,
+            pageNum:index + 1,
+            pageSize:sizeexportcvs,
+          }
+
+          this.$exportAxios.post('excel/export_send_order', {
+              ...content       
+          },{
+            onDownloadProgress: pro => {
+              let totalSize = this.totalcount * 159
+              let size = pro.loaded
+              let uploadTime = parseInt((size/totalSize)*100)
+              if(uploadTime >= 100){
+                this.exportMaxPage[index].status = 100
+              }
+            },
+            responseType: 'arraybuffer'
+          }).then((data) => {
+            
+            if(data.status === 200){
+              this.exportExcel(data,index)
+            }else{
+              this.$Message.error('网络不稳定'+data.status)
+            }
+          }, true)
+
+        },
+        //下载
+        exportExcel(res,index) {
+          let data = res.data;
+
+
+          console.info(data)
+
+
+          
+          let fileName = `${this.getYMDTime(this.search.start)}--${this.getYMDTime(this.search.end)}${index}订单.xlsx`
+
+          
+          if (data && !data.byteLength) {
+            alert('表格数据为空，无法导出！');
+            return;
+          }
+          try {
+            let linkElement = document.createElement('a');
+            let blob = new Blob([data], {
+              type: 'application/octet-stream'
+            });
+            let url = window.URL.createObjectURL(blob);
+            linkElement.setAttribute('href', url);
+            linkElement.setAttribute("download", fileName);
+            let clickEvent = new MouseEvent("click", {
+              "view": window,
+              "bubbles": true,
+              "cancelable": false
+            });
+            linkElement.dispatchEvent(clickEvent);
+          } catch (ex) {
+            console.log(ex);
+          }
+        },
+        exportcus() {
+
+            let total = this.searchItem.total
+            let maxPage = Math.ceil(total / sizeexportcvs)
+            let totalNumber = 0
+            if (total % sizeexportcvs !== 0) {
+              totalNumber = (total / sizeexportcvs).toString().split('.')[1]
+            }
+            let obj = []
+            let pageNumber = 0
+            if (maxPage !== 1) {
+              for (let i = 1; i <= maxPage; i++) {
+                if (i == maxPage && total % sizeexportcvs !== 0) {
+                  obj.push({
+                    start: pageNumber,
+                    end: pageNumber + parseInt(totalNumber),
+                    status:0,
+                    disabled:false,
+                  })
+                } else {
+                  obj.push({
+                    start: pageNumber,
+                    end: pageNumber += sizeexportcvs,
+                    status:0,
+                    disabled:false,
+                  })
+                }
+              }
+            } else {
+              obj.push({
+                start: 0,
+                end: total,
+                status:0,
+                disabled:false,
+              })
+            }
+          this.exportMaxPage = obj
+
+          this.exportModal = true
+
+
+
+        },
         get_gift() {
           this.$http.get(`gift/gift_combobox`)
             .then((data)=>{
@@ -766,6 +915,32 @@ export default {
 </script>
 
 <style lang="less">
+
+
+.progre-con {
+  margin-bottom: 16px;
+
+  .progress-span {
+    position: relative;
+    top: 3px;
+    display: inline-block;
+    font-size: 12px;
+    max-width: 130px;
+    text-align: center;
+  }
+  .progres {
+    width: 60%;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .btn {
+    padding: 4px 14px;
+    margin-left: 10px;
+    position: relative;
+    top: 2px;
+    font-size: 12px;
+  }
+}
 
 .el-dropdown-menu {
   max-height: 400px;
