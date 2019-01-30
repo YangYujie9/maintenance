@@ -83,7 +83,7 @@
 
             <div class="input-cus">
               <!--<el-button type="primary" plain @click.native="editdialog_edit" class="btninput cursor" size="small">导入</el-button>-->
-              <!--<el-button type="primary" plain class="btninput cursor" @click="exportcus" size="small">导出</el-button>-->
+              <el-button type="primary" plain class="btninput cursor" @click="exportcus" size="small">导出</el-button>
             </div>
 
             <el-table
@@ -291,7 +291,7 @@
           </div>
           
           <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="exportModal = false" class="btnstyle btnblue">关闭</el-button>
+            <el-button size="mini" type="primary" @click="exportModal = false" class="btnstyle btnblue">关闭</el-button>
           </span>
         </el-dialog>
         
@@ -469,17 +469,19 @@ export default {
 
 
 
-          let content = {
-            ...this.search,
-            pageNum:index + 1,
-            pageSize:sizeexportcvs,
-          }
 
-          this.$exportAxios.post('excel/export_send_order', {
-              ...content       
+          this.$http.post('info/export_client_list', {
+                timeType: this.searchItem.timeType,
+                start: this.searchItem.start/1000,
+                end: this.searchItem.end/1000,
+                collectorIds: this.searchItem.collectorId,
+                giveType: this.searchItem.giveType,
+                pageNum:index + 1,
+                statusId: this.searchItem.statusId,
+                pageSize: sizeexportcvs,    
           },{
             onDownloadProgress: pro => {
-              let totalSize = this.totalcount * 159
+              let totalSize = this.searchItem.total * 159
               let size = pro.loaded
               let uploadTime = parseInt((size/totalSize)*100)
               if(uploadTime >= 100){
@@ -488,25 +490,29 @@ export default {
             },
             responseType: 'arraybuffer'
           }).then((data) => {
-            
-            if(data.status === 200){
+
               this.exportExcel(data,index)
-            }else{
-              this.$Message.error('网络不稳定'+data.status)
-            }
+            
           }, true)
+
+        },
+        getYMDTime(time){
+          var now = new Date(time * 1000)
+          var year = now.getFullYear()
+          var month = now.getMonth()
+          var date = now.getDate()
+          
+          var currentTime = year+"-"+month+"-"+date
+          return currentTime;
 
         },
         //下载
         exportExcel(res,index) {
-          let data = res.data;
-
-
-          console.info(data)
+          let data = res
 
 
           
-          let fileName = `${this.getYMDTime(this.search.start)}--${this.getYMDTime(this.search.end)}${index}订单.xlsx`
+          let fileName = `${this.getYMDTime(this.searchItem.start)}--${this.getYMDTime(this.searchItem.end)}${index}订单.xlsx`
 
           
           if (data && !data.byteLength) {
@@ -518,9 +524,15 @@ export default {
             let blob = new Blob([data], {
               type: 'application/octet-stream'
             });
+
+
             let url = window.URL.createObjectURL(blob);
             linkElement.setAttribute('href', url);
             linkElement.setAttribute("download", fileName);
+
+
+
+
             let clickEvent = new MouseEvent("click", {
               "view": window,
               "bubbles": true,

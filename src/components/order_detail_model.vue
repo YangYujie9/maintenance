@@ -119,7 +119,6 @@
                 	<div v-if="!detail.oldKzId" class="match_old">当前老客信息没有和现有老客户匹配<span @click="matchdata">查询匹配</span></div>
                   <div v-if="detail.oldKzId" class="match_old">匹配错误？<span @click="matchclear">清空匹配</span></div>
 
-                  <div v-if="detail.oldKzId" style="height: 20px"></div>
 
                 	<div  class="ullist">
 	                    
@@ -211,16 +210,16 @@
                   <div class="ullist">
                       
                       <span class="input-span">收货人姓名</span>
-                      <el-input  :disabled="detail.giveType==2" size="mini" v-model="detail.receiveNameNew" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
+                      <el-input  :disabled="detail.giveType==1" size="mini" v-model="detail.receiveNameNew" style="margin-right: 40px" class="input-new" placeholder=""></el-input>
 
                       <span class="input-span">收货人电话</span>
-                      <el-input :disabled="detail.giveType==2" size="mini" v-model="detail.receivePhoneNew" class="input-new" placeholder=""></el-input>
+                      <el-input :disabled="detail.giveType==1" size="mini" v-model="detail.receivePhoneNew" class="input-new" placeholder=""></el-input>
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄地址</span>
                       
                       <el-cascader
-                        :disabled="detail.giveType==2"
+                        :disabled="detail.giveType==1"
                         size="mini"
                         style="width: 300px" 
                         :options="cityMap"
@@ -234,13 +233,13 @@
                       <span class="input-span">详细地址</span>
                       
                       
-                      <el-input style="width: 300px"  size="mini" :disabled="detail.giveType==2" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
+                      <el-input style="width: 300px"  size="mini" :disabled="detail.giveType==1" class="input-new" v-model="detail.address2New" placeholder="请输入详细地址"></el-input>  
                   </div>
                   <div class="ullist">
                       <span class="input-span">邮寄</span>
                       
 
-                      <el-select :disabled="detail.giveType==2" clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递">
+                      <el-select :disabled="detail.giveType==1" clearable  class="input-new" style="margin-right: 14px;" size="mini" v-model="detail.expressIdNew" placeholder="快递">
                           <el-option 
                           v-for="item in getpageDict.commonMap.expressType" 
                           :key="item.dicCode"
@@ -250,7 +249,7 @@
                       </el-select> 
 
                       <span class="input-span">单号</span>
-                      <el-input :disabled="detail.giveType==2" size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
+                      <el-input :disabled="detail.giveType==1" size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                 </div>
                 <div v-show="choosetab == 'introduce'"  class="old">
