@@ -932,10 +932,12 @@ export default {
 
 
                       if (data.data.infoList[i].statusId == 30 || data.data.infoList[i].statusId == 40 || data.data.infoList[i].statusId == 9) {
-
-                        if ((data.data.infoList[i].successTime-(new Date(this.searchDatatoatl.start).getTime()/1000) > 0  || data.data.infoList[i].successTime-(new Date(this.searchDatatoatl.start).getTime()/1000) == 0) && (new Date(this.searchDatatoatl.end).getTime()/1000-data.data.infoList[i].successTime>0 || new Date(this.searchDatatoatl.end).getTime()/1000-data.data.infoList[i].successTime==0)) {
-                          infodata++
+                        if (this.searchDatatoatl && this.searchDatatoatl.start) {
+                            if ((data.data.infoList[i].successTime-(new Date(this.searchDatatoatl.start).getTime()/1000) > 0  || data.data.infoList[i].successTime-(new Date(this.searchDatatoatl.start).getTime()/1000) == 0) && (new Date(this.searchDatatoatl.end).getTime()/1000-data.data.infoList[i].successTime>0 || new Date(this.searchDatatoatl.end).getTime()/1000-data.data.infoList[i].successTime==0)) {
+                            infodata++
+                          }
                         }
+                        
                         
                       }
                     }

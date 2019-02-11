@@ -26,4 +26,13 @@ let proUrl={
     websocketUrl:'wss://websocket.qiein.com/ws' 
 }
 
+
+// 张嘴金夫人
+let prozhjfrUrl={
+    domain: 'http://introduce.hzjfr.qiein.com/introduce-api/',
+    apolloDomain:'https://apollo.qiein.com/',
+    wxCallBack:'https://apollo.qiein.com/wechat/dsyy_order_call_back',
+    websocketUrl:'wss://websocket.qiein.com/ws' 
+}
+
 export default devUrl
