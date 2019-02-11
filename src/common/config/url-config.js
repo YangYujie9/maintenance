@@ -27,12 +27,14 @@ let proUrl={
 }
 
 
-// 张嘴金夫人
-let prozhjfrUrl={
+// 杭州金夫人
+let jinfuRen={
     domain: 'http://introduce.hzjfr.qiein.com/introduce-api/',
     apolloDomain:'https://apollo.qiein.com/',
     wxCallBack:'https://apollo.qiein.com/wechat/dsyy_order_call_back',
     websocketUrl:'wss://websocket.qiein.com/ws' 
 }
+
+
 
 export default devUrl
