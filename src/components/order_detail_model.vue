@@ -276,6 +276,7 @@
                     :header-cell-class-name="tableheaderClassName"
                     @row-dblclick="acumulate"
                     :row-class-name="tableRowClassName"
+
                     class="border-q"
                     :height="340"
                     border
@@ -307,6 +308,8 @@
                       prop="name"
                       width="180"
                       label="状态"
+                      :filters="get_status_map"
+                      :filter-method="filterTag"
                       >
                     <template slot-scope="scope"> 
                       {{scope.row.statusName}}
@@ -431,6 +434,16 @@ export default {
         ...mapGetters([
         	'getpageDict',
         ]),
+        get_status_map() {
+          
+          let array = []
+
+          for (let key in this.getpageDict.statusMap) {
+            array.push({text: this.getpageDict.statusMap[key].statusName,value: this.getpageDict.statusMap[key].statusId})
+          }
+
+          return array
+        }
     },
     data(){
         return{
@@ -702,6 +715,12 @@ export default {
 
 
 
+      },
+      filterTag(value, row) {
+
+
+        
+        return row.statusId === value;
       },
     	matchdata() {
     		this.matchdialog.dialogVisible = true
