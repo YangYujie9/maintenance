@@ -6,7 +6,7 @@
           :visible.sync="dialogVisible"
           :show-close="false"
           width="680px"
-          style="padding-right: 500px;"
+          style="padding-right: 550px;"
           >
           <div class="operation-record">
             <el-menu size="mini" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
@@ -1162,10 +1162,10 @@ export default {
 
 .operation-record {
   position: absolute;
-  right: -500px;
+  right: -550px;
   background: #ffffff;
-  width: 500px;
-  height: 600px;
+  width: 550px;
+  height: 610px;
   border: 1px solid #e4e7ed;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -1211,7 +1211,7 @@ export default {
       }
 
       &-right {
-        width: 400px;
+        width: 450px;
         vertical-align: middle;
         display: inline-block;
         border: 1px solid #eed;
