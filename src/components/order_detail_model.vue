@@ -1165,11 +1165,12 @@ export default {
   right: -500px;
   background: #ffffff;
   width: 500px;
-  height: 540px;
+  height: 600px;
   border: 1px solid #e4e7ed;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   font-size: 12px;
+  top: 46px;
 
   
 
