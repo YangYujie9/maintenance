@@ -91,6 +91,7 @@
                 :header-cell-class-name="tableheaderClassName"
                 class="border-q"
                 :height="table_height"
+                :row-class-name="tableRowClassName"
                 border
                 @row-dblclick="dblclickdetail"
                 style="width: 100%;font-size: 12px;"> 
@@ -447,6 +448,18 @@ export default {
         },10)
     },
     methods:{
+        tableRowClassName({row, rowIndex}) {
+          if (row.statusOld === 2) {
+            return 'order';
+          } else if (row.statusOld === 3) {
+            return 'arrive';
+          } else if (row.statusOld === 1) {
+            return 'noaddress';
+          } else if (row.statusOld === 4) {
+            return 'save';
+          }
+          return '';
+        },
         //开始下载
         uploadStart(index){
           this.exportMaxPage[index].disabled = true
@@ -933,7 +946,21 @@ export default {
 </script>
 
 <style lang="less">
+.el-table .order {
+  background: #c5db94;
+}
 
+.el-table .arrive {
+  background: #d2cdf8;
+}
+
+.el-table .noaddress {
+  background: #f1cfd0;
+}
+
+.el-table .save {
+  background: #f4d6a9;
+}
 
 .progre-con {
   margin-bottom: 16px;

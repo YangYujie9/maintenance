@@ -6,14 +6,39 @@
           :visible.sync="dialogVisible"
           :show-close="false"
           width="680px"
-          
+          style="padding-right: 500px;"
           >
+          <div class="operation-record">
+            <el-menu size="mini" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+              <el-menu-item index="1">操作记录
+                
+              </el-menu-item>
+              
+            </el-menu>
+            <div class="operation-record-content">
+              <div style="padding-top: 20px;" class="wrap">
+                <!--<div class="operation-record-content-top">
+                  <span>上次联系:<label>1天前</label></span>
+                </div>-->
+                <div  v-for="list in detail.logList" class="operation-record-content-list">
+                  <span class="operation-record-content-list-left">
+                    <img style="width: 20px;height: 20px;position: relative;top: 4px;" src="../assets/head-o.png" />
+                  </span>
+                  <div class="operation-record-content-list-right">
+                    <p class="log_memo">{{list.memo}}</p> 
+                    <!----> <!----> 
+                    <p style="color: rgb(162, 163, 164);">{{list.operaName}}@{{list.operaTime}} </p></div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div style="font-size: 14px;position: relative;" slot="title">
             {{detail.letterId ? detail.letterId:detail.id}}&nbsp;
             <span style="position: absolute;right: 40px;font-size: 12px;color: rgb(158, 158, 158)">录入时间：{{detail.createTime}}</span>
 
             <button @click="$emit('close')" style="position: absolute;right: 8px;top: -2px" type="button" aria-label="Close" class="el-dialog__headerbtn"><i class="el-dialog__close el-icon el-icon-close"></i></button>
           </div>
+          
           <div v-loading="loading" class="edit-content">
             <div>
                <div class="ul">
@@ -133,6 +158,7 @@
                         累计介绍（4/6）
                     </div>-->
                 </div>
+                <!--老客内容匹配-->
                 <div v-show="choosetab == 'old'"   class="old">
                 	<div v-if="!detail.oldKzId" class="match_old">当前老客信息没有和现有老客户匹配<span @click="matchdata">查询匹配</span></div>
                   <div v-if="detail.oldKzId" class="match_old">匹配错误？<span @click="matchclear">清空匹配</span></div>
@@ -203,8 +229,8 @@
 	                    <el-input  size="mini" v-model="detail.expressNumOld" class="input-new" placeholder="请输入内容"></el-input>
 	                </div>
                 </div>
-                
-
+                <!--老客内容匹配-->
+                <!--新客信息匹配-->
                 <div v-show="choosetab == 'new'" style="position: relative;top: 20px;" class="old">
                   <!--<div v-if="!detail.KzId" class="match_old">当前老客信息没有和现有老客户匹配<span @click="matchdata">查询匹配</span></div>-->
 
@@ -270,6 +296,9 @@
                       <el-input :disabled="detail.giveType==1" size="mini" v-model="detail.expressNumNew" class="input-new" placeholder="请输入内容"></el-input>
                   </div>
                 </div>
+
+
+                <!--累计介绍-->
                 <div v-show="choosetab == 'introduce'"  class="old">
                   <el-table
                     :data="detail.infolist"
@@ -317,6 +346,8 @@
                     </el-table-column>
                   </el-table>
                 </div>
+
+                <!--累计介绍-->
             </div>
             <el-input v-show="choosetab != 'introduce'" v-model="detail.memo" size="mini" style="width: 100%;" type="textarea" class="input-new" placeholder="请输入备注"></el-input>
           </div>
@@ -325,8 +356,8 @@
             <el-button size="small" @click="edit_kz_detail" type="primary" >确 定</el-button>
           </span>
         </el-dialog>
-        <!--编辑文件部分-->
-    	<el-dialog
+        <!--搜索老客匹配-->
+    	  <el-dialog
             :close-on-click-modal="false"
             :visible.sync="matchdialog.dialogVisible"
             width="600px"
@@ -409,6 +440,9 @@
                 <el-button size="small" type="primary" @click="oldmsgok">确定绑定</el-button>
               </span>
         </el-dialog>
+        <!--搜索老客匹配-->
+
+
     </div>
 </template>
 
@@ -447,8 +481,10 @@ export default {
     },
     data(){
         return{
+            activeIndex: '1',
             giftarray: [],
             giftOptionsnew: [],
+
             giftOptionsold: [],
           	cityOptions: [],
           	cityMap: cityMap,
@@ -563,6 +599,7 @@ export default {
     				oldMatePhone: "",
     				shopName: "",
     				statusNew: null,
+            logList: [],
     				statusOld: null
         	},
           gift_lists: []
@@ -573,6 +610,9 @@ export default {
       this.get_gifts()
     },
     methods:{
+      handleSelect(key, keyPath) {
+        console.log(key, keyPath);
+      },
       acumulate(row) {
         this.$emit('acumulate',row.kzId)
       },
@@ -717,9 +757,6 @@ export default {
 
       },
       filterTag(value, row) {
-
-
-        
         return row.statusId === value;
       },
     	matchdata() {
@@ -1005,6 +1042,7 @@ export default {
                 this.giftOptionsold = this.getarraygift(this.detail.giftIdOld)
 
                 //console.info(this.giftOptionsnew)
+                this.detail.logList = data.data.logList
 
 
       					this.detail.oldKzName = data.data.oldKzName
@@ -1122,6 +1160,74 @@ export default {
 
 <style lang="less">
 
+.operation-record {
+  position: absolute;
+  right: -500px;
+  background: #ffffff;
+  width: 500px;
+  height: 540px;
+  border: 1px solid #e4e7ed;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 12px;
+
+  
+
+  &-content {
+    margin: 10px 16px 10px 16px;
+    height: 450px;
+    overflow-y: scroll;
+
+    .operation-record-content-top {
+      height: 40px;
+      line-height: 40px;
+      margin-bottom: 20px;
+      background: #e6e6e6;
+      padding-left: 20px;
+    }
+
+    .operation-record-content-list {
+      padding: 1px 1px 10px 14px;
+      font-size: 12px;
+      position: relative;
+
+      &-left {
+        display: inline-block;
+        text-align: center;
+        background: #ccc;
+        color: #fff;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        vertical-align: middle;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        border-radius: 16px;
+
+        
+
+      }
+
+      &-right {
+        width: 400px;
+        vertical-align: middle;
+        display: inline-block;
+        border: 1px solid #eed;
+        border-radius: 2px;
+        padding: 3px 8px;
+        line-height: 22px;
+
+        .log_memo {
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+        }
+        
+      }
+    }
+  }
+}
 
 .el-table .success-row-a {
   background: pink;
@@ -1149,7 +1255,13 @@ export default {
   }
 }
 
+.el-checkbox__label {
+  font-size: 12px;
+}
+
 .order_detail_model {
+
+
 
 	.match_content {
 	    .ul {
