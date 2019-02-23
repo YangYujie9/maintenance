@@ -22,7 +22,8 @@
                 </div>-->
                 <div  v-for="list in detail.logList" class="operation-record-content-list">
                   <span class="operation-record-content-list-left">
-                    <img style="width: 20px;height: 20px;position: relative;top: 4px;" src="../assets/head-o.png" />
+                    <img v-if="!list.headImg" style="width: 20px;height: 20px;position: relative;top: 4px;" src="../assets/head-o.png" />
+                    <img v-else style="width: 20px;height: 20px;position: relative;top: 4px;border-radius: 50%" :src="list.headImg" />
                   </span>
                   <div class="operation-record-content-list-right">
                     <p class="log_memo">{{list.memo}}</p> 
