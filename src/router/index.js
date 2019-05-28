@@ -4,35 +4,124 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 export default new Router({
-  routes: [{
+  routes: [
+    {
       path: '/',
-      redirect: '/old_passenger_maintenance',
       name: 'index',
-      component: resolve => require(['@/view/index'], resolve), 
+      redirect: '/login',
+      component: resolve => require(['@/view/index'],resolve),
       children: [
-      	{
-          path: '/old_passenger_maintenance',
-          name: 'old_passenger_maintenance',
-          component: resolve => require(['@/view/old_passenger_maintenance/index'], resolve),
+        {
+          path: '/setting',
+          name: 'setting', 
+          redirect: '/setting/auth-setting',
+          component: resolve => require(['@/view/setting/index'], resolve),
+          children: [
+            
+            {
+              path: '/setting/auth-setting',
+              name: 'auth-setting',
+              component: resolve => require(['@/view/setting/auth-setting/index'],resolve), 
+            },
+
+          ]
+        },
+        {
+          path: '/report',
+          name: 'report',
+          component: resolve => require(['@/view/report_form/index'],resolve),
+          children: [
+              {
+                path: '/reportcangchu/cangchu',
+                name: 'cangchu',
+                component: resolve => require(['@/view/report_form/cangchu/index'],resolve),
+              },
+              
+              {
+                path: '/reportcangchu/importsearch',
+                name: 'importsearch',
+                component: resolve => require(['@/view/report_form/cangchu/importsearch'],resolve),
+              },
+              {
+                path: '/reportpinkong/pinkong',
+                name: 'pinkong',
+                component: resolve => require(['@/view/report_form/cangchu/pinkong'],resolve),
+              },
+              {
+                path: '/reportthree/threecheck',
+                name: 'threecheck',
+                component: resolve => require(['@/view/report_form/cangchu/threecheck'],resolve),
+              },
+          ],
+        },
+        {
+          path: '/maintenance/demonsion',
+          name: 'maintenancedemonsion',
+          component: resolve => require(['@/view/operation_maintenance/maintenance_type'],resolve),
+        },
+        {
+          path: '/report_list',
+          name: 'report_list',
+          component: resolve => require(['@/view/report_form/report'],resolve),
+        },
+        {
+          path: '/maintenance',
+          name: 'maintenance', 
+          component: resolve => require(['@/view/operation_maintenance/index'],resolve),
+          children: [
+              {
+                path: '/maintenance/data_center',
+                name: 'data_center',
+                component: resolve => require(['@/view/operation_maintenance/data_center'],resolve),
+              },
+              {
+                path: '/maintenance/approve',
+                name: 'approve',
+                component: resolve => require(['@/view/operation_maintenance/approve'],resolve),
+              },
+              
+          ],
+        },
+        {
+          path: '/project',
+          name: 'project', 
+          component: resolve => require(['@/view/project/index'],resolve),
           children: [
             {
-              path: '/old_cus_order',
-              name: 'old_cus_order',
-              component: resolve => require(['@/view/old_passenger_maintenance/old_cus_order'], resolve),
+              path: '/project/project_list',
+              name: 'project_list',
+              component: resolve => require(['@/view/project/project_list'],resolve),
             },
             {
-              path: '/gift_manage',
-              name: 'gift_manage',
-              component: resolve => require(['@/view/old_passenger_maintenance/gift_manage'], resolve),
+              path: '/project/project_index',
+              name: 'project_index',
+              component: resolve => require(['@/view/project/project_index'],resolve),
             },
             {
-              path: '/active_manage',
-              name: 'active_manage',
-              component: resolve => require(['@/view/old_passenger_maintenance/active_manage'], resolve),
+              path: '/project/mission',
+              name: 'mission',
+              component: resolve => require(['@/view/project/mission'],resolve),
+            },
+            {
+              path: '/project/mission_board',
+              name: 'mission_board',
+              component: resolve => require(['@/view/project/mission_board'],resolve),
             },
           ]
         },
+        
       ]
-    }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: resolve => require(['../view/login'],resolve),
+    },
+    
+    {
+      path: '/demonsion',
+      name: 'demonsion',
+      component: resolve => require(['../view/demonsion'],resolve),
+    },
   ]
 })

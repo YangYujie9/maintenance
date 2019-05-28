@@ -12,10 +12,6 @@ import urlConfig from '@/common/config/url-config'
 let erpAxios = axios.create()
 erpAxios.defaults.baseURL = urlConfig.domain
 
-console.info(urlConfig)
-
-
-import Cookies from 'js-cookie'
 
 
 /**
@@ -23,10 +19,6 @@ import Cookies from 'js-cookie'
  */
 
 erpAxios.interceptors.request.use(function (config) {
-  config.headers['cid'] = Cookies.get('cid')
-  config.headers['uid'] = Cookies.get('uid')
-  config.headers['token'] = Cookies.get('token')
-  //console.log(config);
   
   return config;
 }, function (error) {

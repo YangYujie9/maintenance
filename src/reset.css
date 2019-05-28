@@ -16,6 +16,7 @@ menu, nav, output, ruby, section, summary, time, mark, audio, video {
 
 body {
   padding-right: 0px !important;
+  
 }
 ol,ul{
   list-style: none;
@@ -57,13 +58,110 @@ html,body{
 } 
 
 
+.el-popover {
+min-width: 80px;
+}
+
+.el-popover .el-popover-content {
+    margin-top: 10px;
+    text-align: center
+  }
+
+  .el-popover .el-popover-content-first {
+    margin-top: 0px;
+  }
+
 .boxshadow1 {
     box-shadow: 0 2px 0px 0 rgba(0,0,0,.1);
     border: 1px solid #ebeef5;
     border-radius: 3px;
 } 
+.el-table .table-head-th{
+    background-color:#f4f4f4;
+    color: #000;
+    text-align: center;
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover > td {
+      background: #ebf7ff !important;
+      text-align: center;
+    }
+
+
+    .el-table td, .el-table th {
+        text-align: center;
+        font-size: 12px;
+
+
+    } 
+
+.el-table thead.is-group th {
+    background: #ebf7ff;
+    text-align: center;
+}
+
+.el-table th.is-leaf {
+    background: #ebf7ff;
+
+}
+
+.el-timeline {
+    margin: 0;
+    font-size: 14px;
+    list-style: none;
+}
+.el-timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+    height: 100px;
+}
+.el-timeline-item__tail {
+    position: absolute;
+    left: 4px;
+    height: 100%;
+    border-left: 2px solid #e4e7ed;
+}
+.el-timeline-item__node {
+    position: absolute;
+    background-color: #e4e7ed;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.el-timeline-item__node--normal {
+    left: -22px;
+    width: 50px;
+    height: 50px;
+    font-size: 12px;
+}
+
+.el-timeline-item__wrapper {
+    position: relative;
+    padding-left: 48px;
+    top: 10px;
+}
 
 
 .cursor {
   cursor: pointer;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all .8s;
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(300px);
+  opacity: 0;
 }

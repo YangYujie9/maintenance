@@ -1,7 +1,9 @@
 <template>
     <div class="index-1">
     	<v-header/>
-        <router-view/>
+        <div class="router-wrap">
+            <router-view/>
+        </div>
     </div>
 </template>
 
@@ -33,7 +35,15 @@ export default {
 
 <style spoced lang="less">
 .index-1 {
-   
+    height: calc(100vh - 0px);
+    background: url("https://static.z.qiein.com/img/login/bg3green.png") no-repeat center;
+    background-size: cover;
+
+    .router-wrap {
+        margin-top: 4px;
+        height: calc(100vh - 64px);
+        background: rgba(255, 255, 255, 0.7);
+    }
 }
   
 </style>

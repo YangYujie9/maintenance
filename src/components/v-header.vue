@@ -1,80 +1,56 @@
 <template>
   <div class="head-1">
     <div class="qiein-head">
-      <div class="head-logo">
-        <img src="https://oss.aliyuncs.com/hmcrm/beidou/home_img/beidou_logo.png" alt="">
-      </div>
+      
       <div class="head-menu">
         <div @click="jump(index)" v-for="(list, index) in category" class="head-menu-list" :key="index">
           <span :class="{active: list.choose}" class="head-menu-drag">{{list.name}}</span>
         </div>
       </div>
 
+      <!--<el-dropdown @command="handle_new_add" class="dropdownpositon">
+        <span class="el-dropdown-link">
+          <i style="font-size: 26px;position: relative;left: -34px;top: 1px;" class="iconfont icon-iconjia cursor"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="a">新增运维</el-dropdown-item>
+          <el-dropdown-item command="b">新增项目</el-dropdown-item>
+          <el-dropdown-item command="c">新增任务</el-dropdown-item> 
+          
+        </el-dropdown-menu>
+      </el-dropdown>-->
 
 
-      <!--搜索-->
-
-      <div @click.stop=""  class="search-detail">
-
-        <el-input size="medium" v-model="searchKey" @keyup.native="keyupsearch" style="width:100%; font-size: 12px;" placeholder="请输入搜索内容" class="input-with-select">
-
-          <el-button slot="append" @click.stop.prevent="searchok" icon="el-icon-search"></el-button>
-        </el-input>
-        <div v-if="searchresult" class="list-rt boxshadow cursor">
-          <div @click="detailkz(list)" v-for="list in searchlist" :class="{red: (list.kzPhone== searchKey || list.kzPhone== searchKey) }" class="order-detail">
-              <!--<div class="order-detail-left">
-                <span">
-                  
-                </span>
-                
-              </div>-->
-              <div class="order-detail-right">
-                <div>
-                  <p>新客
-                    <span class="span-right">{{list.kzName}}  </span>
-                    <span class="span-right"> {{list.kzPhone}}</span>  
-                    <span class="span-right"> {{list.mateName}}</span> 
-                    <span class="span-right"> {{list.matePhone}}</span></p>
-
-                  <p>老客
-                    <span  class="span-right">{{list.oldKzName}}  </span>   
-                    <span class="span-right"> {{list.oldKzPhone}}</span>  
-                    <span class="span-right"> {{list.oldMateName}}</span>
-                    <span class="span-right"> {{list.oldMatePhone}}</span> 
-                  </p>
-                  
-                </div>
-              </div>
-          </div>
-
-          <div v-if="searchlist.length == 0" class="noresult">
-            没有搜索结果
-          </div>
-        </div>
-      </div>
-      <!--搜索-->
-
-     
       <!--个人信息-->
       <div class="person">
-        <!--<el-popover width="200" trigger="hover">
+        <el-popover width="200" trigger="hover">
           <div style="text-align: center;">
-            <p style="margin-bottom: 12px;font-size: 12px;" class="person-p">当前帐号:{{loginUserInfo.nickName}}</p>
-            <el-button size="mini" @click="exit()" style="">
-              退出登录
+            <p style="margin-bottom: 12px;font-size: 12px;" class="person-p">当前帐号:{{userInfo.staffName}}</p>
+            <el-button type="danger" size="mini" @click="editstaff.dialogVisible = true" style="">
+              修改密码
             </el-button>
+
+
+            <p style="margin-top: 16px;">
+              <el-button type="warning" size="mini" @click="exit()" style="">
+                退出登录
+              </el-button>
+            </p>
+
+
           </div>
           <el-button style="padding: 3px 10px;" slot="reference">
-            <img class="head" :src="loginUserInfo.headImg" />
-            {{loginUserInfo.nickName}}
-          </el-button>
-        </el-popover>-->
-
-        <el-button style="padding: 3px 10px;" slot="reference">
             <img class="head" v-if="getstaffVO.headImg" :src="getstaffVO.headImg" />
             <img class="head" v-else src="../assets/head-o.png" />
-            {{getstaffVO.nickName}}
+            {{userInfo.staffName}}
           </el-button>
+        </el-popover>
+
+        <!--<el-button style="padding: 3px 10px;" slot="reference">
+          <img class="head" v-if="getstaffVO.headImg" :src="getstaffVO.headImg" />
+          <img class="head" v-else src="../assets/head-o.png" />
+          {{getstaffVO.nickName}}
+        </el-button>-->
       </div>
       <!--个人信息-->
 
@@ -83,26 +59,71 @@
 
     </div>
 
-    <orderDetailModel v-if="editdialog.dialogVisible" :dialogVisible="editdialog.dialogVisible" :kzId="editdialog.kzId" @close="editdialog.dialogVisible = false"/>
+    <el-dialog
+        title="员工编辑"
+        :visible.sync="editstaff.dialogVisible" 
+        width="500px"
+        >
+        <div class="wrap-staff">
+          <p class="input-p">
+            <b >*</b><span >密码：</span>
+            <el-input type="password" placeholder="请输入密码"  size="mini" class="input-input"
+               v-model="editstaff.password" ></el-input>
+            
+          </p>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="mini" @click="editstaff.dialogVisible = false">取 消</el-button>
+          <el-button size="mini" @click="editstaffok" type="primary" >确 定</el-button>
+        </span>
+      </el-dialog>
+    <addmaintenance  @close="addmaintenance_dialogVisible = false" :dialogVisible="addmaintenance_dialogVisible"></addmaintenance>
+
   </div>
 </template>
 
 <script>
   import Cookies from "js-cookie"
-  import orderDetailModel from './order_detail_model' 
   import { mapGetters } from 'vuex'
+  import addmaintenance from './add_maintenance'
 
   export default {
     components: {
-      orderDetailModel
+      addmaintenance
     },
     data() {
       return {
-        category: [{
-            name: '客户维护',
-            link: '/online_sales',
+        editstaff: {
+          dialogVisible: false,
+          password: ''
+        },
+        addmaintenance_dialogVisible: false, 
+        category: [
+          {
+            name: '首页',
+            link: '/demonsion',
             choose: true
-          }
+          },
+          {
+            name: '运维',
+            link: '/maintenance/demonsion',
+            choose: true
+          },
+          {
+            name: '项目',
+            link: '/project/project_list',
+            choose: false
+          },
+          {
+            name: '报表',
+            link: '/report_list',
+            choose: false
+          },
+          {
+            name: '设置',
+            link: '/setting',
+            choose: false
+          },
         ],
         editdialog: {
           dialogVisible: false,
@@ -121,6 +142,8 @@
     computed: {
         ...mapGetters([
           'getstaffVO',
+          'userInfo',
+          'getpowers'
         ]),
     },
     mounted() {
@@ -128,67 +151,118 @@
       //this.getCurrentLoginUserInfo()
       let that = this
 
-      document.addEventListener("click", function(){
-        that.searchresult = false
-        that.searchKey = ''
-      }, false);
+      if (this.$route.fullPath.indexOf('report')>0) {
+
+        this.jumpa(3)
+      }
+
+      if (this.$route.fullPath.indexOf('maintenance')>0) {
+        this.jumpa(1)
+
+      }
+
+
+      if (this.$route.fullPath.indexOf('project')>0) {
+        
+        this.jumpa(2)
+      }
+
+      if (this.$route.fullPath.indexOf('setting')>0) {
+        
+        this.jumpa(4)
+      }
+
+
     },
     methods: {
+      isInArray(value){
+            for(var i = 0; i < this.getpowers.length; i++){
+                if(value == this.getpowers[i]){
+
+                    return true;
+                }
+            }
+            return false;
+      },
+      handle_new_add(command) {
+        this.addmaintenance_dialogVisible = true
+        console.info(command)
+      },
       //顶部跳转
       jump(index) {
         for (let i = 0; i < this.category.length; i++) {
           this.category[i].choose = false
         }
         this.category[index].choose = true
-        this.$router.push(this.category[index].link)
+
+        if (!this.isInArray('20') && this.category[index].name == '设置') {
+          return this.$message({
+            message: '没有权限查看此页面',
+            type: 'warning'
+          })
+        }
+
+        if (this.category[index].link) {
+          this.$router.push(this.category[index].link)
+        } else {
+          this.$message({
+            message: '新功能暂未开发，请期待',
+            type: 'warning'
+          })
+        } 
+        
+      },
+      jumpa(index) {
+        for (let i = 0; i < this.category.length; i++) {
+          this.category[i].choose = false
+        }
+        this.category[index].choose = true
+        //this.$router.push(this.category[index].link)
       },
       detailkz(list) {
         this.editdialog.kzId = list.kzId
         this.editdialog.dialogVisible = true
       },
-      //搜索
-      searchok() {
-        if (!this.searchKey) {
-          return
-        }
+      editstaffok() {
 
-        if (this.searchKey.length<3) {
-          if (/[^\u4E00-\u9FA5]/g.test(this.searchKey)) {
-            return this.$message({
-              message: '请输入清晰的条件',
-              type: 'error'
-            })
-          }
-        }
+        let that = this
+        this.$http.get(`staff/update_password?id=${this.getstaffVO.uid}&password=${this.editstaff.password}`)
+          .then(function (data) {
+            console.info(data)
 
-        
+                  
+                    if (data.code != '200'){
+                      that.$message({
+                        message: data.msg,
+                        type: 'error'
+                      });
 
 
+                    } else {
+                      that.$message({
+                          message: data.msg,
+                          type: 'success'
+                       });
 
-        
-        this.searchresult = true
-        this.$http.get(`info/get_info_list_by_key?searchKey=${this.searchKey}`)
-        .then((data)=>{
-            
-            if (data.code == '100000') {
-                this.searchlist = []
+                      that.exit()
+                    }
 
-                this.searchlist = data.data
-            } else {
-                this.$message({
-                  message: data.msg,
-                  type: 'error'
+                    
+                  
+                  
                 })
-            }
-        })
-      },
-      keyupsearch(event) {
-        if (event.keyCode == 13 && this.searchKey) {
-          this.searchok()
-        }
+                .catch(function (error) {
+                  console.log(error);
+                  that.$message({
+                      message: '接口报错',
+                      type: 'error'
+                    });
+                });
       },
       //退出登录
       exit() {
+
+        console.info(Cookies)
         Cookies.remove('cid')
         Cookies.remove('uid')
         Cookies.remove('token')
@@ -209,9 +283,43 @@
   }
 </script>
 
-<style spoced lang="less">
+<style>
+  .el-popper .popper__arrow {
+    display: none
+  }
+  .head-1 .el-popper{
+    min-width: 60px;
+  }
+</style>
+<style scope lang="less">
+  .wrap-staff {
+    p {
+      margin-bottom: 20px;
+      padding-left: 20px;
+      font-size: 12px;
+
+      .input-input {
+        display: inline-block;
+        width: 270px;
+        font-size: 12px;
+      }
+
+      span {
+        padding-left: 4px;
+      }
+
+      b {
+        color: red;
+      }
+    }
+  }
   .head-1 {
     position: relative;
+
+    .dropdownpositon {
+      position: absolute;
+      right: 160px;
+    }
 
     .search-detail {
     position: absolute;
@@ -315,12 +423,17 @@
       position: relative;
       z-index: 940;
 
+      background: rgba(255, 255, 255, 0.85);
+
+
+
+
       
 
       .person {
         position: absolute;
         text-align: left;
-        right: 20px;
+        right: 30px;
         top: 15px;
         font-size: 12px;
 
@@ -376,9 +489,9 @@
         justify-content: space-between;
         align-items: center;
         width: 20%;
-        min-width: 220px;
-        max-width: 220px;
-        margin-left: 26px;
+        min-width: 460px;
+        max-width: 460px;
+        margin-left: 160px;
       }
 
       .update-wrap {
