@@ -91,6 +91,17 @@ export default {
                     }
                   ],
               },
+              {
+                  name: '视图导入',
+                  choose: false,
+                  link:'/reportdataview/dataview',
+                  routerarray: [
+                    {
+                      router: '/reportdataview/dataview',
+                      power: 25
+                    }
+                  ],
+              },
               
             ],
             chooseindex: 0,
@@ -125,6 +136,8 @@ export default {
           this.change(2)
         } else if (this.$route.fullPath.indexOf('reportthree')>0) {
           this.change(0)
+        } else if (this.$route.fullPath.indexOf('reportdataview')>0) {
+          this.change(3)
         }
         
           //
@@ -161,7 +174,7 @@ export default {
             } 
 
 
-            if (listindex === -1) {
+            if (listindex === -1 && index !=3) {
               this.$message({
                 message: '您没有查看此报表的权限',
                 type: 'warning'

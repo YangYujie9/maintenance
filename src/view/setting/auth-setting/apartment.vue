@@ -482,8 +482,10 @@
 	            <b >*</b><span >部门：</span>
 	            <el-cascader
 	            	:props="staffprops"
-				    placeholder="试试搜索：指南"
+	            	class="input-input"
 				    :options="leftdata"
+				     v-model="selectedOptions"
+				     change-on-select
 				    size="mini"
 				    filterable
 				 ></el-cascader>
@@ -559,6 +561,7 @@ export default {
         		label: 'groupName',
         		children: 'groupVOList',
         	},
+        	selectedOptions: [],
         	memo: '',
         	addstaff: {
         		dialogVisible:false,
@@ -809,6 +812,12 @@ export default {
     	editstaffok() {
     		let that = this
 
+
+    		
+    		let groupId = this.selectedOptions.length>0? this.selectedOptions[this.selectedOptions.length-1]:this.editstaff.groupId
+
+    		
+
     		this.$http.post('staff/update_staff',{
     			staffName: this.editstaff.staffName,
     			phone: this.editstaff.phone,
@@ -816,7 +825,7 @@ export default {
     			password: this.editstaff.password,
     			sex: this.editstaff.sex,
     			id: this.editstaff.id,
-    			groupId: this.editstaff.groupId,
+    			groupId: groupId,
 
     		})
     		.then(function (data) {

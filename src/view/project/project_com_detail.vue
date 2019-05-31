@@ -104,11 +104,11 @@
 
                 <el-button v-if="detailproject.status==1" size="mini" @click="deleteproject(detailproject.id)" type="danger">删除</el-button>
 
-                <el-button v-if="detailproject.status==3" size="mini" @click="project_finish(detailproject.id)" type="danger">完成</el-button>
+                <el-button v-if="detailproject.status==3" size="mini"  type="danger" disabled>完成</el-button>
 
 
 
-                <el-button v-if="detailproject.status==2" size="mini"  type="info" disabled>完成</el-button>
+                <el-button v-if="detailproject.status==2" @click="project_finish(detailproject.id)" size="mini"  type="info" >完成</el-button>
 
 
                 <el-button size="mini" v-if="!editdetailproject" @click="editdetailproject = true">编辑</el-button>

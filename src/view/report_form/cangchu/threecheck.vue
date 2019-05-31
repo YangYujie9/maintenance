@@ -115,8 +115,12 @@
 
               <!--<el-button @click="updateFile" size="mini" style="margin-left: 20px;margin-bottom: 20px" type="primary">上传表单</el-button>-->
 
-              <el-button v-if="isInArray(17)" :disabled="uploadflag" size="mini" style="margin-left: 20px;margin-bottom: 20px" type="primary">{{uploadflag?'上传中': '上传'}}</el-button>
-              <input v-if="isInArray(17)" type="file" class="inpucus cursor" @change="tirggerFile($event)" />
+              <el-button v-if="isInArray(17)" :disabled="uploadflag" size="mini" style="margin-left: 20px;margin-bottom: 20px;position: relative;" type="primary">{{uploadflag?'上传中': '上传'}}
+
+                <input v-if="isInArray(17)" style="left:0px" type="file" class="inpucus cursor" @change="tirggerFile($event)" />
+
+              </el-button>
+              
 
 
               <a target="_blank" style="text-decoration: none; position: absolute;right: 40px;" href="http://10.88.125.115/" class="el-button el-button--primary el-button--mini">货源知识库</a>

@@ -52,6 +52,11 @@ export default new Router({
                 name: 'threecheck',
                 component: resolve => require(['@/view/report_form/cangchu/threecheck'],resolve),
               },
+              {
+                path: '/reportdataview/dataview',
+                name: 'dataview',
+                component: resolve => require(['@/view/report_form/dataview'],resolve),
+              },
           ],
         },
         {
@@ -122,6 +127,11 @@ export default new Router({
       path: '/demonsion',
       name: 'demonsion',
       component: resolve => require(['../view/demonsion'],resolve),
+    },
+    {
+      path: '/report_dataview',
+      name: 'dataview',
+      component: resolve => require(['../view/dataview/index'],resolve),
     },
   ]
 })
